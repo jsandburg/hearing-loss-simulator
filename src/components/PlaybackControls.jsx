@@ -75,7 +75,7 @@ export function PlaybackControls({
         justifyContent: 'space-between',
         fontSize: 10,
         fontFamily: THEME.fontSans,
-        color: THEME.textSecondary,   // was textMuted
+        color: THEME.textSecondary,
         marginBottom: 14,
       }}>
         <span>{hasAudio ? formatDuration(elapsed) : '0:00'}</span>
@@ -98,7 +98,7 @@ export function PlaybackControls({
             flexShrink: 0,
             background: inactive ? THEME.bgCardHover : accent,
             border: 'none',
-            color: inactive ? THEME.textSecondary : '#ffffff',   // was textMuted
+            color: inactive ? THEME.textSecondary : '#ffffff',
             cursor: inactive ? 'not-allowed' : 'pointer',
             display: 'flex',
             alignItems: 'center',

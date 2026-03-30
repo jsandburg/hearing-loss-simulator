@@ -94,7 +94,7 @@ export function PresetSelector({ activeId, onSelect, customProfiles = [], onNewC
             fontWeight: 600,
             letterSpacing: '0.1em',
             textTransform: 'uppercase',
-            color: THEME.textPrimary,   // was textMuted
+            color: THEME.textPrimary,
             marginBottom: 5,
           }}>
             {label}
@@ -155,9 +155,9 @@ export function PresetSelector({ activeId, onSelect, customProfiles = [], onNewC
                   fontSize: 11,
                   fontFamily: THEME.fontSans,
                   background: THEME.bgCard,
-                  border: `1px dashed ${THEME.textTertiary}`,   // was THEME.border
+                  border: `1px dashed ${THEME.textTertiary}`,
                   borderRadius: 3,
-                  color: THEME.textSecondary,   // was textMuted
+                  color: THEME.textSecondary,
                   cursor: 'pointer',
                   textAlign: 'left',
                 }}

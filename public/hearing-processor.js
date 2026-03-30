@@ -15,16 +15,13 @@
  * This file must be served as a static asset (placed in /public/).
  * It is loaded via: audioContext.audioWorklet.addModule('/hearing-processor.js?v=1')
  *
- * Architecture: Filterbank (Option B — per-band isolation)
+ * Architecture: Filterbank — per-band isolation
  * For each of the 8 audiogram frequency bands:
- *   1. Analysis bandpass filter measures band energy
- *   2. Threshold gate: if band energy < hearing threshold → mute that band's contribution
- *   3. Recruitment compressor: if energy > threshold → apply dynamic compression
- *   4. Temporal envelope smearing via envelope low-pass filter + reimposition
+ *   1. Analysis bandpass filter measures band energy (RMS over 128-sample block)
+ *   2. Threshold gate: if band energy < hearing threshold → mute that band
  * Then on the full mixed signal:
- *   5. Temporal fine structure degradation (LCG noise injection)
- *   6. Tinnitus tone addition
- *   7. Hard clip to [-1, 1]
+ *   3. Tinnitus tone addition (sinusoidal oscillator)
+ *   4. Hard clip to [-1, 1]
  */
 
 'use strict';
@@ -35,13 +32,6 @@ const NUM_BANDS    = 8;
 const FREQUENCIES  = [250, 500, 1000, 2000, 3000, 4000, 6000, 8000];
 // Per-band Q values calculated from audiogram frequency spacing
 const BAND_Q       = [1.41, 1.42, 1.41, 1.93, 2.96, 2.79, 2.96, 3.86];
-// Cochlear dynamic range above threshold (dB) for recruitment compression
-const COCHLEAR_DR  = 20.0;
-// Normal dynamic range (dB)
-const NORMAL_DR    = 120.0;
-// Envelope follower smoothing — per-sample coefficient (very slow attack/release)
-const ENV_ATTACK   = 0.9995;
-const ENV_RELEASE  = 0.9990;
 
 // ─── Biquad Filter Utilities ─────────────────────────────────────────────────
 // Direct-form II transposed biquad implementation.
@@ -73,26 +63,6 @@ function tickBiquad(f, x) {
   return y;
 }
 
-function resetBiquad(f) {
-  f.z1 = 0;
-  f.z2 = 0;
-}
-
-// ─── LCG Noise Generator ─────────────────────────────────────────────────────
-// Linear congruential generator. Faster than Math.random() on the audio thread
-// and deterministic. Produces values in [-1, 1].
-
-class LCGNoise {
-  constructor() {
-    this.state = (Math.random() * 0xFFFFFFFF) >>> 0;
-  }
-  next() {
-    // Knuth's multiplicative LCG
-    this.state = (Math.imul(this.state, 1664525) + 1013904223) >>> 0;
-    return (this.state / 0x7FFFFFFF) - 1.0;
-  }
-}
-
 // ─── HearingProcessor ────────────────────────────────────────────────────────
 
 class HearingProcessor extends AudioWorkletProcessor {
@@ -101,14 +71,8 @@ class HearingProcessor extends AudioWorkletProcessor {
 
     // ── Parameters (updated via MessagePort) ──────────────────────────────
     // thresholds: Float32Array[8] — hearing threshold per band in dB HL
-    // recruitment: bool — enable abnormal loudness growth compression
-    // smearingHz: number — envelope LPF cutoff (Hz). 150=normal, 8=profound
-    // fineStructure: number 0–1 — phase noise injection amount
     // tinnitus: { enabled, frequency, level }
     this.thresholds    = new Float32Array(NUM_BANDS); // all 0 = no gating
-    this.recruitment   = false;
-    this.smearingHz    = 150;  // 150 Hz = normal (no smearing)
-    this.fineStructure = 0;
     this.tinnitus      = { enabled: false, frequency: 4000, level: 0 };
 
     // ── Analysis filterbank ────────────────────────────────────────────────
@@ -119,22 +83,13 @@ class HearingProcessor extends AudioWorkletProcessor {
 
     // ── Reconstruction filterbank ──────────────────────────────────────────
     // Matched pair to analysis filters. Used to reconstruct the output
-    // from gated/compressed per-band signals.
+    // from gated per-band signals.
     this.reconstructFilters = FREQUENCIES.map((f, i) =>
       makeBandpassCoeffs(f, BAND_Q[i], sampleRate)
     );
 
-    // ── Per-band state ─────────────────────────────────────────────────────
-    this.bandEnergy       = new Float32Array(NUM_BANDS); // RMS per band
-    this.bandEnvelopes    = new Float32Array(NUM_BANDS); // envelope followers
-
-    // ── Temporal envelope smearing state ──────────────────────────────────
-    // Per-band envelope low-pass filters (one-pole IIR)
-    this.smearEnv         = new Float32Array(NUM_BANDS); // smeared envelope
-    this.smearCoeff       = this._smearCoeff(150);       // derived from smearingHz
-
-    // ── Fine structure noise ───────────────────────────────────────────────
-    this.noise = new LCGNoise();
+    // ── Per-band energy ────────────────────────────────────────────────────
+    this.bandEnergy = new Float32Array(NUM_BANDS); // RMS per band
 
     // ── Tinnitus oscillator ────────────────────────────────────────────────
     this.tinnitusPhase = 0;
@@ -150,13 +105,7 @@ class HearingProcessor extends AudioWorkletProcessor {
           this.thresholds[i] = Number(d.thresholds[i] ?? 0);
         }
       }
-      if ('recruitment'   in d) this.recruitment   = Boolean(d.recruitment);
-      if ('smearingHz'    in d) {
-        this.smearingHz  = Math.max(1, Math.min(200, Number(d.smearingHz)));
-        this.smearCoeff  = this._smearCoeff(this.smearingHz);
-      }
-      if ('fineStructure' in d) this.fineStructure = Math.max(0, Math.min(1, Number(d.fineStructure)));
-      if ('tinnitus'      in d) {
+      if ('tinnitus' in d) {
         this.tinnitus = {
           enabled:   Boolean(d.tinnitus.enabled),
           frequency: Math.max(20, Math.min(20000, Number(d.tinnitus.frequency ?? 4000))),
@@ -168,39 +117,8 @@ class HearingProcessor extends AudioWorkletProcessor {
 
   // ── Private helpers ────────────────────────────────────────────────────────
 
-  _smearCoeff(cutoffHz) {
-    // One-pole IIR low-pass coefficient for envelope follower.
-    // coeff = exp(-2π * cutoff / sampleRate)
-    // High cutoff (150 Hz) → coeff near 1 → fast tracking (no smearing)
-    // Low cutoff (8 Hz)    → coeff near 1 → slow tracking (heavy smearing)
-    return Math.exp(-2 * Math.PI * cutoffHz / sampleRate);
-  }
-
   _dbToLinear(db) {
     return Math.pow(10, db / 20);
-  }
-
-  _linearToDb(lin) {
-    return 20 * Math.log10(Math.max(1e-10, lin));
-  }
-
-  _applyRecruitmentGain(inputLevel, thresholdDb) {
-    // Inputs: inputLevel in linear, thresholdDb in dB HL
-    // Returns a gain factor to apply to the signal.
-    //
-    // Above threshold, cochlear dynamic range is compressed from NORMAL_DR
-    // to COCHLEAR_DR. Ratio = NORMAL_DR / COCHLEAR_DR = 6:1.
-    // This means the band goes from just-audible to maximally-loud over
-    // only 20 dB of input change instead of the normal 120 dB.
-    if (thresholdDb <= 0) return 1.0; // no threshold, no recruitment
-
-    const threshLin = this._dbToLinear(-thresholdDb); // threshold as linear amplitude
-    if (inputLevel <= threshLin) return 0.0;          // below threshold: silence
-
-    const excessDb    = this._linearToDb(inputLevel / threshLin);
-    const ratio       = NORMAL_DR / COCHLEAR_DR;
-    const compressedDb = excessDb / ratio;
-    return this._dbToLinear(compressedDb) * threshLin / inputLevel;
   }
 
   // ── Main process loop ──────────────────────────────────────────────────────
@@ -218,7 +136,7 @@ class HearingProcessor extends AudioWorkletProcessor {
     // the energy probe is effectively stateless — preventing state drift that
     // would cause threshold gating decisions to be based on stale energy estimates.
     for (let b = 0; b < NUM_BANDS; b++) {
-      const af    = this.analysisFilters[b];
+      const af      = this.analysisFilters[b];
       const savedZ1 = af.z1;
       const savedZ2 = af.z2;
 
@@ -238,14 +156,14 @@ class HearingProcessor extends AudioWorkletProcessor {
 
     // ── Step 2: Process each sample ───────────────────────────────────────
     // Hoist tinnitus phase increment — constant within a block
-    this._tinnitusPhaseInc = this.tinnitus.enabled
+    const tinnitusPhaseInc = this.tinnitus.enabled
       ? (2 * Math.PI * this.tinnitus.frequency) / sampleRate
       : 0;
 
     for (let i = 0; i < blockSize; i++) {
       const x = inputChannel[i];
 
-      // Reconstruct signal as sum of gated/compressed frequency bands
+      // Reconstruct signal as sum of gated frequency bands
       let reconstructed = 0;
 
       for (let b = 0; b < NUM_BANDS; b++) {
@@ -254,66 +172,25 @@ class HearingProcessor extends AudioWorkletProcessor {
         const threshDb   = this.thresholds[b];
 
         let gain;
-        if (this.recruitment) {
-          gain = this._applyRecruitmentGain(energy, threshDb);
-        } else if (threshDb > 0) {
-          // Threshold gating without recruitment: below threshold → silence
+        if (threshDb > 0) {
+          // Threshold gating: below threshold → silence
           const threshLin = this._dbToLinear(-threshDb);
           gain = energy < threshLin ? 0.0 : 1.0;
         } else {
           gain = 1.0;
         }
 
-        // Temporal envelope smearing
-        // Track the instantaneous envelope of this band using a standard
-        // one-pole IIR follower with separate attack and release time constants.
-        // attack is fast (ENV_ATTACK near 1 → fast rise),
-        // release is slow (ENV_RELEASE near 1 → slow decay).
-        const instEnv  = Math.abs(bandSample);
-        const prevEnv  = this.bandEnvelopes[b];
-        const trackedEnv = instEnv > prevEnv
-          ? ENV_ATTACK  * prevEnv + (1 - ENV_ATTACK)  * instEnv  // attack: fast
-          : ENV_RELEASE * prevEnv + (1 - ENV_RELEASE) * instEnv; // release: slow
-        this.bandEnvelopes[b] = trackedEnv;
-
-        // Smear the envelope via one-pole LPF
-        const c = this.smearCoeff;
-        this.smearEnv[b] = c * this.smearEnv[b] + (1 - c) * this.bandEnvelopes[b];
-
-        // Reimpose smeared envelope onto the band signal
-        let processedBand;
-        if (this.smearingHz < 148 && instEnv > 1e-8) {
-          // Scale signal so its envelope matches the smeared (slower) version
-          processedBand = bandSample * (this.smearEnv[b] / instEnv);
-        } else {
-          processedBand = bandSample;
-        }
-
-        reconstructed += processedBand * gain;
+        reconstructed += bandSample * gain;
       }
 
-      // ── Step 3: Temporal fine structure degradation ────────────────────
+      // ── Step 3: Tinnitus tone ──────────────────────────────────────────
       let sample = reconstructed;
-      if (this.fineStructure > 0) {
-        // Inject phase-incoherent noise scaled to signal envelope.
-        // Preserves loudness but destroys pitch/timing information.
-        const noiseVal  = this.noise.next();
-        const envAmp    = Math.abs(sample);
-        sample = sample  * (1.0 - this.fineStructure)
-               + noiseVal * this.fineStructure * envAmp * 3.0;
-      }
-
-      // ── Step 4: Tinnitus tone ──────────────────────────────────────────
-      // phaseInc is hoisted before the loop (see _tinnitusPhaseInc below)
       if (this.tinnitus.enabled && this.tinnitus.level > 0) {
         sample            += Math.sin(this.tinnitusPhase) * this.tinnitus.level * 0.15;
-        this.tinnitusPhase = (this.tinnitusPhase + this._tinnitusPhaseInc) % (2 * Math.PI);
+        this.tinnitusPhase = (this.tinnitusPhase + tinnitusPhaseInc) % (2 * Math.PI);
       }
 
-      // ── Step 5: Hard clip to [-1, 1] ──────────────────────────────────
-      // Fine structure noise injection can push levels above ±1.
-      // The downstream SafetyLimiter in React catches larger issues,
-      // but we clamp here too to keep the worklet output clean.
+      // ── Step 4: Hard clip to [-1, 1] ──────────────────────────────────
       outputChannel[i] = sample < -1.0 ? -1.0 : sample > 1.0 ? 1.0 : sample;
     }
 

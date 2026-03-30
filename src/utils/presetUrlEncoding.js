@@ -131,9 +131,6 @@ export function decodePresetFromUrl(encoded) {
     colorRight:   null,
     desc:         'Shared hearing profile.',
     worklet: {
-      recruitment:      false,
-      temporalSmearing: 0,
-      fineStructure:    0,
       tinnitus: {
         enabled:   payload.wk?.ten === 1,
         frequency: clamp(payload.wk?.tF ?? 4000, 500, 12000),

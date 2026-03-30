@@ -22,7 +22,7 @@ export function WorkletControls({ effective, onSetTinnitus, hasFile }) {
         <span style={{
           fontSize: 10, fontFamily: THEME.fontSans, fontWeight: 600,
           letterSpacing: '0.08em', textTransform: 'uppercase',
-          color: THEME.textPrimary,   // was textMuted
+          color: THEME.textPrimary,
         }}>
           Tinnitus
         </span>

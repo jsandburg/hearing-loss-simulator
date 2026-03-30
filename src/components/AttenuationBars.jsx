@@ -45,7 +45,7 @@ function Bar({ label, correctedDb, color }) {
         }}>
           <span style={{
             fontSize: 9, fontFamily: THEME.fontSans, fontWeight: hasLoss ? 600 : 400,
-            color: hasLoss ? color : THEME.textTertiary,   // was textMuted
+            color: hasLoss ? color : THEME.textTertiary,
           }}>
             {hasLoss ? `−${Math.round(correctedDb)}` : '—'}
           </span>

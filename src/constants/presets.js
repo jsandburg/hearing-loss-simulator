@@ -23,9 +23,6 @@ export const PRESETS = {
     flatAttenuationR: null,
     desc:        'Mild loss across all frequencies (26–40 dB HL) — often the first level at which hearing aids are recommended. Soft speech is frequently missed, and background noise significantly reduces comprehension.',
     worklet: {
-      recruitment:      false,
-      temporalSmearing: 0,
-      fineStructure:    0,
       tinnitus: { enabled: false, frequency: 4000, level: 0.15 },
     },
   },
@@ -43,9 +40,6 @@ export const PRESETS = {
     flatAttenuationR: null,
     desc:        'Moderate loss (41–55 dB HL). Normal conversation requires sustained effort and concentration, and unaided speech recognition drops sharply in noisy environments. Hearing aids are typically prescribed at this stage.',
     worklet: {
-      recruitment:      false,
-      temporalSmearing: 0,
-      fineStructure:    0,
       tinnitus: { enabled: false, frequency: 4000, level: 0.15 },
     },
   },
@@ -63,9 +57,6 @@ export const PRESETS = {
     flatAttenuationR: null,
     desc:        'Severe loss (71–90 dB HL). Most speech is inaudible without amplification, and even with hearing aids, understanding remains limited. Cochlear implant candidacy is typically evaluated at this level.',
     worklet: {
-      recruitment:      false,
-      temporalSmearing: 0,
-      fineStructure:    0,
       tinnitus: { enabled: false, frequency: 4000, level: 0.15 },
     },
   },
@@ -85,9 +76,6 @@ export const PRESETS = {
     flatAttenuationR: null,
     desc:        'Early age-related loss beginning with the high frequencies above 2 kHz — the most common pattern of hearing loss overall. Consonants like S, F, and TH start to blur, and speech in noise becomes harder to follow.',
     worklet: {
-      recruitment:      false,
-      temporalSmearing: 0,
-      fineStructure:    0,
       tinnitus: { enabled: false, frequency: 4000, level: 0.15 },
     },
   },
@@ -105,9 +93,6 @@ export const PRESETS = {
     flatAttenuationR: null,
     desc:        'Moderate age-related loss, affecting a majority of adults over 65. Conversation requires concentration, speech in noise is difficult, and the television volume tends to creep up. Amplification is typically recommended at this stage.',
     worklet: {
-      recruitment:      false,
-      temporalSmearing: 0,
-      fineStructure:    0,
       tinnitus: { enabled: false, frequency: 4000, level: 0.15 },
     },
   },
@@ -125,9 +110,6 @@ export const PRESETS = {
     flatAttenuationR: null,
     desc:        'Significant age-related loss. One-on-one conversation is difficult even in quiet, and group conversations are nearly impossible. Hearing aids may not provide sufficient benefit at this level; cochlear implant evaluation is sometimes appropriate.',
     worklet: {
-      recruitment:      false,
-      temporalSmearing: 0,
-      fineStructure:    0,
       tinnitus: { enabled: false, frequency: 4000, level: 0.15 },
     },
   },
@@ -147,9 +129,6 @@ export const PRESETS = {
     flatAttenuationR: null,
     desc:        'Classic acoustic-trauma pattern — a sharp notch centred at 4 kHz, where the cochlea is most mechanically stressed by loud sounds. Common after gunfire, industrial noise, or concert exposure. The notch typically widens with continued or repeated exposure.',
     worklet: {
-      recruitment:      false,
-      temporalSmearing: 0,
-      fineStructure:    0,
       tinnitus: { enabled: false, frequency: 4000, level: 0.15 },
     },
   },
@@ -169,9 +148,6 @@ export const PRESETS = {
     flatAttenuationR: 27,
     desc:        'Mild middle-ear blockage — like hearing through earplugs or with fluid in the ear. Sounds are uniformly softer but not distorted, because the inner ear (cochlea) is intact. Typically caused by otitis media, cerumen impaction, or ossicular chain disruption.',
     worklet: {
-      recruitment:      false,
-      temporalSmearing: 0,
-      fineStructure:    0,
       tinnitus: { enabled: false, frequency: 4000, level: 0.15 },
     },
   },
@@ -189,9 +165,6 @@ export const PRESETS = {
     flatAttenuationR: 40,
     desc:        'Moderate middle-ear blockage (41–55 dB HL). Speech requires significant volume to be audible, and normal conversation is difficult without raised voices. Conductive loss at this level is often treatable medically or surgically.',
     worklet: {
-      recruitment:      false,
-      temporalSmearing: 0,
-      fineStructure:    0,
       tinnitus: { enabled: false, frequency: 4000, level: 0.15 },
     },
   },
@@ -211,9 +184,6 @@ export const PRESETS = {
     flatAttenuationR: null,
     desc:        'Mid-frequency loss centred around 1–2 kHz — a U-shaped dip named for looking like a bite taken from the middle of the audiogram. Voice fundamentals fall squarely in this range, so speech can sound hollow or muffled. This pattern is often hereditary.',
     worklet: {
-      recruitment:      false,
-      temporalSmearing: 0,
-      fineStructure:    0,
       tinnitus: { enabled: false, frequency: 4000, level: 0.15 },
     },
   },
@@ -231,9 +201,6 @@ export const PRESETS = {
     flatAttenuationR: null,
     desc:        'Mid-frequency loss centred around 2–3 kHz, where consonant clarity lives. Sounds like "s", "sh", and "ch" become hard to distinguish from one another. Often hereditary; may be stable for decades before progression.',
     worklet: {
-      recruitment:      false,
-      temporalSmearing: 0,
-      fineStructure:    0,
       tinnitus: { enabled: false, frequency: 4000, level: 0.15 },
     },
   },
@@ -251,9 +218,6 @@ export const PRESETS = {
     flatAttenuationR: null,
     desc:        'A steep cliff-like drop above 2 kHz — near-normal hearing in the low and mid frequencies, with high-frequency sounds nearly inaudible. Common in genetic hearing loss patterns and in late-stage noise-induced loss.',
     worklet: {
-      recruitment:      false,
-      temporalSmearing: 0,
-      fineStructure:    0,
       tinnitus: { enabled: false, frequency: 4000, level: 0.15 },
     },
   },
@@ -273,9 +237,6 @@ export const PRESETS = {
     flatAttenuationR: null,
     desc:        'Unilateral noise exposure — left ear significantly worse than right, with a pronounced 4 kHz notch on the left. Common in occupational settings or shooting sports. Asymmetric sensorineural loss should always be investigated to exclude retrocochlear pathology such as acoustic neuroma.',
     worklet: {
-      recruitment:      false,
-      temporalSmearing: 0,
-      fineStructure:    0,
       tinnitus: { enabled: false, frequency: 4000, level: 0.15 },
     },
   },
@@ -293,9 +254,6 @@ export const PRESETS = {
     flatAttenuationR: null,
     desc:        'Sudden sensorineural hearing loss in the left ear, with a normal right. Profoundly disorienting — spatial awareness is severely compromised and the brain receives no input to localise sound direction. Sudden SNHL is a medical emergency requiring urgent evaluation.',
     worklet: {
-      recruitment:      false,
-      temporalSmearing: 0,
-      fineStructure:    0,
       tinnitus: { enabled: false, frequency: 4000, level: 0.15 },
     },
   },
@@ -315,9 +273,6 @@ export const PRESETS = {
     flatAttenuationR: null,
     desc:        'Full auditory range with thresholds of 0–20 dB HL across all frequencies — considered within normal limits for adults. No processing applied. Use as a reference baseline when comparing against a simulated profile.',
     worklet: {
-      recruitment:      false,
-      temporalSmearing: 0,
-      fineStructure:    0,
       tinnitus: { enabled: false, frequency: 4000, level: 0.15 },
     },
   },
@@ -345,18 +300,4 @@ export function isSymmetric(profile) {
 
 export function findPreset(key) {
   return PRESETS[key] ?? null;
-}
-
-export function safeWorkletParams(profile) {
-  const w = profile.worklet ?? {};
-  return {
-    recruitment:      Boolean(w.recruitment),
-    temporalSmearing: Math.max(0, Math.min(1, Number(w.temporalSmearing ?? 0))),
-    fineStructure:    Math.max(0, Math.min(1, Number(w.fineStructure    ?? 0))),
-    tinnitus: {
-      enabled:   Boolean(w.tinnitus?.enabled),
-      frequency: Math.max(500, Math.min(12000, Number(w.tinnitus?.frequency ?? 4000))),
-      level:     Math.max(0,   Math.min(1,     Number(w.tinnitus?.level     ?? 0))),
-    },
-  };
 }

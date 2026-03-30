@@ -111,18 +111,17 @@ export function FileUploader({ onFile, onRemove, fileInfo, isLoading, uploaderRe
             style={{
               flexShrink: 0,
               background: 'none',
-              border: `1px solid ${THEME.textTertiary}`,   // was THEME.border
+              border: `1px solid ${THEME.textTertiary}`,
               borderRadius: 3,
               cursor: 'pointer',
               padding: '4px 8px',
               fontSize: 11,
               fontFamily: THEME.fontSans,
-              color: THEME.textSecondary,   // was textMuted
+              color: THEME.textSecondary,
               transition: 'all 0.12s',
             }}
             onMouseEnter={e => { e.currentTarget.style.borderColor = THEME.error; e.currentTarget.style.color = THEME.error; }}
             onMouseLeave={e => { e.currentTarget.style.borderColor = THEME.textTertiary; e.currentTarget.style.color = THEME.textSecondary; }}
-            // was: borderColor = THEME.border, color = THEME.textMuted
           >
             Remove
           </button>
@@ -145,7 +144,7 @@ export function FileUploader({ onFile, onRemove, fileInfo, isLoading, uploaderRe
           style={{
             display: 'block',
             padding: '20px 16px',
-            border: `1px dashed ${isDragging ? THEME.textPrimary : THEME.textTertiary}`,   // was THEME.border
+            border: `1px dashed ${isDragging ? THEME.textPrimary : THEME.textTertiary}`,
             borderRadius: 4,
             background: isDragging ? 'rgba(54,69,79,0.04)' : THEME.bgCardHover,
             cursor: 'pointer',
@@ -156,7 +155,6 @@ export function FileUploader({ onFile, onRemove, fileInfo, isLoading, uploaderRe
           }}
           onFocus={e => { e.currentTarget.style.borderColor = THEME.borderFocus; }}
           onBlur={e => { e.currentTarget.style.borderColor = isDragging ? THEME.textPrimary : THEME.textTertiary; }}
-          // was: THEME.border
         >
           <div style={{ fontSize: 11, fontFamily: THEME.fontSans, fontWeight: 500, color: isDragging ? THEME.textPrimary : THEME.textSecondary, marginBottom: 3 }}>
             {isDragging ? 'Drop to load' : 'Upload an audio file'}

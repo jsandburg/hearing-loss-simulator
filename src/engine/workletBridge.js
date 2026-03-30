@@ -50,7 +50,6 @@ export function sendWorkletParams(workletL, workletR, profile, overrides = {}) {
 
   const baseMsg = {
     // Threshold gating — RETSPL-corrected so mild loss doesn't over-gate
-    // recruitment, smearingHz, fineStructure intentionally omitted (processor defaults to off)
     tinnitus,
   };
 

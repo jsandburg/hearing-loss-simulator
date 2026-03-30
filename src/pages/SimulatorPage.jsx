@@ -372,7 +372,6 @@ export function SimulatorPage({ initialPresetId, initialProfile, sharedProfile }
           profile={editor.editingProfile}
           onSetName={editor.setName}
           onSetLoss={editor.setLossValue}
-          onMirrorLR={editor.mirrorLeftToRight}
           onMirrorRL={editor.mirrorRightToLeft}
           onSave={handleSaveCustom}
           onCancel={editor.closeEditor}

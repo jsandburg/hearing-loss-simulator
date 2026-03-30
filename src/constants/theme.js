@@ -43,13 +43,11 @@ export const THEME = {
   // Feature accents
   worklet:  '#708090',
   custom:   '#36454f',
-  share:    '#36454f',
 
   // Typography
   // font: alias for fontSans, used in SVG/canvas contexts where "Sans" feels awkward
   font:     '"Helvetica Neue", Helvetica, Arial, sans-serif',
   fontSans: '"Helvetica Neue", Helvetica, Arial, sans-serif',
-  fontMono: '"Courier New", monospace',
 
   // Grid
   gridLine: 'rgba(54,69,79,0.08)',

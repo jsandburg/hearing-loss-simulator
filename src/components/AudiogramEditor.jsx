@@ -74,14 +74,11 @@ export function AudiogramEditor({
   profile,
   onSetName,
   onSetLoss,
-  onMirrorLR,
   onMirrorRL,
   onSave,
   onCancel,
 }) {
   if (!profile) return null;
-
-  const isNew = !profile._isEditing;
 
   return (
     /* Backdrop — click outside to cancel */
@@ -123,7 +120,7 @@ export function AudiogramEditor({
             fontWeight: 700,
             color: THEME.textPrimary,
           }}>
-            {isNew ? 'New Custom Audiogram' : 'Edit Audiogram'}
+            Custom Audiogram
           </div>
           <button
             type="button"

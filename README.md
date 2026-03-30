@@ -79,7 +79,7 @@ A filterbank of 8 analysis biquads measures RMS energy per band each 128-sample 
 Below threshold, the band output is gated to silence. This models the non-linear threshold behaviour of cochlear hair cells — sounds don't fade gradually, they disappear.
 
 **Tinnitus**
-A sinusoidal oscillator at the configured frequency is added to the output. Phase increment is computed once per 128-sample block (not per sample). The tinnitus frequency maps 500–12,000 Hz on the slider.
+A sinusoidal oscillator at the configured frequency is added to the output. Phase increment is computed once per 128-sample block rather than per sample. The tinnitus frequency maps 500–12,000 Hz on the slider.
 
 ### Profile Sharing
 
@@ -129,7 +129,7 @@ src/
     ErrorBoundary.jsx        — class component, recovery UI on render error
     FileUploader.jsx         — drag-and-drop + click audio file loader
     PlaybackControls.jsx     — play/stop, seek bar, volume, loop
-    PresetDescription.jsx    — active profile name, description, clinical note
+    PresetDescription.jsx    — active profile name and description
     PresetSelector.jsx       — profile buttons with hover-delete for custom
     ShareDialog.jsx          — profile URL + QR code share modal
     SmallComponents.jsx      — Header, ErrorBanner, WarningBar, SharedProfileBanner
@@ -138,9 +138,9 @@ src/
   pages/
     SimulatorPage.jsx        — full app layout (two-column)
   utils/
-    fileValidation.js        — file type/size checks, formatDuration, displayFileName
+    fileValidation.js        — formatDuration, displayFileName (validation is in AudioEngine)
     presetUrlEncoding.js     — Base64 URL encode/decode for profile sharing
-    volumeCurve.js           — cubic perceptual volume curve
+    volumeCurve.js           — percentToGain: cubic perceptual volume curve
 
 public/
   hearing-processor.js       — AudioWorklet processor (served as static file)
@@ -166,9 +166,6 @@ my_profile: {
   flatAttenuationR: null,
   desc:        'Plain-language description.',
   worklet: {
-    recruitment:      false,     // legacy field, keep false
-    temporalSmearing: 0,         // legacy field, keep 0
-    fineStructure:    0,         // legacy field, keep 0
     tinnitus: { enabled: false, frequency: 4000, level: 0.15 },
   },
 },

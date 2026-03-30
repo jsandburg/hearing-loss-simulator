@@ -12,13 +12,6 @@ import { THEME } from '../constants/theme.js';
 const STORAGE_KEY = 'hearing-sim-custom-audiograms';
 const DEFAULT_LOSS = new Array(8).fill(0);
 
-const DEFAULT_WORKLET = {
-  recruitment:      false,
-  temporalSmearing: 0,
-  fineStructure:    0,
-  tinnitus: { enabled: false, frequency: 4000, level: 0 },
-};
-
 /**
  * Sanitise a profile loaded from localStorage.
  * Adds any fields that didn't exist in older saved versions.
@@ -38,9 +31,6 @@ function sanitiseStoredProfile(p) {
     flatAttenuationR: p.flatAttenuationR ?? null,
     desc:         p.desc         ?? 'User-defined audiogram.',
     worklet: {
-      recruitment:      Boolean(p.worklet?.recruitment),
-      temporalSmearing: Number(p.worklet?.temporalSmearing ?? 0),
-      fineStructure:    Number(p.worklet?.fineStructure    ?? 0),
       tinnitus: {
         enabled:   Boolean(p.worklet?.tinnitus?.enabled),
         frequency: Number(p.worklet?.tinnitus?.frequency ?? 4000),
@@ -71,9 +61,6 @@ function makeEmptyProfile(name = 'Custom Audiogram') {
     colorRight:   null,
     desc:         'User-defined audiogram.',
     worklet: {
-      recruitment:      false,
-      temporalSmearing: 0,
-      fineStructure:    0,
       tinnitus: { enabled: false, frequency: 4000, level: 0 },
     },
   };
@@ -110,11 +97,6 @@ export function useAudiogramEditor() {
     setIsEditorOpen(true);
   }, []);
 
-  const openEditEditor = useCallback((profile) => {
-    setEditingProfile({ ...profile });
-    setIsEditorOpen(true);
-  }, []);
-
   const closeEditor = useCallback(() => {
     setEditingProfile(null);
     setIsEditorOpen(false);
@@ -138,13 +120,6 @@ export function useAudiogramEditor() {
         [ear]: updated,
         isSymmetric: updated.every((v, i) => v === other[i]),
       };
-    });
-  }, []);
-
-  const mirrorLeftToRight = useCallback(() => {
-    setEditingProfile(prev => {
-      if (!prev) return null;
-      return { ...prev, right: [...prev.left], isSymmetric: true };
     });
   }, []);
 
@@ -177,27 +152,16 @@ export function useAudiogramEditor() {
     setCustomProfiles(prev => prev.filter(p => p.id !== id));
   }, []);
 
-  // ── Import a shared profile (from URL decode) ──────────────────────────────
-
-  const importSharedProfile = useCallback((sharedProfile) => {
-    const profile = { ...sharedProfile, id: generateId(), isCustom: true };
-    setCustomProfiles(prev => [...prev, profile]);
-    return profile;
-  }, []);
-
   return {
     customProfiles,
     editingProfile,
     isEditorOpen,
     openNewEditor,
-    openEditEditor,
     closeEditor,
     setName,
     setLossValue,
-    mirrorLeftToRight,
     mirrorRightToLeft,
     saveProfile,
     deleteProfile,
-    importSharedProfile,
   };
 }

@@ -19,13 +19,3 @@ export function percentToGain(percent) {
   const x = percent / 100;
   return x * x * x;
 }
-
-/**
- * @param {number} gain  0–1
- * @returns {number}     0–100 percent
- */
-export function gainToPercent(gain) {
-  if (gain <= 0) return 0;
-  if (gain >= 1) return 100;
-  return Math.cbrt(gain) * 100;
-}
