@@ -37,7 +37,6 @@ function sanitiseStoredProfile(p) {
     flatAttenuationL: p.flatAttenuationL ?? null,
     flatAttenuationR: p.flatAttenuationR ?? null,
     desc:         p.desc         ?? 'User-defined audiogram.',
-    clinicalNote: p.clinicalNote ?? '',
     worklet: {
       recruitment:      Boolean(p.worklet?.recruitment),
       temporalSmearing: Number(p.worklet?.temporalSmearing ?? 0),
@@ -71,7 +70,6 @@ function makeEmptyProfile(name = 'Custom Audiogram') {
     color:        THEME.custom,
     colorRight:   null,
     desc:         'User-defined audiogram.',
-    clinicalNote: '',
     worklet: {
       recruitment:      false,
       temporalSmearing: 0,

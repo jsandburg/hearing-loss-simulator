@@ -19,7 +19,7 @@ import { useAudiogramEditor }   from '../hooks/useAudiogramEditor.js';
 import { useKeyboardShortcuts } from '../hooks/useKeyboardShortcuts.js';
 
 import {
-  Header, ErrorBanner, WarningBar, LimiterIndicator, SharedProfileBanner,
+  Header, ErrorBanner, WarningBar, SharedProfileBanner,
 } from '../components/SmallComponents.jsx';
 import { AboutSection }      from '../components/AboutSection.jsx';
 import { PresetSelector }    from '../components/PresetSelector.jsx';
@@ -353,7 +353,6 @@ export function SimulatorPage({ initialPresetId, initialProfile, sharedProfile }
                   </div>
                 </div>
                 <SpectrumAnalyser engine={audio.engine} isPlaying={audio.playState === 'playing'} />
-                <LimiterIndicator active={audio.limiterActive} />
               </div>
             </div>
 

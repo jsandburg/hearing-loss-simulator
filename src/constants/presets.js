@@ -21,8 +21,7 @@ export const PRESETS = {
     isConductive:    false,
     flatAttenuationL: null,
     flatAttenuationR: null,
-    desc:        'Mild loss across all frequencies. Soft speech is often missed. Background noise significantly reduces comprehension.',
-    clinicalNote: 'Mild sensorineural loss (26–40 dB HL) is often the first level at which hearing aids are recommended in adults.',
+    desc:        'Mild loss across all frequencies (26–40 dB HL) — often the first level at which hearing aids are recommended. Soft speech is frequently missed, and background noise significantly reduces comprehension.',
     worklet: {
       recruitment:      false,
       temporalSmearing: 0,
@@ -42,8 +41,7 @@ export const PRESETS = {
     isConductive:    false,
     flatAttenuationL: null,
     flatAttenuationR: null,
-    desc:        'Moderate loss. Normal conversation requires effort and concentration. Hearing aids are typically prescribed at this stage.',
-    clinicalNote: 'Moderate sensorineural loss (41–55 dB HL). Unaided speech recognition scores drop significantly, especially in noise.',
+    desc:        'Moderate loss (41–55 dB HL). Normal conversation requires sustained effort and concentration, and unaided speech recognition drops sharply in noisy environments. Hearing aids are typically prescribed at this stage.',
     worklet: {
       recruitment:      false,
       temporalSmearing: 0,
@@ -63,8 +61,7 @@ export const PRESETS = {
     isConductive:    false,
     flatAttenuationL: null,
     flatAttenuationR: null,
-    desc:        'Severe loss. Most speech is inaudible without amplification. Even with hearing aids, understanding is limited.',
-    clinicalNote: 'Severe sensorineural loss (71–90 dB HL). Cochlear implant candidacy evaluation is strongly indicated.',
+    desc:        'Severe loss (71–90 dB HL). Most speech is inaudible without amplification, and even with hearing aids, understanding remains limited. Cochlear implant candidacy is typically evaluated at this level.',
     worklet: {
       recruitment:      false,
       temporalSmearing: 0,
@@ -86,8 +83,7 @@ export const PRESETS = {
     isConductive:    false,
     flatAttenuationL: null,
     flatAttenuationR: null,
-    desc:        'Early age-related high-frequency loss. Consonants like S, F, and TH begin to blur. Speech in noise becomes harder to follow.',
-    clinicalNote: 'Presbycusis is the most common cause of hearing loss. It typically affects frequencies above 2 kHz first due to basal cochlear hair cell loss.',
+    desc:        'Early age-related loss beginning with the high frequencies above 2 kHz — the most common pattern of hearing loss overall. Consonants like S, F, and TH start to blur, and speech in noise becomes harder to follow.',
     worklet: {
       recruitment:      false,
       temporalSmearing: 0,
@@ -107,8 +103,7 @@ export const PRESETS = {
     isConductive:    false,
     flatAttenuationL: null,
     flatAttenuationR: null,
-    desc:        'Moderate age-related loss. Conversation requires concentration. Speech in noise is difficult. Television volume is often turned up.',
-    clinicalNote: 'Most adults over 65 have some degree of presbycusis. At this stage, amplification is typically recommended.',
+    desc:        'Moderate age-related loss, affecting a majority of adults over 65. Conversation requires concentration, speech in noise is difficult, and the television volume tends to creep up. Amplification is typically recommended at this stage.',
     worklet: {
       recruitment:      false,
       temporalSmearing: 0,
@@ -128,8 +123,7 @@ export const PRESETS = {
     isConductive:    false,
     flatAttenuationL: null,
     flatAttenuationR: null,
-    desc:        'Significant age-related loss. One-on-one conversation is difficult even in quiet. Group conversations are nearly impossible.',
-    clinicalNote: 'At this level, hearing aids may not provide sufficient benefit. Cochlear implant evaluation is sometimes appropriate.',
+    desc:        'Significant age-related loss. One-on-one conversation is difficult even in quiet, and group conversations are nearly impossible. Hearing aids may not provide sufficient benefit at this level; cochlear implant evaluation is sometimes appropriate.',
     worklet: {
       recruitment:      false,
       temporalSmearing: 0,
@@ -151,8 +145,7 @@ export const PRESETS = {
     isConductive:    false,
     flatAttenuationL: null,
     flatAttenuationR: null,
-    desc:        'Classic acoustic-trauma pattern — a sharp notch at 4 kHz. Common after gunfire, industrial noise, or loud concert exposure.',
-    clinicalNote: 'The 4 kHz notch occurs because this region of the cochlea is most mechanically stressed by loud sounds. The notch often widens with continued exposure.',
+    desc:        'Classic acoustic-trauma pattern — a sharp notch centred at 4 kHz, where the cochlea is most mechanically stressed by loud sounds. Common after gunfire, industrial noise, or concert exposure. The notch typically widens with continued or repeated exposure.',
     worklet: {
       recruitment:      false,
       temporalSmearing: 0,
@@ -174,8 +167,7 @@ export const PRESETS = {
     isConductive:    true,
     flatAttenuationL: 27,
     flatAttenuationR: 27,
-    desc:        'Mild middle-ear blockage — like hearing through earplugs or with fluid in the ear. Sounds are uniformly softer but not distorted.',
-    clinicalNote: 'Conductive loss is typically caused by otitis media, cerumen impaction, or ossicular chain disruption. The inner ear is intact.',
+    desc:        'Mild middle-ear blockage — like hearing through earplugs or with fluid in the ear. Sounds are uniformly softer but not distorted, because the inner ear (cochlea) is intact. Typically caused by otitis media, cerumen impaction, or ossicular chain disruption.',
     worklet: {
       recruitment:      false,
       temporalSmearing: 0,
@@ -195,8 +187,7 @@ export const PRESETS = {
     isConductive:    true,
     flatAttenuationL: 40,
     flatAttenuationR: 40,
-    desc:        'Moderate middle-ear blockage. Speech requires significant volume to be audible. Normal conversation is difficult without raising voices.',
-    clinicalNote: 'Moderate conductive loss (41–55 dB HL). Often treatable medically or surgically.',
+    desc:        'Moderate middle-ear blockage (41–55 dB HL). Speech requires significant volume to be audible, and normal conversation is difficult without raised voices. Conductive loss at this level is often treatable medically or surgically.',
     worklet: {
       recruitment:      false,
       temporalSmearing: 0,
@@ -218,8 +209,7 @@ export const PRESETS = {
     isConductive:    false,
     flatAttenuationL: null,
     flatAttenuationR: null,
-    desc:        'Mid-frequency loss centred around 1–2 kHz. Voice fundamentals most affected; speech can sound hollow or muffled.',
-    clinicalNote: 'Cookie bite audiograms are often hereditary. The shape is named because the dip looks like a bite taken from the middle of the audiogram.',
+    desc:        'Mid-frequency loss centred around 1–2 kHz — a U-shaped dip named for looking like a bite taken from the middle of the audiogram. Voice fundamentals fall squarely in this range, so speech can sound hollow or muffled. This pattern is often hereditary.',
     worklet: {
       recruitment:      false,
       temporalSmearing: 0,
@@ -239,8 +229,7 @@ export const PRESETS = {
     isConductive:    false,
     flatAttenuationL: null,
     flatAttenuationR: null,
-    desc:        'Mid-frequency loss centred around 2–3 kHz. Consonant clarity most affected — "s", "sh", "ch" become hard to distinguish.',
-    clinicalNote: 'Mid-frequency hereditary loss often presents symmetrically and may be stable for decades before progression.',
+    desc:        'Mid-frequency loss centred around 2–3 kHz, where consonant clarity lives. Sounds like "s", "sh", and "ch" become hard to distinguish from one another. Often hereditary; may be stable for decades before progression.',
     worklet: {
       recruitment:      false,
       temporalSmearing: 0,
@@ -260,8 +249,7 @@ export const PRESETS = {
     isConductive:    false,
     flatAttenuationL: null,
     flatAttenuationR: null,
-    desc:        'Steep cliff-like drop above 2 kHz. Low and mid frequencies are near-normal, but high-frequency sounds are nearly inaudible.',
-    clinicalNote: 'Precipitous high-frequency loss is common in genetic hearing loss patterns and in late-stage noise-induced loss.',
+    desc:        'A steep cliff-like drop above 2 kHz — near-normal hearing in the low and mid frequencies, with high-frequency sounds nearly inaudible. Common in genetic hearing loss patterns and in late-stage noise-induced loss.',
     worklet: {
       recruitment:      false,
       temporalSmearing: 0,
@@ -283,8 +271,7 @@ export const PRESETS = {
     isConductive:    false,
     flatAttenuationL: null,
     flatAttenuationR: null,
-    desc:        'Unilateral noise exposure — left ear significantly worse than right. Common in occupational settings or shooting sports.',
-    clinicalNote: 'Asymmetric sensorineural loss should be investigated to exclude retrocochlear pathology (acoustic neuroma) even when noise exposure is the likely cause.',
+    desc:        'Unilateral noise exposure — left ear significantly worse than right, with a pronounced 4 kHz notch on the left. Common in occupational settings or shooting sports. Asymmetric sensorineural loss should always be investigated to exclude retrocochlear pathology such as acoustic neuroma.',
     worklet: {
       recruitment:      false,
       temporalSmearing: 0,
@@ -304,8 +291,7 @@ export const PRESETS = {
     isConductive:    false,
     flatAttenuationL: null,
     flatAttenuationR: null,
-    desc:        'Sudden sensorineural hearing loss in the left ear, with normal right. Profoundly disorienting. Spatial awareness is severely compromised.',
-    clinicalNote: 'Sudden SNHL is a medical emergency requiring urgent evaluation and steroid therapy.',
+    desc:        'Sudden sensorineural hearing loss in the left ear, with a normal right. Profoundly disorienting — spatial awareness is severely compromised and the brain receives no input to localise sound direction. Sudden SNHL is a medical emergency requiring urgent evaluation.',
     worklet: {
       recruitment:      false,
       temporalSmearing: 0,
@@ -327,8 +313,7 @@ export const PRESETS = {
     isConductive:    false,
     flatAttenuationL: null,
     flatAttenuationR: null,
-    desc:        'Full auditory range. No processing applied. Use as a reference baseline when comparing against a simulated profile.',
-    clinicalNote: 'Hearing thresholds of 0–20 dB HL are considered within normal limits for adults.',
+    desc:        'Full auditory range with thresholds of 0–20 dB HL across all frequencies — considered within normal limits for adults. No processing applied. Use as a reference baseline when comparing against a simulated profile.',
     worklet: {
       recruitment:      false,
       temporalSmearing: 0,

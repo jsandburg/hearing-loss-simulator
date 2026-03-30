@@ -130,7 +130,6 @@ export function decodePresetFromUrl(encoded) {
     color:        '#36454f',
     colorRight:   null,
     desc:         'Shared hearing profile.',
-    clinicalNote: '',
     worklet: {
       recruitment:      false,
       temporalSmearing: 0,

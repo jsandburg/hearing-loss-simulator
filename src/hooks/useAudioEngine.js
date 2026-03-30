@@ -12,7 +12,6 @@
  *  fileInfo      — { name, duration, sampleRate, channels } | null
  *  workletReady  — boolean
  *  workletLoading — boolean
- *  limiterActive — boolean
  *  errors        — { decode, format, size, context } — each string|null
  *  warnings      — string[]
  *  loadFile()
@@ -36,7 +35,6 @@ export function useAudioEngine() {
   const engineRef       = useRef(null);
   const animFrameRef    = useRef(null);
   const mountedRef      = useRef(true);
-  const wasLimitingRef  = useRef(false);
 
   const [playState,     setPlayState]     = useState('stopped');
   const [elapsed,       setElapsed]       = useState(0);
@@ -44,7 +42,6 @@ export function useAudioEngine() {
   const [workletReady,    setWorkletReady]    = useState(false);
   const [workletLoading,  setWorkletLoading]  = useState(false);
   const [workletAttempted,setWorkletAttempted]= useState(false);
-  const [limiterActive, setLimiterActive] = useState(false);
   const [errors,        setErrors]        = useState({ decode: null, format: null, size: null, context: null });
   const [warnings,      setWarnings]      = useState([]);
 
@@ -91,15 +88,8 @@ export function useAudioEngine() {
       const engine = engineRef.current;
 
       if (engine.isPlaying) {
-        setElapsed(engine.elapsed);
-
-        // Limiter state change detection (avoids re-rendering every frame)
-        const limiting = engine.limiterReduction > 1;
-        if (limiting !== wasLimitingRef.current) {
-          wasLimitingRef.current = limiting;
-          setLimiterActive(limiting);
+          setElapsed(engine.elapsed);
         }
-      }
 
       animFrameRef.current = requestAnimationFrame(tick);
     };
@@ -234,7 +224,6 @@ export function useAudioEngine() {
     workletReady,
     workletLoading,
     workletAttempted,
-    limiterActive,
     errors,
     warnings,
     loadFile,

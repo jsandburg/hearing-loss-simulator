@@ -12,7 +12,7 @@ Most hearing loss explainers reduce the experience to "things sound quieter." Th
 
 - **Frequency-specific attenuation** — each profile is derived from a real audiogram, applying the specific pattern of loss at each frequency rather than uniform volume reduction
 - **Threshold gating** — sounds that fall below the hearing threshold at a given frequency vanish entirely, rather than fading, which is the clinically accurate behaviour
-- **Tinnitus** — an optional persistent tone at a configurable pitch and loudness, which partially masks nearby frequencies; supports intermittent cycling for episodic tinnitus simulation
+- **Tinnitus** — an optional persistent tone at a configurable pitch and loudness, which partially masks nearby frequencies
 
 The audiogram display uses the standard clinical format (ISO 8253-1): blue X marks for the left ear, red O marks for the right, with dB HL on the Y axis and frequency on the X axis.
 
@@ -79,7 +79,7 @@ A filterbank of 8 analysis biquads measures RMS energy per band each 128-sample 
 Below threshold, the band output is gated to silence. This models the non-linear threshold behaviour of cochlear hair cells — sounds don't fade gradually, they disappear.
 
 **Tinnitus**
-A sinusoidal oscillator at the configured frequency is added to the output. Phase increment is computed once per 128-sample block (not per sample). The tinnitus frequency maps 500–12,000 Hz on the slider. Intermittent tinnitus cycles on/off at a configurable duration (10s–3min), managed in React state with the audio processor receiving only the current enabled state.
+A sinusoidal oscillator at the configured frequency is added to the output. Phase increment is computed once per 128-sample block (not per sample). The tinnitus frequency maps 500–12,000 Hz on the slider.
 
 ### Profile Sharing
 
@@ -132,9 +132,9 @@ src/
     PresetDescription.jsx    — active profile name, description, clinical note
     PresetSelector.jsx       — profile buttons with hover-delete for custom
     ShareDialog.jsx          — profile URL + QR code share modal
-    SmallComponents.jsx      — Header, ErrorBanner, WarningBar, LimiterIndicator, SharedProfileBanner
+    SmallComponents.jsx      — Header, ErrorBanner, WarningBar, SharedProfileBanner
     SpectrumAnalyser.jsx     — canvas real-time FFT display
-    WorkletControls.jsx      — tinnitus enable/pitch/loudness/intermittent controls
+    WorkletControls.jsx      — tinnitus enable/pitch/loudness controls
   pages/
     SimulatorPage.jsx        — full app layout (two-column)
   utils/
@@ -165,7 +165,6 @@ my_profile: {
   flatAttenuationL: null,        // dB, used for conductive profiles only
   flatAttenuationR: null,
   desc:        'Plain-language description.',
-  clinicalNote: 'Optional clinical context.',
   worklet: {
     recruitment:      false,     // legacy field, keep false
     temporalSmearing: 0,         // legacy field, keep 0

@@ -1,6 +1,6 @@
 /**
  * components/PresetDescription.jsx
- * Profile name, description, and clinical note — rendered flat.
+ * Profile name and description — rendered flat.
  * When tinnitus is active, a brief explanation is appended.
  */
 
@@ -53,22 +53,10 @@ export function PresetDescription({ profile, workletReady, workletAttempted, eff
         fontFamily: THEME.fontSans,
         color: THEME.textSecondary,
         lineHeight: 1.65,
-        marginBottom: profile.clinicalNote || tinnitusActive ? 8 : 0,
+        marginBottom: tinnitusActive ? 8 : 0,
       }}>
         {profile.desc}
       </div>
-
-      {profile.clinicalNote && (
-        <div style={{
-          fontSize: 11,
-          fontFamily: THEME.fontSans,
-          color: THEME.textSecondary,
-          lineHeight: 1.65,
-          marginBottom: tinnitusActive ? 8 : 0,
-        }}>
-          {profile.clinicalNote}
-        </div>
-      )}
 
       {/* Tinnitus explanation — shown only when tinnitus is active */}
       {tinnitusActive && (

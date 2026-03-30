@@ -104,25 +104,6 @@ export function WarningBar({ warnings, onClear }) {
   );
 }
 
-// ─── LimiterIndicator ─────────────────────────────────────────────────────────
-
-export function LimiterIndicator({ active }) {
-  if (!active) return null;
-  return (
-    <div style={{
-      textAlign: 'center',
-      padding: '4px 0 0',
-      fontSize: 9,
-      fontFamily: THEME.fontSans,
-      letterSpacing: '0.15em',
-      textTransform: 'uppercase',
-      color: THEME.error,
-    }}>
-      ● Limiter Active
-    </div>
-  );
-}
-
 // ─── SharedProfileBanner ──────────────────────────────────────────────────────
 
 export function SharedProfileBanner({ profile, onDismiss, onScrollToUploader }) {
