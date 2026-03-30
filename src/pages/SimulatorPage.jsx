@@ -392,7 +392,16 @@ export function SimulatorPage({ initialPresetId, initialProfile, sharedProfile }
           color: THEME.textTertiary,
           textAlign: 'center',
         }}>
-          © 2026 Julie Sandburg. All rights reserved.
+          <a
+            href="https://github.com/jsandburg/hearing-loss-simulator/"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ color: THEME.textTertiary, textDecoration: 'none' }}
+            onMouseEnter={e => { e.currentTarget.style.color = THEME.textPrimary; }}
+            onMouseLeave={e => { e.currentTarget.style.color = THEME.textTertiary; }}
+          >
+            GitHub
+          </a>
         </div>
       </footer>
 

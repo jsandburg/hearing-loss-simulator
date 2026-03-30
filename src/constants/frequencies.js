@@ -78,22 +78,3 @@ export function getEffectiveQ(bandIndex, lossDb) {
   return FILTER_Q[bandIndex] / broadeningFactor;
 }
 
-/**
- * Calculate makeup gain to compensate for the loudness reduction caused
- * by applying the hearing loss filters. Without this, switching presets
- * causes jarring volume jumps that obscure the perceptual differences.
- *
- * Formula: makeupGain = min(20, mean(effectiveAttenuations) * 0.6)
- * The 0.6 scalar keeps the simulation audibly quieter than normal
- * (real hearing loss IS quieter) while preventing extreme volume drops.
- *
- * @param {number[]} lossValues  dB HL values for one ear (8 values)
- * @returns {number}             Gain in dB to add at the makeup GainNode
- */
-export function calculateMakeupGain(lossValues) {
-  const attenuations = lossValues.map((v, i) =>
-    Math.min(MAX_ATTENUATION, Math.max(0, v - RETSPL_CORRECTION[i]))
-  );
-  const mean = attenuations.reduce((a, b) => a + b, 0) / attenuations.length;
-  return Math.min(20, mean * 0.6);
-}

@@ -26,7 +26,6 @@ import {
   AUDIO_EXTENSIONS,
   AUDIO_MIME_TYPES,
   MAX_FILE_SIZE,
-  calculateMakeupGain,
 } from '../constants/frequencies.js';
 import { buildFilterChain, applyProfileToFilters } from './buildFilterChain.js';
 import { sendWorkletParams } from './workletBridge.js';
@@ -41,7 +40,6 @@ export class AudioEngine {
     this._snsPathGain      = null;  // sensorineural path
     this._condPathGain     = null;  // conductive path
     this._bypassPathGain   = null;
-    this._makeupGain       = null;
     this._limiter          = null;
     this._analyser         = null;
     this._volumeGain       = null;
@@ -116,9 +114,6 @@ export class AudioEngine {
     this._condPathGain   = this._ctx.createGain();
     this._bypassPathGain = this._ctx.createGain();
 
-    this._makeupGain = this._ctx.createGain();
-    this._makeupGain.gain.value = 1.0;
-
     this._limiter = this._ctx.createDynamicsCompressor();
     this._limiter.threshold.value = -3;
     this._limiter.knee.value      = 0;
@@ -133,11 +128,10 @@ export class AudioEngine {
     this._volumeGain = this._ctx.createGain();
     this._volumeGain.gain.value = this._volume;
 
-    // Wire persistent graph
-    this._snsPathGain.connect(this._makeupGain);
-    this._condPathGain.connect(this._makeupGain);
-    this._bypassPathGain.connect(this._makeupGain);
-    this._makeupGain.connect(this._limiter);
+    // Wire persistent graph — path gains connect directly to limiter
+    this._snsPathGain.connect(this._limiter);
+    this._condPathGain.connect(this._limiter);
+    this._bypassPathGain.connect(this._limiter);
     this._limiter.connect(this._analyser);
     this._analyser.connect(this._volumeGain);
     this._volumeGain.connect(this._ctx.destination);
@@ -272,13 +266,6 @@ export class AudioEngine {
       sendWorkletParams(this._workletL, this._workletR, profile, overrides);
     }
 
-    // Set makeup gain
-    const avgLoss = profile.bypass ? [0, 0, 0, 0, 0, 0, 0, 0] :
-      profile.left.map((v, i) => (v + profile.right[i]) / 2);
-    const makeupDb  = calculateMakeupGain(avgLoss);
-    const makeupLin = Math.pow(10, makeupDb / 20);
-    this._makeupGain.gain.setTargetAtTime(makeupLin, this._ctx.currentTime, 0.05);
-
     // Start source
     this._source.start(0);
     this._sourceStarted = true;
@@ -372,14 +359,6 @@ export class AudioEngine {
       sendWorkletParams(this._workletL, this._workletR, newProfile, overrides);
     }
 
-    // Update makeup gain
-    const avgLoss  = newProfile.bypass ? [0,0,0,0,0,0,0,0] :
-      newProfile.left.map((v, i) => (v + newProfile.right[i]) / 2);
-    const makeupDb  = calculateMakeupGain(avgLoss);
-    const makeupLin = Math.pow(10, makeupDb / 20);
-    this._makeupGain.gain.cancelScheduledValues(now);
-    this._makeupGain.gain.setValueAtTime(this._makeupGain.gain.value, now);
-    this._makeupGain.gain.linearRampToValueAtTime(makeupLin, now + FADE);
   }
 
   // Update worklet overrides without switching profile
