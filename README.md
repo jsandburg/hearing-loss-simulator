@@ -83,7 +83,7 @@ A sinusoidal oscillator at the configured frequency is added to the output. Phas
 
 ### Profile Sharing
 
-Sharing encodes the full `HearingProfile` object as compact JSON, UTF-8 encoded to a byte array, then URL-safe Base64 encoded, then placed in a `?p=` query parameter. No server involved. Links are permanent and decode correctly even from older URL formats that used standard Base64 with percent-encoding.
+Built-in profiles are shared as a simple `?preset=<id>` URL — short, readable, and impossible to corrupt. Custom audiograms encode the full profile as compact JSON, UTF-8 encoded to a byte array, then URL-safe Base64 encoded into a `?p=` parameter. No server involved. Links are permanent and decode correctly even from older URL formats that used standard Base64 with percent-encoding.
 
 ---
 

@@ -144,6 +144,12 @@ export function decodePresetFromUrl(encoded) {
  * Build the full shareable URL for a profile-only share.
  */
 export function buildPresetShareUrl(profile) {
+  // Built-in profiles: use the short, readable ?preset=<id> form.
+  // Custom profiles: encode full data into ?p=<base64> since they aren't in the bundle.
+  if (!profile.isCustom && profile.id) {
+    return `${window.location.origin}/?preset=${encodeURIComponent(profile.id)}`;
+  }
+
   const encoded = encodePresetToUrl(profile);
   if (!encoded) return null;
   return `${window.location.origin}/?p=${encoded}`;

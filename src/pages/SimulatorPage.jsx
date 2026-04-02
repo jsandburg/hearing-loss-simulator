@@ -3,11 +3,7 @@
  *
  * Two-column layout (maxWidth 1100px):
  *   Left  — Hearing Loss block (selector + tinnitus + description + share)
- *           + Audio Player card
- *   Right — Audiogram card
- *
- * Layout order in left card (task 3): selector → tinnitus → description
- * Section titles now use THEME.textPrimary (task 9).
+ *   Right — Audiogram card + Audio Player card
  */
 
 import { useState, useCallback, useRef, useEffect } from 'react';
@@ -32,8 +28,6 @@ import { PlaybackControls }  from '../components/PlaybackControls.jsx';
 import { SpectrumAnalyser }  from '../components/SpectrumAnalyser.jsx';
 import { AttenuationBars }   from '../components/AttenuationBars.jsx';
 import { ShareDialog }       from '../components/ShareDialog.jsx';
-
-const PRESET_ORDER = Object.keys(PRESETS);
 
 export function SimulatorPage({ initialPresetId, initialProfile, sharedProfile }) {
 
@@ -71,13 +65,6 @@ export function SimulatorPage({ initialPresetId, initialProfile, sharedProfile }
 
   // ── Keyboard navigation ────────────────────────────────────────────────────
 
-  const cyclePreset = useCallback((dir) => {
-    const idx = PRESET_ORDER.indexOf(activePresetId);
-    if (idx === -1) return;
-    const next = (idx + dir + PRESET_ORDER.length) % PRESET_ORDER.length;
-    selectProfile(PRESET_ORDER[next], PRESETS[PRESET_ORDER[next]]);
-  }, [activePresetId, selectProfile]);
-
   const handleTogglePlay = useCallback(() => {
     if (audio.playState === 'playing') {
       audio.stop();
@@ -86,11 +73,7 @@ export function SimulatorPage({ initialPresetId, initialProfile, sharedProfile }
     }
   }, [audio, activeProfile, worklet.overrides]);
 
-  useKeyboardShortcuts({
-    onTogglePlay: handleTogglePlay,
-    onNextPreset: () => cyclePreset(1),
-    onPrevPreset: () => cyclePreset(-1),
-  });
+  useKeyboardShortcuts({ onTogglePlay: handleTogglePlay });
 
   // ── Worklet param changes → engine ─────────────────────────────────────────
 
@@ -137,7 +120,7 @@ export function SimulatorPage({ initialPresetId, initialProfile, sharedProfile }
 
   const isLoadingAudio = audio.playState === 'loading';
 
-  // ── Section title style (task 9) — dark gray matching the app title ────────
+  // ── Section title style ────────────────────────────────────────────────────
   const sectionTitle = {
     fontSize: 10, fontFamily: THEME.fontSans, fontWeight: 600,
     letterSpacing: '0.1em', textTransform: 'uppercase',
@@ -251,7 +234,7 @@ export function SimulatorPage({ initialPresetId, initialProfile, sharedProfile }
               {/* Divider */}
               <div style={{ borderTop: `1px solid ${THEME.border}`, margin: '16px 0 0' }} />
 
-              {/* Tinnitus — now ABOVE the profile description (task 3) */}
+              {/* Tinnitus */}
               <WorkletControls
                 effective={worklet.effective}
                 onSetTinnitus={worklet.setTinnitus}
@@ -261,7 +244,7 @@ export function SimulatorPage({ initialPresetId, initialProfile, sharedProfile }
               {/* Divider */}
               <div style={{ borderTop: `1px solid ${THEME.border}`, margin: '14px 0 14px' }} />
 
-              {/* Profile description — at the bottom (task 3) */}
+              {/* Profile description */}
               <PresetDescription
                 profile={activeProfile}
                 workletReady={audio.workletReady}
@@ -376,6 +359,7 @@ export function SimulatorPage({ initialPresetId, initialProfile, sharedProfile }
           profile={editor.editingProfile}
           onSetName={editor.setName}
           onSetLoss={editor.setLossValue}
+          onMirrorLR={editor.mirrorLeftToRight}
           onMirrorRL={editor.mirrorRightToLeft}
           onSave={handleSaveCustom}
           onCancel={editor.closeEditor}

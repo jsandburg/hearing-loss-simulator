@@ -123,6 +123,13 @@ export function useAudiogramEditor() {
     });
   }, []);
 
+  const mirrorLeftToRight = useCallback(() => {
+    setEditingProfile(prev => {
+      if (!prev) return null;
+      return { ...prev, right: [...prev.left], isSymmetric: true };
+    });
+  }, []);
+
   const mirrorRightToLeft = useCallback(() => {
     setEditingProfile(prev => {
       if (!prev) return null;
@@ -166,6 +173,7 @@ export function useAudiogramEditor() {
     closeEditor,
     setName,
     setLossValue,
+    mirrorLeftToRight,
     mirrorRightToLeft,
     saveProfile,
     deleteProfile,

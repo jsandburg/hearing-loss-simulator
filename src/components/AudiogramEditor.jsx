@@ -74,6 +74,7 @@ export function AudiogramEditor({
   profile,
   onSetName,
   onSetLoss,
+  onMirrorLR,
   onMirrorRL,
   onSave,
   onCancel,
@@ -192,6 +193,23 @@ export function AudiogramEditor({
           color={THEME.rightEar}
           onSetLoss={onSetLoss}
         />
+
+        {/* "Duplicate from left ear" button — between the rows */}
+        <div style={{ marginBottom: 14 }}>
+          <button
+            type="button"
+            onClick={onMirrorLR}
+            style={{
+              fontSize: 11, fontFamily: THEME.fontSans,
+              background: 'none',
+              border: `1px solid ${THEME.border}`,
+              borderRadius: 3, cursor: 'pointer',
+              color: THEME.textTertiary, padding: '6px 14px',
+            }}
+          >
+            Duplicate input data from left ear
+          </button>
+        </div>
 
         {/* Left ear — second row */}
         <EarRow

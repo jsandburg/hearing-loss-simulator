@@ -2,8 +2,9 @@
  * App.jsx
  * Minimal client-side router.
  *
- * Route 1: /?p=<encoded> → SimulatorPage with shared profile pre-loaded
- * Route 2: /             → SimulatorPage (normal mode)
+ * Route 1: /?p=<encoded>     → SimulatorPage with shared custom profile pre-loaded
+ * Route 2: /?preset=<id>     → SimulatorPage with a built-in preset pre-selected
+ * Route 3: /                 → SimulatorPage (default: mild sensorineural)
  */
 
 import { SimulatorPage } from './pages/SimulatorPage.jsx';

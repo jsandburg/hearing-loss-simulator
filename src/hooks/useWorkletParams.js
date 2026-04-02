@@ -46,16 +46,9 @@ export function useWorkletParams(currentProfile) {
     },
   };
 
-  const hasOverrides = currentProfile ? (
-    (overrides.tinnitus?.enabled    !== undefined && overrides.tinnitus.enabled    !== profileTinnitus.enabled)    ||
-    (overrides.tinnitus?.frequency  !== undefined && overrides.tinnitus.frequency  !== profileTinnitus.frequency)  ||
-    (overrides.tinnitus?.level      !== undefined && overrides.tinnitus.level      !== profileTinnitus.level)
-  ) : false;
-
   return {
     overrides,
     effective,
-    hasOverrides,
     setTinnitus,
     resetToPreset,
   };

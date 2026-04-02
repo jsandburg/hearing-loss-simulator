@@ -83,7 +83,7 @@ export const SpectrumAnalyser = memo(function SpectrumAnalyser({ engine, isPlayi
       }
 
       // Overlay audiogram frequency markers
-      ctx.fillStyle = THEME.textMuted;
+      ctx.fillStyle = THEME.textTertiary;
       ctx.font      = `7px ${THEME.font}`;
       ctx.textAlign = 'center';
       FREQUENCIES.forEach((f, i) => {
@@ -91,7 +91,7 @@ export const SpectrumAnalyser = memo(function SpectrumAnalyser({ engine, isPlayi
         const x = t * W;
         ctx.fillStyle = 'rgba(0,0,0,0.1)';
         ctx.fillRect(x, 0, 1, H);
-        ctx.fillStyle = THEME.textMuted;
+        ctx.fillStyle = THEME.textTertiary;
         ctx.fillText(FREQ_LABELS[i], x, H - 3);
       });
     };
