@@ -3,6 +3,7 @@
  * Small single-purpose components that don't warrant their own files.
  */
 
+import React from 'react';
 import { THEME } from '../constants/theme.js';
 
 // ─── Header ───────────────────────────────────────────────────────────────────
@@ -106,8 +107,15 @@ export function WarningBar({ warnings, onClear }) {
 
 // ─── SharedProfileBanner ──────────────────────────────────────────────────────
 
-export function SharedProfileBanner({ profile, onDismiss, onScrollToUploader }) {
+export function SharedProfileBanner({ profile, onDismiss, onScrollToUploader, onSave }) {
   if (!profile) return null;
+
+  const [saved, setSaved] = React.useState(false);
+
+  const handleSave = () => {
+    onSave?.();
+    setSaved(true);
+  };
 
   const lossAvg = Math.round(
     [...profile.left, ...profile.right].reduce((a, b) => a + b, 0) / 16
@@ -139,18 +147,38 @@ export function SharedProfileBanner({ profile, onDismiss, onScrollToUploader }) 
           {severity} {profile.isConductive ? 'conductive' : 'sensorineural'} loss
           {!profile.left.every((v, i) => v === profile.right[i]) ? ' · Asymmetric' : ''}
         </div>
-        <button type="button"
-          onClick={onScrollToUploader}
-          style={{
-            background: 'rgba(54,69,79,0.08)',
-            border: `1px solid rgba(54,69,79,0.22)`,
-            borderRadius: 3, cursor: 'pointer',
-            color: THEME.info, fontSize: 10, fontFamily: THEME.fontSans,
-            padding: '5px 10px',
-          }}
-        >
-          Upload audio to experience this profile →
-        </button>
+        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+          <button type="button"
+            onClick={onScrollToUploader}
+            style={{
+              background: 'rgba(54,69,79,0.08)',
+              border: `1px solid rgba(54,69,79,0.22)`,
+              borderRadius: 3, cursor: 'pointer',
+              color: THEME.info, fontSize: 10, fontFamily: THEME.fontSans,
+              padding: '5px 10px',
+            }}
+          >
+            Upload audio to experience this profile →
+          </button>
+          {onSave && (
+            <button type="button"
+              onClick={handleSave}
+              disabled={saved}
+              style={{
+                background: saved ? 'rgba(42,122,74,0.08)' : 'rgba(54,69,79,0.08)',
+                border: `1px solid ${saved ? 'rgba(42,122,74,0.3)' : 'rgba(54,69,79,0.22)'}`,
+                borderRadius: 3,
+                cursor: saved ? 'default' : 'pointer',
+                color: saved ? THEME.success : THEME.info,
+                fontSize: 10, fontFamily: THEME.fontSans,
+                padding: '5px 10px',
+                transition: 'all 0.15s',
+              }}
+            >
+              {saved ? '✓ Saved to my profiles' : 'Save to my profiles'}
+            </button>
+          )}
+        </div>
       </div>
       <button type="button"
         onClick={onDismiss}

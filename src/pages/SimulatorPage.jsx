@@ -167,6 +167,10 @@ export function SimulatorPage({ initialPresetId, initialProfile, sharedProfile }
             profile={sharedBannerProfile}
             onDismiss={() => setSharedBannerProfile(null)}
             onScrollToUploader={handleScrollToUploader}
+            onSave={() => {
+              const saved = editor.addCustomProfile(sharedBannerProfile);
+              selectProfile(saved.id, saved);
+            }}
           />
         )}
 

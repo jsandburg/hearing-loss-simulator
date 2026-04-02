@@ -179,7 +179,7 @@ The profile will appear in the selector under its category automatically.
 
 **Why RETSPL correction matters:** Audiogram values are in dB HL (hearing level), a clinical reference scale where 0 dB HL = just audible to a normal ear at that frequency. But 0 dB HL means different things at different frequencies — 250 Hz requires 25.5 dB more signal energy than 1 kHz to reach the same perceptual threshold. Without RETSPL correction, a mild loss profile (10 dB HL at 250 Hz) would gate out a large fraction of normal speech at 250 Hz, despite there being effectively zero loss there.
 
-**Why the simulation sounds quieter than normal:** That's intentional and correct. Real hearing loss makes the world quieter. No loudness compensation is applied — each profile is presented at its natural attenuated level, so the perceptual difference between profiles reflects actual differences in hearing loss severity. Turn up your system volume if needed.
+**Why the simulation sounds quieter than normal:** That's intentional and correct. Real hearing loss makes the world quieter. No loudness compensation is applied — each profile is presented at its natural attenuated level, so the perceptual difference between profiles reflects actual differences in hearing loss severity. Severe profiles will be very quiet; turn up your system volume if needed. Per-band attenuation is capped at 40 dB — beyond that, bands become inaudible in a digital simulation, which defeats the educational purpose.
 
 **Why conductive loss is different:** Conductive loss is mechanical — fluid in the middle ear, ossicular chain disruption, cerumen impaction. The cochlea is intact. There is no frequency-specific damage and no threshold gating effect at the cochlear level. The simulation uses flat gain reduction only.
 
@@ -207,4 +207,4 @@ React 18 · Vite 6 · Web Audio API · AudioWorklet · Netlify
 
 ## License
 
-See [GitHub](https://github.com/jsandburg/hearing-loss-simulator/) for license details.
+See LICENSE for licensing information.

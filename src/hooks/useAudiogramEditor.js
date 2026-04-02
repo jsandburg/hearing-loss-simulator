@@ -152,6 +152,12 @@ export function useAudiogramEditor() {
     setCustomProfiles(prev => prev.filter(p => p.id !== id));
   }, []);
 
+  const addCustomProfile = useCallback((profile) => {
+    const saved = { ...profile, id: generateId(), isCustom: true, category: 'custom' };
+    setCustomProfiles(prev => [...prev, saved]);
+    return saved;
+  }, []);
+
   return {
     customProfiles,
     editingProfile,
@@ -163,5 +169,6 @@ export function useAudiogramEditor() {
     mirrorRightToLeft,
     saveProfile,
     deleteProfile,
+    addCustomProfile,
   };
 }

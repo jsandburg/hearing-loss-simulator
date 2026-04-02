@@ -36,11 +36,12 @@ export const FILTER_Q = [1.41, 1.42, 1.41, 1.93, 2.96, 2.79, 2.96, 3.86];
 export const RETSPL_CORRECTION = [25.5, 11.5, 7.0, 9.0, 11.5, 12.0, 16.0, 15.5];
 
 /**
- * Maximum attenuation we apply per band. Caps at 70 dB to avoid:
- *  - Float32 precision artifacts in BiquadFilterNode at extreme gains
- *  - Audible quantisation noise from near-zero filter output
+ * Maximum attenuation we apply per band. Caps at 40 dB to ensure all profiles
+ * remain audible. Beyond 40 dB a band is at ≤1% of its original level — clearly
+ * impaired but still perceptible. Higher values (as occur in severe profiles)
+ * produce complete silence in a digital simulation, which is not educational.
  */
-export const MAX_ATTENUATION = 70;
+export const MAX_ATTENUATION = 40;
 
 /**
  * Audiogram Y-axis range (dB HL).
