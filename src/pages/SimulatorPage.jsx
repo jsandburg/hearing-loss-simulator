@@ -395,32 +395,6 @@ export function SimulatorPage({ initialPresetId, initialProfile, sharedProfile }
         />
       )}
 
-      {/* ── Footer ── */}
-      <footer style={{
-        borderTop: `1px solid ${THEME.border}`,
-        background: THEME.bg,
-        padding: isMobile ? '18px 16px' : '18px 32px',
-      }}>
-        <div style={{
-          maxWidth: 1100,
-          margin: '0 auto',
-          fontSize: 11,
-          fontFamily: THEME.fontSans,
-          color: THEME.textTertiary,
-          textAlign: 'center',
-        }}>
-          <a
-            href="https://github.com/jsandburg/hearing-loss-simulator/"
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{ color: THEME.textTertiary, textDecoration: 'none' }}
-            onMouseEnter={e => { e.currentTarget.style.color = THEME.textPrimary; }}
-            onMouseLeave={e => { e.currentTarget.style.color = THEME.textTertiary; }}
-          >
-            GitHub
-          </a>
-        </div>
-      </footer>
 
     </div>
   );
