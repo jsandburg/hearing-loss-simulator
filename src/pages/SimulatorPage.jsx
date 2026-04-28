@@ -13,6 +13,7 @@ import { useAudioEngine }       from '../hooks/useAudioEngine.js';
 import { useWorkletParams }     from '../hooks/useWorkletParams.js';
 import { useAudiogramEditor }   from '../hooks/useAudiogramEditor.js';
 import { useKeyboardShortcuts } from '../hooks/useKeyboardShortcuts.js';
+import { useIsMobile }          from '../hooks/useIsMobile.js';
 
 import {
   Header, ErrorBanner, WarningBar, SharedProfileBanner,
@@ -48,9 +49,10 @@ export function SimulatorPage({ initialPresetId, initialProfile, sharedProfile }
   );
   const [activeProfile, setActiveProfile] = useState(defaultProfile);
 
-  const audio   = useAudioEngine();
-  const worklet = useWorkletParams(activeProfile);
-  const editor  = useAudiogramEditor();
+  const audio    = useAudioEngine();
+  const worklet  = useWorkletParams(activeProfile);
+  const editor   = useAudiogramEditor();
+  const isMobile = useIsMobile();
 
   const [volume,         setVolumeState] = useState(100);
   const [levelMatching,  setLevelMatching] = useState(false);
@@ -167,7 +169,7 @@ export function SimulatorPage({ initialPresetId, initialProfile, sharedProfile }
         workletAttempted={audio.workletAttempted}
       />
 
-      <div style={{ maxWidth: 1100, margin: '0 auto', padding: '0 32px 48px' }}>
+      <div style={{ maxWidth: 1100, margin: '0 auto', padding: isMobile ? '0 16px 48px' : '0 32px 48px' }}>
 
         {sharedBannerProfile && (
           <SharedProfileBanner
@@ -198,7 +200,7 @@ export function SimulatorPage({ initialPresetId, initialProfile, sharedProfile }
         {/* ── Two-column body ── */}
         <div style={{
           display: 'grid',
-          gridTemplateColumns: '1fr 1fr',
+          gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr',
           gap: 24,
           marginTop: 24,
           alignItems: 'start',
@@ -397,7 +399,7 @@ export function SimulatorPage({ initialPresetId, initialProfile, sharedProfile }
       <footer style={{
         borderTop: `1px solid ${THEME.border}`,
         background: THEME.bg,
-        padding: '18px 32px',
+        padding: isMobile ? '18px 16px' : '18px 32px',
       }}>
         <div style={{
           maxWidth: 1100,

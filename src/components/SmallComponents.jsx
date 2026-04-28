@@ -5,16 +5,18 @@
 
 import React from 'react';
 import { THEME } from '../constants/theme.js';
+import { useIsMobile } from '../hooks/useIsMobile.js';
 
 // ─── Header ───────────────────────────────────────────────────────────────────
 
 export function Header() {
+  const isMobile = useIsMobile();
   return (
     <header style={{
       borderBottom: `1px solid ${THEME.border}`,
       background: '#ffffff',
     }}>
-      <div style={{ maxWidth: 1100, margin: '0 auto', padding: '18px 32px 16px' }}>
+      <div style={{ maxWidth: 1100, margin: '0 auto', padding: isMobile ? '18px 16px 16px' : '18px 32px 16px' }}>
         <h1 style={{
           margin: 0,
           fontSize: 17,

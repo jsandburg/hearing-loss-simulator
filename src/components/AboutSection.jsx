@@ -6,14 +6,16 @@
  */
 
 import { THEME } from '../constants/theme.js';
+import { useIsMobile } from '../hooks/useIsMobile.js';
 
 export function AboutSection({ workletAttempted, workletReady }) {
+  const isMobile = useIsMobile();
   return (
     <div style={{
       borderBottom: `1px solid ${THEME.border}`,
       background: THEME.bg,
     }}>
-    <div style={{ maxWidth: 1100, margin: '0 auto', padding: '20px 32px 24px' }}>
+    <div style={{ maxWidth: 1100, margin: '0 auto', padding: isMobile ? '20px 16px 24px' : '20px 32px 24px' }}>
 
       <p style={{
         fontSize: 13,
