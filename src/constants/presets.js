@@ -139,6 +139,8 @@ export const PRESETS = {
     name:     'Conductive Loss (Mild)',
     // left/right are audiometric dB HL values used only for the audiogram display.
     // Audio simulation uses flatAttenuationL/R (uniform gain reduction) — not these arrays.
+    // These values are product-calibrated to better match the qualitative
+    // "blocked ear / earplug" experience than raw audiometric threshold shift.
     left:     [25, 30, 30, 30, 28, 25, 22, 20],
     right:    [25, 30, 30, 30, 28, 25, 22, 20],
     color:    '#36454f',
@@ -146,8 +148,8 @@ export const PRESETS = {
     category: 'conductive',
     bypass:   false,
     isConductive:    true,
-    flatAttenuationL: 27,
-    flatAttenuationR: 27,
+    flatAttenuationL: 15,
+    flatAttenuationR: 15,
     desc:        'Mild hearing loss caused by something blocking or dampening the middle ear, such as fluid, earwax buildup, or an ear infection. The experience is similar to wearing earplugs: sounds are softer overall but not distorted. This type of loss is often treatable.',
     worklet: {
       tinnitus: { enabled: false, frequency: 4000, level: 0.15 },
@@ -158,6 +160,8 @@ export const PRESETS = {
     name:     'Conductive Loss (Moderate)',
     // left/right are audiometric dB HL values used only for the audiogram display.
     // Audio simulation uses flatAttenuationL/R (uniform gain reduction) — not these arrays.
+    // These values are product-calibrated to better match perceived listening
+    // difficulty rather than replaying the full threshold shift as broadband loss.
     left:     [40, 45, 45, 42, 40, 38, 35, 30],
     right:    [40, 45, 45, 42, 40, 38, 35, 30],
     color:    '#36454f',
@@ -165,8 +169,8 @@ export const PRESETS = {
     category: 'conductive',
     bypass:   false,
     isConductive:    true,
-    flatAttenuationL: 40,
-    flatAttenuationR: 40,
+    flatAttenuationL: 25,
+    flatAttenuationR: 25,
     desc:        'Moderate hearing loss caused by middle-ear blockage. Conversation requires noticeably raised voices, and quieter sounds become inaudible. Like a more severe version of having blocked ears. This level of loss is often treatable with medication or surgery.',
     worklet: {
       tinnitus: { enabled: false, frequency: 4000, level: 0.15 },

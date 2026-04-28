@@ -1,11 +1,11 @@
 /**
  * utils/volumeCurve.js
- * Maps a 0–100 UI percentage to a 0–1 linear gain value using an
- * exponential curve that feels natural to human perception.
+ * Maps a 0–100 UI percentage to a 0–1 linear gain value using a
+ * gentle nonlinear curve that preserves a useful range at lower settings.
  *
- * Linear sliders feel wrong for volume because our perception of loudness
- * is logarithmic. This curve places 50% of the slider at roughly -20 dB
- * of gain (0.1 linear), which matches how most audio UIs behave.
+ * Linear sliders feel abrupt near the bottom because our perception of
+ * loudness is nonlinear. A square-law taper keeps 100% at unity while
+ * avoiding the overly quiet midrange produced by a steeper cubic curve.
  */
 
 /**
@@ -15,7 +15,7 @@
 export function percentToGain(percent) {
   if (percent <= 0)   return 0;
   if (percent >= 100) return 1;
-  // x^3 curve: 50% → ~0.125, 75% → ~0.42, 100% → 1.0
+  // x^2 curve: 50% → 0.25, 75% → ~0.56, 100% → 1.0
   const x = percent / 100;
-  return x * x * x;
+  return x * x;
 }

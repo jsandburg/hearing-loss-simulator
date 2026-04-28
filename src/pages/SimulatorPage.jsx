@@ -52,12 +52,12 @@ export function SimulatorPage({ initialPresetId, initialProfile, sharedProfile }
   const worklet = useWorkletParams(activeProfile);
   const editor  = useAudiogramEditor();
 
-  const [volume,      setVolumeState] = useState(75);
+  const [volume,      setVolumeState] = useState(100);
   const [loopEnabled, setLoopEnabled] = useState(true);
 
-  // Sync engine volume on mount — AudioEngine defaults to 1.0 (100%) but UI starts at 75%.
+  // Sync engine volume on mount so the default "Normal Hearing" reference is unity gain.
   useEffect(() => {
-    audio.setVolume(75);
+    audio.setVolume(100);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
   const [shareOpen,   setShareOpen]   = useState(false);
   const [sharedBannerProfile, setSharedBannerProfile] = useState(
