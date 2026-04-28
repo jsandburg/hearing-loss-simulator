@@ -31,7 +31,7 @@ import { buildFilterChain, applyProfileToFilters } from './buildFilterChain.js';
 import { sendWorkletParams } from './workletBridge.js';
 
 // Version string appended to addModule URL for cache-busting
-const WORKLET_VERSION = 'v2';
+const WORKLET_VERSION = 'v3';
 
 export class AudioEngine {
   constructor() {

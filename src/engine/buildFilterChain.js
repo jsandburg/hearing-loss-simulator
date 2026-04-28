@@ -41,26 +41,60 @@ import {
  */
 export function buildFilterChain(ctx, profile, workletReady = false) {
 
+  // ── Worklet factory helper ────────────────────────────────────────────────
+  const makeWorkletPair = () => {
+    if (!workletReady) return { workletL: null, workletR: null };
+    try {
+      const opts = { numberOfInputs: 1, numberOfOutputs: 1, outputChannelCount: [1] };
+      return {
+        workletL: new AudioWorkletNode(ctx, 'hearing-processor', opts),
+        workletR: new AudioWorkletNode(ctx, 'hearing-processor', opts),
+      };
+    } catch (err) {
+      console.warn('[buildFilterChain] AudioWorkletNode creation failed:', err);
+      return { workletL: null, workletR: null };
+    }
+  };
+
   // ── Bypass path ───────────────────────────────────────────────────────────
   if (profile.bypass) {
-    const pass = ctx.createGain();
-    pass.gain.value = 1.0;
+    const splitter = ctx.createChannelSplitter(2);
+    const merger   = ctx.createChannelMerger(2);
+    const { workletL, workletR } = makeWorkletPair();
+
+    if (workletL && workletR) {
+      splitter.connect(workletL, 0);
+      splitter.connect(workletR, 1);
+      workletL.connect(merger, 0, 0);
+      workletR.connect(merger, 0, 1);
+    } else {
+      splitter.connect(merger, 0, 0);
+      splitter.connect(merger, 0, 1);
+    }
+
     return {
-      input: pass, output: pass,
+      input: splitter, output: merger,
       filtersL: [], filtersR: [],
-      workletL: null, workletR: null,
-      cleanup: () => { try { pass.disconnect(); } catch (_) {} },
+      workletL, workletR,
+      cleanup: () => {
+        try {
+          splitter.disconnect(); merger.disconnect();
+          if (workletL) workletL.disconnect();
+          if (workletR) workletR.disconnect();
+        } catch (_) {}
+      },
     };
   }
 
   // ── Conductive path ───────────────────────────────────────────────────────
-  // Flat gain reduction only — no frequency shaping, no phase artifacts,
-  // no worklet. Conductive loss is mechanical, not cochlear.
+  // Flat gain reduction only — no frequency shaping, no phase artifacts.
+  // Worklet nodes are added after the gain so tinnitus can be injected.
   if (profile.isConductive) {
-    const splitter  = ctx.createChannelSplitter(2);
-    const merger    = ctx.createChannelMerger(2);
-    const gainL     = ctx.createGain();
-    const gainR     = ctx.createGain();
+    const splitter = ctx.createChannelSplitter(2);
+    const merger   = ctx.createChannelMerger(2);
+    const gainL    = ctx.createGain();
+    const gainR    = ctx.createGain();
+    const { workletL, workletR } = makeWorkletPair();
 
     const attL = profile.flatAttenuationL ?? 30;
     const attR = profile.flatAttenuationR ?? 30;
@@ -69,15 +103,27 @@ export function buildFilterChain(ctx, profile, workletReady = false) {
 
     splitter.connect(gainL, 0);
     splitter.connect(gainR, 1);
-    gainL.connect(merger, 0, 0);
-    gainR.connect(merger, 0, 1);
+
+    if (workletL && workletR) {
+      gainL.connect(workletL);
+      gainR.connect(workletR);
+      workletL.connect(merger, 0, 0);
+      workletR.connect(merger, 0, 1);
+    } else {
+      gainL.connect(merger, 0, 0);
+      gainR.connect(merger, 0, 1);
+    }
 
     return {
       input: splitter, output: merger,
       filtersL: [], filtersR: [],
-      workletL: null, workletR: null,
+      workletL, workletR,
       cleanup: () => {
-        try { splitter.disconnect(); gainL.disconnect(); gainR.disconnect(); merger.disconnect(); } catch (_) {}
+        try {
+          splitter.disconnect(); gainL.disconnect(); gainR.disconnect(); merger.disconnect();
+          if (workletL) workletL.disconnect();
+          if (workletR) workletR.disconnect();
+        } catch (_) {}
       },
     };
   }
@@ -116,28 +162,7 @@ export function buildFilterChain(ctx, profile, workletReady = false) {
     }
   };
 
-  // Attempt to create AudioWorkletNodes for sensorineural paths
-  let workletL = null;
-  let workletR = null;
-
-  if (workletReady) {
-    try {
-      workletL = new AudioWorkletNode(ctx, 'hearing-processor', {
-        numberOfInputs:  1,
-        numberOfOutputs: 1,
-        outputChannelCount: [1],
-      });
-      workletR = new AudioWorkletNode(ctx, 'hearing-processor', {
-        numberOfInputs:  1,
-        numberOfOutputs: 1,
-        outputChannelCount: [1],
-      });
-    } catch (err) {
-      console.warn('[buildFilterChain] AudioWorkletNode creation failed:', err);
-      workletL = null;
-      workletR = null;
-    }
-  }
+  const { workletL, workletR } = makeWorkletPair();
 
   wireSerial(filtersL, 0, workletL, 0);
   wireSerial(filtersR, 1, workletR, 1);

@@ -59,7 +59,7 @@ class HearingProcessor extends AudioWorkletProcessor {
       let sample = inputChannel[i];
 
       if (this.tinnitus.enabled && this.tinnitus.level > 0) {
-        sample            += Math.sin(this.tinnitusPhase) * this.tinnitus.level * 0.15;
+        sample            += Math.sin(this.tinnitusPhase) * this.tinnitus.level;
         this.tinnitusPhase = (this.tinnitusPhase + tinnitusPhaseInc) % (2 * Math.PI);
       }
 
