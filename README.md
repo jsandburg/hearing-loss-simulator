@@ -193,6 +193,11 @@ The profile will appear in the selector under its category automatically.
 - Bone conduction thresholds are not distinguished from air conduction
 - Listening fatigue and cognitive load are not modelled
 - AudioWorklet availability varies by browser; tinnitus is disabled in browsers that don't support it, but frequency attenuation via the BiquadFilter chain still works fully
+- The audio engine caps attenuation at 40 dB; profiles with severe loss (80–90 dB HL) cannot be fully represented, so the most severe profiles are less extreme than the real condition
+- Loudness recruitment is not modelled; in sensorineural loss, a sound can jump from inaudible to uncomfortably loud with very little increase in level
+- Temporal processing loss is not modelled; damaged ears also struggle to track rapid changes in sound, which affects speech clarity independently of frequency loss
+- Results depend on playback hardware; headphones give a more accurate result than laptop speakers, which have their own uneven frequency response
+- The built-in profiles are representative examples drawn from common audiometric patterns; individual audiograms vary considerably even within a diagnostic category
 
 ---
 
