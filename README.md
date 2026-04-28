@@ -1,6 +1,6 @@
 # Hearing Loss Simulator
 
-A web-based tool for experiencing how different types of hearing loss alter the perception of sound. Upload any audio file, choose a hearing profile, and hear the difference in real time.
+Real-time browser-based hearing loss simulator. Upload any audio, apply clinical audiogram profiles or your own, and share the result as a URL.
 
 **Live:** [hearing-loss-simulator.netlify.app](https://hearing-loss-simulator.netlify.app)
 
@@ -11,7 +11,7 @@ A web-based tool for experiencing how different types of hearing loss alter the 
 Most hearing loss explainers reduce the experience to "things sound quieter." This simulator goes further. It models:
 
 - **Frequency-specific attenuation** — each profile is derived from a real audiogram, applying the specific pattern of loss at each frequency rather than uniform volume reduction
-- **Threshold gating** — sounds that fall below the hearing threshold at a given frequency vanish entirely, rather than fading, which is the clinically accurate behaviour
+- **Reduced frequency selectivity** — damaged cochlear hair cells have broader tuning curves; the simulation widens each affected band's filter in proportion to the degree of loss, so heavily impaired regions lose clarity, not just loudness
 - **Tinnitus** — an optional persistent tone at a configurable pitch and loudness, which partially masks nearby frequencies
 
 The audiogram display uses the standard clinical format (ISO 8253-1): blue X marks for the left ear, red O marks for the right, with dB HL on the Y axis and frequency on the X axis.
@@ -20,7 +20,7 @@ The audiogram display uses the standard clinical format (ISO 8253-1): blue X mar
 
 ## Hearing Profiles
 
-Fifteen built-in profiles across seven categories:
+Built-in profiles span seven categories:
 
 | Category | Profiles |
 |---|---|
@@ -71,15 +71,7 @@ Conductive loss profiles bypass the EQ chain entirely and use flat gain reductio
 
 ### AudioWorklet Processor
 
-For sensorineural profiles an `AudioWorkletNode` runs after the BiquadFilter chain. The processor (`public/hearing-processor.js`) implements:
-
-**Per-band threshold gating**
-A filterbank of 8 analysis biquads measures RMS energy per band each 128-sample block. Filter state is saved and restored around each measurement to prevent state drift. The same RETSPL correction is applied to thresholds before sending them to the processor — without this, mild loss profiles gate far too aggressively (10 dB HL at 250 Hz is actually 0 dB effective SPL loss after RETSPL correction).
-
-Below threshold, the band output is gated to silence. This models the non-linear threshold behaviour of cochlear hair cells — sounds don't fade gradually, they disappear.
-
-**Tinnitus**
-A sinusoidal oscillator at the configured frequency is added to the output. Phase increment is computed once per 128-sample block rather than per sample. The tinnitus frequency maps 500–12,000 Hz on the slider.
+For sensorineural profiles an `AudioWorkletNode` (`public/hearing-processor.js`) runs after the BiquadFilter chain. Its role is tinnitus injection only: it passes the already-processed signal through and adds a sinusoidal tone at the configured frequency and level if tinnitus is enabled. All frequency-selective attenuation is handled by the BiquadFilter chain upstream.
 
 ### Profile Sharing
 
@@ -110,14 +102,14 @@ src/
   main.jsx                   — entry point, global CSS, ErrorBoundary
   constants/
     frequencies.js           — RETSPL values, filter Q, file validation
-    presets.js               — 15 built-in profiles + PRESET_CATEGORIES
-    theme.js                 — Modern Minimalist design tokens
+    presets.js               — built-in profiles + PRESET_CATEGORIES
+    theme.js                 — design tokens
   engine/
     AudioEngine.js           — Web Audio API lifecycle, playback, seek, loadBuffer
     buildFilterChain.js      — per-playback node graph (bypass/conductive/sensorineural)
-    workletBridge.js         — RETSPL correction, sendWorkletParams, tinnitusLevelLabel
+    workletBridge.js         — sendWorkletParams, tinnitusLevelLabel
   hooks/
-    useAudioEngine.js        — React wrapper for AudioEngine, workletAttempted state
+    useAudioEngine.js        — React wrapper for AudioEngine
     useAudiogramEditor.js    — custom profile CRUD, localStorage persistence
     useKeyboardShortcuts.js  — Space (play/stop), ← → (cycle presets)
     useWorkletParams.js      — tinnitus overrides on top of preset defaults
@@ -138,7 +130,7 @@ src/
   pages/
     SimulatorPage.jsx        — full app layout (two-column)
   utils/
-    fileValidation.js        — formatDuration, displayFileName (validation is in AudioEngine)
+    fileValidation.js        — formatDuration, displayFileName
     presetUrlEncoding.js     — Base64 URL encode/decode for profile sharing
     volumeCurve.js           — percentToGain: cubic perceptual volume curve
 
@@ -177,34 +169,25 @@ The profile will appear in the selector under its category automatically.
 
 ## Design Notes
 
-**Why RETSPL correction matters:** Audiogram values are in dB HL (hearing level), a clinical reference scale where 0 dB HL = just audible to a normal ear at that frequency. But 0 dB HL means different things at different frequencies — 250 Hz requires 25.5 dB more signal energy than 1 kHz to reach the same perceptual threshold. Without RETSPL correction, a mild loss profile (10 dB HL at 250 Hz) would gate out a large fraction of normal speech at 250 Hz, despite there being effectively zero loss there.
+**Why RETSPL correction matters:** Audiogram values are in dB HL (hearing level), a clinical reference scale where 0 dB HL = just audible to a normal ear at that frequency. But 0 dB HL means different things at different frequencies — 250 Hz requires 25.5 dB more signal energy than 1 kHz to reach the same perceptual threshold. Without RETSPL correction, a mild loss profile (10 dB HL at 250 Hz) would attenuate a large fraction of normal speech at 250 Hz, despite there being effectively zero perceptual loss there.
 
 **Why the simulation sounds quieter than normal:** That's intentional and correct. Real hearing loss makes the world quieter. No loudness compensation is applied — each profile is presented at its natural attenuated level, so the perceptual difference between profiles reflects actual differences in hearing loss severity. Severe profiles will be very quiet; turn up your system volume if needed. Per-band attenuation is capped at 40 dB — beyond that, bands become inaudible in a digital simulation, which defeats the educational purpose.
 
-**Why conductive loss is different:** Conductive loss is mechanical — fluid in the middle ear, ossicular chain disruption, cerumen impaction. The cochlea is intact. There is no frequency-specific damage and no threshold gating effect at the cochlear level. The simulation uses flat gain reduction only.
+**Why conductive loss is different:** Conductive loss is mechanical — fluid in the middle ear, ossicular chain disruption, cerumen impaction. The cochlea is intact. There is no frequency-specific damage. The simulation uses flat gain reduction only, bypassing the EQ chain entirely.
 
-**Why the AudioWorklet runs after the filters:** The BiquadFilter chain handles frequency shaping. The worklet handles non-linear threshold behaviour that cannot be modelled with linear filters. Gating decisions are made on RETSPL-corrected band energy — the same correction as the filters — so both stages operate on the same perceptual scale.
-
-**Audiogram colours vs UI theme:** The audiogram display always uses clinical colours (blue for left ear, red for right) per ISO 8253-1, regardless of the UI theme. This ensures the audiogram remains clinically meaningful even as the app's visual design evolves.
+**Audiogram colours vs UI theme:** The audiogram display always uses clinical colours (blue for left ear, red for right) per ISO 8253-1, regardless of the UI theme. This ensures the audiogram remains clinically meaningful as the app's visual design evolves.
 
 ---
 
 ## Limitations
 
-- Filterbank energy measurement is per-block RMS (128 samples ≈ 3ms at 44.1 kHz), not a continuous instantaneous measurement
 - Binaural processing — how both ears collaborate to localise sounds and separate competing voices — is not modelled
 - Bone conduction thresholds are not distinguished from air conduction
 - Listening fatigue and cognitive load are not modelled
-- AudioWorklet availability varies by browser; the app falls back to BiquadFilter-only in browsers that don't support it (basic frequency attenuation still works)
+- AudioWorklet availability varies by browser; tinnitus is disabled in browsers that don't support it — frequency attenuation via the BiquadFilter chain still works fully
 
 ---
 
 ## Tech Stack
 
 React 18 · Vite 6 · Web Audio API · AudioWorklet · Netlify
-
----
-
-## License
-
-See LICENSE for licensing information.

@@ -22,11 +22,11 @@ export function AboutSection({ workletAttempted, workletReady }) {
         lineHeight: 1.7,
         marginBottom: 16,
       }}>
-        This tool lets you hear what it's like to have a specific kind of hearing loss.
-        Choose a hearing profile, upload a voice recording or piece of music, and press
-        play. The audio is processed in real time to approximate how someone with that
-        profile actually perceives sound — not just quieter, but altered in the ways
-        that matter.
+        This tool allows you to experience the impact of a specific type of hearing loss.
+        Select a hearing profile, upload a voice recording or piece of music, and press
+        play. The audio is processed in real-time to approximate how someone with that
+        profile perceives sounds. You can also create a custom profile based upon your
+        own audiogram (or someone else's) and share it.
       </p>
 
       <div style={{
@@ -39,8 +39,8 @@ export function AboutSection({ workletAttempted, workletReady }) {
           body="Each profile is drawn from a real audiogram — the graph audiologists use to map which pitches a person can and can't hear. The simulation applies those exact thresholds to your audio."
         />
         <Feature
-          title="Threshold effects"
-          body="Real hearing loss isn't just volume. Sounds below the hearing threshold disappear entirely rather than fading. This is what makes the simulation feel accurate rather than like a muffler."
+          title="Frequency selectivity"
+          body="Damaged hair cells don't just reduce volume — they also blur adjacent frequencies together. The simulation widens each affected band's filter in proportion to the degree of loss, so heavily impaired regions lose clarity, not just loudness."
         />
         <Feature
           title="Tinnitus"
