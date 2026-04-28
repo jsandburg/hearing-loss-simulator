@@ -21,7 +21,7 @@ export const PRESETS = {
     isConductive:    false,
     flatAttenuationL: null,
     flatAttenuationR: null,
-    desc:        'Mild loss across all frequencies (26–40 dB HL) — often the first level at which hearing aids are recommended. Soft speech is frequently missed, and background noise significantly reduces comprehension.',
+    desc:        'Mild loss across the full range of pitches. Quiet speech is often missed, and following a conversation in a noisy room takes real effort. This is frequently the point at which a doctor first suggests hearing aids.',
     worklet: {
       tinnitus: { enabled: false, frequency: 4000, level: 0.15 },
     },
@@ -38,7 +38,7 @@ export const PRESETS = {
     isConductive:    false,
     flatAttenuationL: null,
     flatAttenuationR: null,
-    desc:        'Moderate loss (41–55 dB HL). Normal conversation requires sustained effort and concentration, and unaided speech recognition drops sharply in noisy environments. Hearing aids are typically prescribed at this stage.',
+    desc:        'Moderate loss across the full range of pitches. Normal conversation takes real concentration, and noisy environments make it much harder to follow what people are saying. People with this level of loss frequently ask others to repeat themselves.',
     worklet: {
       tinnitus: { enabled: false, frequency: 4000, level: 0.15 },
     },
@@ -55,7 +55,7 @@ export const PRESETS = {
     isConductive:    false,
     flatAttenuationL: null,
     flatAttenuationR: null,
-    desc:        'Severe loss (71–90 dB HL). Most speech is inaudible without amplification, and even with hearing aids, understanding remains limited. Cochlear implant candidacy is typically evaluated at this level.',
+    desc:        'Severe loss across all frequencies. Most speech is very difficult to hear without a hearing aid, and even with amplification, following conversation can be a challenge. At this level, cochlear implants are sometimes considered as an option.',
     worklet: {
       tinnitus: { enabled: false, frequency: 4000, level: 0.15 },
     },
@@ -74,7 +74,7 @@ export const PRESETS = {
     isConductive:    false,
     flatAttenuationL: null,
     flatAttenuationR: null,
-    desc:        'Early age-related loss beginning with the high frequencies above 2 kHz — the most common pattern of hearing loss overall. Consonants like S, F, and TH start to blur, and speech in noise becomes harder to follow.',
+    desc:        'Age-related hearing loss that starts with the higher pitches, the most common pattern of hearing loss overall. High-frequency consonants like S, F, and TH begin to sound similar, making words harder to distinguish, especially in background noise.',
     worklet: {
       tinnitus: { enabled: false, frequency: 4000, level: 0.15 },
     },
@@ -91,7 +91,7 @@ export const PRESETS = {
     isConductive:    false,
     flatAttenuationL: null,
     flatAttenuationR: null,
-    desc:        'Moderate age-related loss, affecting a majority of adults over 65. Conversation requires concentration, speech in noise is difficult, and the television volume tends to creep up. Amplification is typically recommended at this stage.',
+    desc:        'Moderate age-related loss affecting the mid and high frequencies. Conversation takes more effort than it used to, following people in noisy places is genuinely difficult, and the TV volume tends to creep up over time. Most adults over 65 have some degree of this.',
     worklet: {
       tinnitus: { enabled: false, frequency: 4000, level: 0.15 },
     },
@@ -108,7 +108,7 @@ export const PRESETS = {
     isConductive:    false,
     flatAttenuationL: null,
     flatAttenuationR: null,
-    desc:        'Significant age-related loss. One-on-one conversation is difficult even in quiet, and group conversations are nearly impossible. Hearing aids may not provide sufficient benefit at this level; cochlear implant evaluation is sometimes appropriate.',
+    desc:        'Significant age-related loss across the full hearing range. Even one-on-one conversation in a quiet room is hard to follow, and group settings are largely inaccessible without hearing aids. At this level, hearing aids alone may not restore enough clarity.',
     worklet: {
       tinnitus: { enabled: false, frequency: 4000, level: 0.15 },
     },
@@ -127,7 +127,7 @@ export const PRESETS = {
     isConductive:    false,
     flatAttenuationL: null,
     flatAttenuationR: null,
-    desc:        'Classic acoustic-trauma pattern — a sharp notch centred at 4 kHz, where the cochlea is most mechanically stressed by loud sounds. Common after gunfire, industrial noise, or concert exposure. The notch typically widens with continued or repeated exposure.',
+    desc:        'A sharp dip in hearing around 4 kHz, the frequency range most vulnerable to loud noise. Common after prolonged exposure to gunfire, heavy machinery, or loud music. The rest of the hearing range may be relatively intact, which is why people with this pattern often do not notice it at first.',
     worklet: {
       tinnitus: { enabled: false, frequency: 4000, level: 0.15 },
     },
@@ -148,7 +148,7 @@ export const PRESETS = {
     isConductive:    true,
     flatAttenuationL: 27,
     flatAttenuationR: 27,
-    desc:        'Mild middle-ear blockage — like hearing through earplugs or with fluid in the ear. Sounds are uniformly softer but not distorted, because the inner ear (cochlea) is intact. Typically caused by otitis media, cerumen impaction, or ossicular chain disruption.',
+    desc:        'Mild hearing loss caused by something blocking or dampening the middle ear, such as fluid, earwax buildup, or an ear infection. The experience is similar to wearing earplugs: sounds are softer overall but not distorted. This type of loss is often treatable.',
     worklet: {
       tinnitus: { enabled: false, frequency: 4000, level: 0.15 },
     },
@@ -167,7 +167,7 @@ export const PRESETS = {
     isConductive:    true,
     flatAttenuationL: 40,
     flatAttenuationR: 40,
-    desc:        'Moderate middle-ear blockage (41–55 dB HL). Speech requires significant volume to be audible, and normal conversation is difficult without raised voices. Conductive loss at this level is often treatable medically or surgically.',
+    desc:        'Moderate hearing loss caused by middle-ear blockage. Conversation requires noticeably raised voices, and quieter sounds become inaudible. Like a more severe version of having blocked ears. This level of loss is often treatable with medication or surgery.',
     worklet: {
       tinnitus: { enabled: false, frequency: 4000, level: 0.15 },
     },
@@ -186,7 +186,7 @@ export const PRESETS = {
     isConductive:    false,
     flatAttenuationL: null,
     flatAttenuationR: null,
-    desc:        'Mid-frequency loss centred around 1–2 kHz — a U-shaped dip named for looking like a bite taken from the middle of the audiogram. Voice fundamentals fall squarely in this range, so speech can sound hollow or muffled. This pattern is often hereditary.',
+    desc:        'A U-shaped dip in the middle of the hearing range, named for what it looks like on an audiogram. The affected frequencies overlap with the core of the human voice, so speech can sound hollow or muffled even when the volume seems fine. This pattern is often inherited.',
     worklet: {
       tinnitus: { enabled: false, frequency: 4000, level: 0.15 },
     },
@@ -203,7 +203,7 @@ export const PRESETS = {
     isConductive:    false,
     flatAttenuationL: null,
     flatAttenuationR: null,
-    desc:        'Mid-frequency loss centred around 2–3 kHz, where consonant clarity lives. Sounds like "s", "sh", and "ch" become hard to distinguish from one another. Often hereditary; may be stable for decades before progression.',
+    desc:        'A U-shaped dip centered slightly higher in pitch, affecting the frequencies where consonant sounds live. Letters like S, SH, and CH become difficult to tell apart. This pattern is often inherited and can remain stable for many years.',
     worklet: {
       tinnitus: { enabled: false, frequency: 4000, level: 0.15 },
     },
@@ -220,7 +220,7 @@ export const PRESETS = {
     isConductive:    false,
     flatAttenuationL: null,
     flatAttenuationR: null,
-    desc:        'A steep cliff-like drop above 2 kHz — near-normal hearing in the low and mid frequencies, with high-frequency sounds nearly inaudible. Common in genetic hearing loss patterns and in late-stage noise-induced loss.',
+    desc:        'Near-normal hearing in the low and mid frequencies, with a steep drop-off in the higher ranges. Low sounds like bass and vowels come through clearly, but high-frequency sounds, consonants, and higher-pitched voices can be nearly inaudible. This pattern appears in some genetic hearing conditions and in advanced noise-induced loss.',
     worklet: {
       tinnitus: { enabled: false, frequency: 4000, level: 0.15 },
     },
@@ -239,7 +239,7 @@ export const PRESETS = {
     isConductive:    false,
     flatAttenuationL: null,
     flatAttenuationR: null,
-    desc:        'Unilateral noise exposure — left ear significantly worse than right, with a pronounced 4 kHz notch on the left. Common in occupational settings or shooting sports. Asymmetric sensorineural loss should always be investigated to exclude retrocochlear pathology such as acoustic neuroma.',
+    desc:        'Noise-induced loss that is significantly worse in the left ear than the right, with a pronounced dip around 4 kHz on the left side. Common after occupational noise exposure or shooting sports where one ear faces the sound source. Hearing loss that differs noticeably between ears is worth having evaluated.',
     worklet: {
       tinnitus: { enabled: false, frequency: 4000, level: 0.15 },
     },
@@ -256,7 +256,7 @@ export const PRESETS = {
     isConductive:    false,
     flatAttenuationL: null,
     flatAttenuationR: null,
-    desc:        'Sudden sensorineural hearing loss in the left ear, with a normal right. Profoundly disorienting — spatial awareness is severely compromised and the brain receives no input to localise sound direction. Sudden SNHL is a medical emergency requiring urgent evaluation.',
+    desc:        'Sudden loss of hearing in the left ear, with the right ear unaffected. One-sided hearing loss makes it very hard to tell where sounds are coming from, and following conversations in group settings becomes disorienting. Sudden hearing loss in one ear is a medical emergency and should be evaluated immediately.',
     worklet: {
       tinnitus: { enabled: false, frequency: 4000, level: 0.15 },
     },
@@ -275,7 +275,7 @@ export const PRESETS = {
     isConductive:    false,
     flatAttenuationL: null,
     flatAttenuationR: null,
-    desc:        'Full auditory range with thresholds of 0–20 dB HL across all frequencies — considered within normal limits for adults. No processing applied. Use as a reference baseline when comparing against a simulated profile.',
+    desc:        'No hearing loss applied. Audio passes through without any processing. Use this as a reference point to compare what something sounds like before and after a hearing loss profile is applied.',
     worklet: {
       tinnitus: { enabled: false, frequency: 4000, level: 0.15 },
     },
