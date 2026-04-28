@@ -80,22 +80,13 @@ export function AttenuationBars({ profile }) {
 
   return (
     <div style={{ padding: '12px 24px 16px' }}>
-      <div style={{
-        display: 'flex', justifyContent: 'space-between', alignItems: 'baseline',
-        marginBottom: 8,
-      }}>
+      <div style={{ marginBottom: 8 }}>
         <div style={{
           fontSize: 9, fontFamily: THEME.fontSans,
           color: THEME.textSecondary,
           letterSpacing: '0.1em', textTransform: 'uppercase',
         }}>
           Signal attenuation (dB)
-        </div>
-        <div style={{
-          fontSize: 9, fontFamily: THEME.fontSans,
-          color: THEME.textTertiary,
-        }}>
-          audio capped at {MAX_ATTENUATION} dB
         </div>
       </div>
 

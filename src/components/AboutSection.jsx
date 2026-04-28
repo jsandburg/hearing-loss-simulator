@@ -38,7 +38,7 @@ export function AboutSection({ workletAttempted, workletReady }) {
       }}>
         <Feature
           title="Frequency loss"
-          body="Each profile is based on a real audiogram, a chart showing which pitches a person can and cannot hear. The simulation applies that same pattern to your audio, reducing the frequencies that are difficult for that person to pick up. For many types of hearing loss, the damage is at specific frequencies, so turning up the volume does not bring those sounds back."
+          body="Each profile is based on a real audiogram, a chart showing which pitches a person can and cannot hear. The simulation applies that same pattern to your audio, reducing the frequencies that are difficult for that person to pick up. For many types of hearing loss, the damage is at specific frequencies, so turning up the volume does not bring those sounds back. For the most severe profiles, the simulation caps reduction at 40 dB per band — beyond that, a digital simulation cannot meaningfully represent additional loss."
         />
         <Feature
           title="Frequency selectivity"
