@@ -46,7 +46,7 @@ AudioBufferSource → ChannelSplitter
   [R] → 8× BiquadFilter (peaking EQ) → AudioWorkletNode(R) ↗
   [direct]                                                  → ConductivePathGain
   [direct]                                                  → BypassPathGain
-                                              → Limiter → Analyser → VolumeGain → Destination
+                         (optional level matching)     → ProfileGain → Limiter → Analyser → VolumeGain → Destination
 ```
 
 Three signal paths exist simultaneously. Profile switching crossfades between them over 100ms with no click or interruption.
@@ -64,10 +64,18 @@ Where the RETSPL corrections are: `[25.5, 11.5, 7.0, 9.0, 11.5, 12.0, 16.0, 15.5
 Filter Q values vary per band based on the frequency spacing of adjacent audiogram frequencies, preventing gaps and overlap. Q is additionally reduced proportional to loss magnitude, reflecting the broader tuning curves of damaged cochlear hair cells:
 
 ```
-Q_effective = Q_base / (1 + min(loss_dB, 60) / 30)
+Q_effective = Q_base / (1 + min(loss_dB, 60) / 60)
 ```
 
 Conductive loss profiles bypass the EQ chain entirely and use flat gain reduction — conductive loss is mechanical and has no cochlear frequency shaping.
+
+Because the simulator uses a cascaded bank of peaking filters, neighbouring bands still interact. The filter gains are calibrated so the combined response lands much closer to the intended attenuation at the standard audiogram frequencies, but the response between those points remains an approximation rather than a perfect reconstruction of the audiogram curve.
+
+### Level Matching
+
+By default, playback uses natural attenuation: quieter profiles really do sound quieter. The player also includes an optional matched mode for comparison listening. When enabled, the engine applies a capped makeup gain after the active hearing-loss path so you can focus more on changes in tone and clarity while reducing much of the profile's loudness drop.
+
+The level match gain is derived from a speech-weighted average of the profile's effective attenuation (or the conductive profile's flat attenuation), averaged across both ears and capped at +18 dB. It is meant as an A/B listening aid, not as a hearing-aid model.
 
 ### AudioWorklet Processor
 
@@ -105,7 +113,7 @@ src/
     presets.js               — built-in profiles + PRESET_CATEGORIES
     theme.js                 — design tokens
   engine/
-    AudioEngine.js           — Web Audio API lifecycle, playback, seek
+    AudioEngine.js           — Web Audio API lifecycle, playback, seek, level matching
     buildFilterChain.js      — per-playback node graph (bypass/conductive/sensorineural)
     workletBridge.js         — sendWorkletParams, tinnitusLevelLabel
   hooks/
@@ -132,7 +140,8 @@ src/
   utils/
     fileValidation.js        — formatDuration, displayFileName
     presetUrlEncoding.js     — Base64 URL encode/decode for profile sharing
-    volumeCurve.js           — percentToGain: cubic perceptual volume curve
+    levelMatching.js         — capped loudness compensation for A/B listening
+    volumeCurve.js           — percentToGain: squared perceptual volume curve
 
 public/
   hearing-processor.js       — AudioWorklet processor (served as static file)

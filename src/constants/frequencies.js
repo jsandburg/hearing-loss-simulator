@@ -71,11 +71,10 @@ export const AUDIO_MIME_TYPES = new Set([
  * This models reduced frequency selectivity in damaged cochleae.
  *
  * At 0 dB loss: Q = FILTER_Q[bandIndex] (normal)
- * At 60 dB loss: Q ≈ FILTER_Q[bandIndex] / 3  (3× broader band)
+ * At 60 dB loss: Q ≈ FILTER_Q[bandIndex] / 2  (2× broader band)
  */
 export function getEffectiveQ(bandIndex, lossDb) {
   if (lossDb <= 0) return FILTER_Q[bandIndex];
-  const broadeningFactor = 1 + (Math.min(lossDb, 60) / 30);
+  const broadeningFactor = 1 + (Math.min(lossDb, 60) / 60);
   return FILTER_Q[bandIndex] / broadeningFactor;
 }
-

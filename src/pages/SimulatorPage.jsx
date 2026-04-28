@@ -52,13 +52,19 @@ export function SimulatorPage({ initialPresetId, initialProfile, sharedProfile }
   const worklet = useWorkletParams(activeProfile);
   const editor  = useAudiogramEditor();
 
-  const [volume,      setVolumeState] = useState(100);
-  const [loopEnabled, setLoopEnabled] = useState(true);
+  const [volume,         setVolumeState] = useState(100);
+  const [levelMatching,  setLevelMatching] = useState(false);
+  const [loopEnabled,    setLoopEnabled] = useState(true);
 
   // Sync engine volume on mount so the default "Normal Hearing" reference is unity gain.
   useEffect(() => {
     audio.setVolume(100);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    audio.setLevelMatching(levelMatching, activeProfile);
+  }, [activeProfile, audio.setLevelMatching, levelMatching]);
+
   const [shareOpen,   setShareOpen]   = useState(false);
   const [sharedBannerProfile, setSharedBannerProfile] = useState(
     sharedProfile ? activeProfile : null
@@ -73,10 +79,8 @@ export function SimulatorPage({ initialPresetId, initialProfile, sharedProfile }
     setActivePresetId(id);
     setActiveProfile(nextProfile);
     worklet.resetToPreset();
-    if (audio.playState === 'playing') {
-      audio.switchProfile(nextProfile, {});
-    }
-  }, [audio.playState, audio.switchProfile, worklet.resetToPreset]);
+    audio.switchProfile(nextProfile, {});
+  }, [audio.switchProfile, worklet.resetToPreset]);
 
   // ── Keyboard navigation ────────────────────────────────────────────────────
 
@@ -112,6 +116,10 @@ export function SimulatorPage({ initialPresetId, initialProfile, sharedProfile }
       return next;
     });
   }, [audio.setLooping]);
+
+  const handleLevelMatching = useCallback((enabled) => {
+    setLevelMatching(enabled);
+  }, []);
 
   // ── Custom audiogram ───────────────────────────────────────────────────────
 
@@ -333,10 +341,12 @@ export function SimulatorPage({ initialPresetId, initialProfile, sharedProfile }
                   elapsed={audio.elapsed}
                   duration={audio.fileInfo?.duration}
                   volume={volume}
+                  levelMatching={levelMatching}
                   loopEnabled={loopEnabled}
                   onTogglePlay={handleTogglePlay}
                   onSeek={audio.seek}
                   onVolumeChange={handleVolume}
+                  onLevelMatchingChange={handleLevelMatching}
                   onLoopToggle={handleLoop}
                   hasAudio={!!audio.fileInfo}
                   accentColor={THEME.info}

@@ -7,7 +7,7 @@
  * Persistent node graph (created once in init(), torn down in destroy()):
  *
  *   SensorineuralPathGain ──┐
- *   ConductivePathGain   ──►  MakeupGainNode → SafetyLimiter → AnalyserNode → VolumeGain → Destination
+ *   ConductivePathGain   ──►  ProfileGain → SafetyLimiter → AnalyserNode → VolumeGain → Destination
  *   BypassPathGain       ──┘
  *
  * Per-playback nodes (created in startPlay(), torn down in stop()):
@@ -29,6 +29,7 @@ import {
 } from '../constants/frequencies.js';
 import { buildFilterChain, applyProfileToFilters } from './buildFilterChain.js';
 import { sendWorkletParams } from './workletBridge.js';
+import { getProfileLevelMatchGain } from '../utils/levelMatching.js';
 
 // Version string appended to addModule URL for cache-busting
 const WORKLET_VERSION = 'v3';
@@ -40,6 +41,7 @@ export class AudioEngine {
     this._snsPathGain      = null;  // sensorineural path
     this._condPathGain     = null;  // conductive path
     this._bypassPathGain   = null;
+    this._profileGain      = null;
     this._limiter          = null;
     this._analyser         = null;
     this._volumeGain       = null;
@@ -63,6 +65,7 @@ export class AudioEngine {
     this._playStartTime    = 0;
     this._isPlaying        = false;
     this._looping          = true;
+    this._levelMatchingEnabled = false;
     this._volume           = 1.0;
 
     // ── Safety ────────────────────────────────────────────────────────────
@@ -111,6 +114,8 @@ export class AudioEngine {
     this._snsPathGain    = this._ctx.createGain();
     this._condPathGain   = this._ctx.createGain();
     this._bypassPathGain = this._ctx.createGain();
+    this._profileGain    = this._ctx.createGain();
+    this._profileGain.gain.value = 1;
 
     this._limiter = this._ctx.createDynamicsCompressor();
     this._limiter.threshold.value = -3;
@@ -126,10 +131,11 @@ export class AudioEngine {
     this._volumeGain = this._ctx.createGain();
     this._volumeGain.gain.value = this._volume;
 
-    // Wire persistent graph — path gains connect directly to limiter
-    this._snsPathGain.connect(this._limiter);
-    this._condPathGain.connect(this._limiter);
-    this._bypassPathGain.connect(this._limiter);
+    // Wire persistent graph — path gains sum into an optional makeup stage
+    this._snsPathGain.connect(this._profileGain);
+    this._condPathGain.connect(this._profileGain);
+    this._bypassPathGain.connect(this._profileGain);
+    this._profileGain.connect(this._limiter);
     this._limiter.connect(this._analyser);
     this._analyser.connect(this._volumeGain);
     this._volumeGain.connect(this._ctx.destination);
@@ -179,6 +185,7 @@ export class AudioEngine {
       try { this._ctx.close(); } catch (_) {}
       this._ctx = null;
     }
+    this._profileGain = null;
     this._workletReady = false;
   }
 
@@ -273,6 +280,7 @@ export class AudioEngine {
     this._sourceStarted = true;
     this._playStartTime = this._ctx.currentTime - startOffset;
     this._isPlaying     = true;
+    this._applyProfileGain(profile, false);
     this._setPathGainsForProfile(profile, false);
   }
 
@@ -303,6 +311,7 @@ export class AudioEngine {
     if (!this._ctx || !this._isPlaying) {
       this._currentProfile   = newProfile;
       this._workletOverrides = overrides;
+      this._applyProfileGain(newProfile, false);
       return;
     }
 
@@ -326,8 +335,9 @@ export class AudioEngine {
     // If path type changes (e.g. sensorineural → conductive), we need to
     // rebuild the chain. Otherwise we can update in place.
     const pathChanged = this._getPathKey(prevProfile) !== this._getPathKey(newProfile);
+    const requiresRebuild = pathChanged || this._getPathKey(newProfile) === 'conductive';
 
-    if (pathChanged) {
+    if (requiresRebuild) {
       // Fade out current path
       this._setAllPathGainsSilent(now, FADE);
       // Rebuild chain after fade
@@ -351,6 +361,8 @@ export class AudioEngine {
       sendWorkletParams(this._workletL, this._workletR, newProfile, overrides);
     }
 
+    this._applyProfileGain(newProfile);
+
   }
 
   // Update worklet overrides without switching profile
@@ -359,6 +371,11 @@ export class AudioEngine {
     if (this._currentProfile && (this._workletL || this._workletR)) {
       sendWorkletParams(this._workletL, this._workletR, this._currentProfile, overrides);
     }
+  }
+
+  setLevelMatching(enabled, profile = this._currentProfile) {
+    this._levelMatchingEnabled = enabled;
+    this._applyProfileGain(profile, true);
   }
 
   // ─── Path gain helpers ─────────────────────────────────────────────────────
@@ -409,6 +426,20 @@ export class AudioEngine {
       node.gain.setValueAtTime(node.gain.value, t);
       node.gain.linearRampToValueAtTime(0, t + fadeTime);
     });
+  }
+
+  _applyProfileGain(profile, animate = true) {
+    if (!this._ctx || !this._profileGain) return;
+
+    const now = this._ctx.currentTime;
+    const rampTime = animate ? 0.08 : 0.005;
+    const target = this._levelMatchingEnabled
+      ? getProfileLevelMatchGain(profile)
+      : 1;
+
+    this._profileGain.gain.cancelScheduledValues(now);
+    this._profileGain.gain.setValueAtTime(this._profileGain.gain.value, now);
+    this._profileGain.gain.linearRampToValueAtTime(target, now + rampTime);
   }
 
   // ─── Seek ──────────────────────────────────────────────────────────────────

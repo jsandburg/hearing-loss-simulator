@@ -11,10 +11,12 @@ export function PlaybackControls({
   elapsed,
   duration,
   volume,
+  levelMatching,
   loopEnabled,
   onTogglePlay,
   onSeek,
   onVolumeChange,
+  onLevelMatchingChange,
   onLoopToggle,
   hasAudio,
   accentColor,
@@ -83,7 +85,7 @@ export function PlaybackControls({
       </div>
 
       {/* Controls row */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
 
         {/* Play / Stop */}
         <button
@@ -146,6 +148,67 @@ export function PlaybackControls({
           }}>
             {volume}%
           </span>
+        </div>
+
+        {/* Level matching mode */}
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 6,
+          opacity: inactive ? 0.4 : 1,
+          transition: 'opacity 0.15s',
+          flexShrink: 0,
+        }}>
+          <span style={{
+            fontSize: 10,
+            fontFamily: THEME.fontSans,
+            color: THEME.textPrimary,
+            userSelect: 'none',
+          }}>
+            Level
+          </span>
+          <div style={{
+            display: 'inline-flex',
+            border: `1px solid ${THEME.border}`,
+            borderRadius: 3,
+            overflow: 'hidden',
+          }}>
+            {[
+              {
+                id: 'natural',
+                label: 'Natural',
+                active: !levelMatching,
+                title: "Play at the profile's natural attenuated level",
+              },
+              {
+                id: 'matched',
+                label: 'Matched',
+                active: levelMatching,
+                title: 'Apply capped makeup gain to compare tone and clarity',
+              },
+            ].map((option) => (
+              <button
+                key={option.id}
+                type="button"
+                onClick={() => onLevelMatchingChange(option.id === 'matched')}
+                disabled={inactive}
+                aria-pressed={option.active}
+                title={option.title}
+                style={{
+                  border: 'none',
+                  background: option.active ? `${accent}12` : 'transparent',
+                  color: option.active ? accent : THEME.textSecondary,
+                  cursor: inactive ? 'not-allowed' : 'pointer',
+                  padding: '4px 8px',
+                  fontSize: 10,
+                  fontFamily: THEME.fontSans,
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                {option.label}
+              </button>
+            ))}
+          </div>
         </div>
 
         {/* Loop — labelled text button */}

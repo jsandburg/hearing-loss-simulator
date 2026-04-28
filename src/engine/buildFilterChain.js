@@ -23,6 +23,157 @@ import {
   getEffectiveQ,
 } from '../constants/frequencies.js';
 
+const CALIBRATION_EPSILON_DB = 0.1;
+const CALIBRATION_MAX_PASSES = 4;
+const CALIBRATION_TOLERANCE_DB = 0.25;
+
+function clampAttenuation(db) {
+  return Math.max(0, Math.min(MAX_ATTENUATION, db));
+}
+
+function getSensorineuralBandTargets(lossArr) {
+  return FREQUENCIES.map((freq, i) => {
+    const corrected = Math.max(0, lossArr[i] - RETSPL_CORRECTION[i]);
+    return {
+      center: freq,
+      target: clampAttenuation(corrected),
+      q: getEffectiveQ(i, corrected),
+    };
+  });
+}
+
+function getPeakingResponseDb(sampleRate, testFreq, centerFreq, q, gainDb) {
+  if (gainDb === 0) return 0;
+
+  const A = Math.pow(10, gainDb / 40);
+  const w0 = (2 * Math.PI * centerFreq) / sampleRate;
+  const cosW0 = Math.cos(w0);
+  const sinW0 = Math.sin(w0);
+  const alpha = sinW0 / (2 * q);
+
+  let b0 = 1 + alpha * A;
+  let b1 = -2 * cosW0;
+  let b2 = 1 - alpha * A;
+  let a0 = 1 + alpha / A;
+  let a1 = -2 * cosW0;
+  let a2 = 1 - alpha / A;
+
+  b0 /= a0; b1 /= a0; b2 /= a0;
+  a1 /= a0; a2 /= a0;
+
+  const w = (2 * Math.PI * testFreq) / sampleRate;
+  const cosW = Math.cos(w);
+  const sinW = Math.sin(w);
+  const cos2W = Math.cos(2 * w);
+  const sin2W = Math.sin(2 * w);
+
+  const numRe = b0 + b1 * cosW + b2 * cos2W;
+  const numIm = -b1 * sinW - b2 * sin2W;
+  const denRe = 1 + a1 * cosW + a2 * cos2W;
+  const denIm = -a1 * sinW - a2 * sin2W;
+
+  return 20 * Math.log10(
+    Math.hypot(numRe, numIm) / Math.hypot(denRe, denIm)
+  );
+}
+
+function solveLinearSystem(matrix, values) {
+  const n = values.length;
+  const augmented = matrix.map((row, i) => [...row, values[i]]);
+
+  for (let col = 0; col < n; col++) {
+    let pivot = col;
+    for (let row = col + 1; row < n; row++) {
+      if (Math.abs(augmented[row][col]) > Math.abs(augmented[pivot][col])) {
+        pivot = row;
+      }
+    }
+
+    if (Math.abs(augmented[pivot][col]) < 1e-8) return null;
+
+    [augmented[col], augmented[pivot]] = [augmented[pivot], augmented[col]];
+
+    const divisor = augmented[col][col];
+    for (let j = col; j <= n; j++) augmented[col][j] /= divisor;
+
+    for (let row = 0; row < n; row++) {
+      if (row === col) continue;
+      const factor = augmented[row][col];
+      for (let j = col; j <= n; j++) {
+        augmented[row][j] -= factor * augmented[col][j];
+      }
+    }
+  }
+
+  return augmented.map((row) => row[n]);
+}
+
+function evaluateCascadeAttenuation(sampleRate, bands, attenuations) {
+  return FREQUENCIES.map((testFreq) =>
+    bands.reduce((sum, band, i) => (
+      sum - getPeakingResponseDb(
+        sampleRate,
+        testFreq,
+        band.center,
+        band.q,
+        -attenuations[i]
+      )
+    ), 0)
+  );
+}
+
+function buildCalibrationMatrix(sampleRate, bands, attenuations = null) {
+  if (!attenuations) {
+    return FREQUENCIES.map((testFreq) =>
+      bands.map((band) => (
+        -getPeakingResponseDb(sampleRate, testFreq, band.center, band.q, -1)
+      ))
+    );
+  }
+
+  const base = evaluateCascadeAttenuation(sampleRate, bands, attenuations);
+  return FREQUENCIES.map((testFreq, rowIndex) =>
+    bands.map((band, bandIndex) => {
+      const next = [...attenuations];
+      next[bandIndex] += CALIBRATION_EPSILON_DB;
+      const delta = evaluateCascadeAttenuation(sampleRate, bands, next)[rowIndex] - base[rowIndex];
+      return delta / CALIBRATION_EPSILON_DB;
+    })
+  );
+}
+
+function calibrateBandAttenuations(sampleRate, bands) {
+  const targets = bands.map((band) => band.target);
+  const initialMatrix = buildCalibrationMatrix(sampleRate, bands);
+  const initial = solveLinearSystem(initialMatrix, targets);
+
+  if (!initial) return targets;
+
+  let attenuations = initial.map(clampAttenuation);
+
+  for (let pass = 0; pass < CALIBRATION_MAX_PASSES; pass++) {
+    const actual = evaluateCascadeAttenuation(sampleRate, bands, attenuations);
+    const error = targets.map((target, i) => target - actual[i]);
+    const maxError = Math.max(...error.map((value) => Math.abs(value)));
+
+    if (maxError <= CALIBRATION_TOLERANCE_DB) break;
+
+    const jacobian = buildCalibrationMatrix(sampleRate, bands, attenuations);
+    const delta = solveLinearSystem(jacobian, error);
+    if (!delta) break;
+
+    attenuations = attenuations.map((value, i) => clampAttenuation(value + delta[i]));
+  }
+
+  return attenuations;
+}
+
+function buildSensorineuralBands(ctx, lossArr) {
+  const bands = getSensorineuralBandTargets(lossArr);
+  const attenuations = calibrateBandAttenuations(ctx.sampleRate, bands);
+  return bands.map((band, i) => ({ ...band, attenuation: attenuations[i] }));
+}
+
 /**
  * @param {BaseAudioContext} ctx
  * @param {HearingProfile} profile
@@ -130,17 +281,17 @@ export function buildFilterChain(ctx, profile, workletReady = false) {
   const splitter = ctx.createChannelSplitter(2);
   const merger   = ctx.createChannelMerger(2);
 
-  const createBandFilters = (lossArr) =>
-    FREQUENCIES.map((freq, i) => {
+  const createBandFilters = (lossArr) => {
+    const bands = buildSensorineuralBands(ctx, lossArr);
+    return bands.map((band) => {
       const f      = ctx.createBiquadFilter();
       f.type       = 'peaking';
-      f.frequency.value = freq;
-      const corrected   = Math.max(0, lossArr[i] - RETSPL_CORRECTION[i]);
-      const clamped     = Math.min(MAX_ATTENUATION, corrected);
-      f.Q.value         = getEffectiveQ(i, corrected);
-      f.gain.value      = -clamped;
+      f.frequency.value = band.center;
+      f.Q.value         = band.q;
+      f.gain.value      = -band.attenuation;
       return f;
     });
+  };
 
   const filtersL = createBandFilters(profile.left);
   const filtersR = createBandFilters(profile.right);
@@ -190,19 +341,16 @@ export function buildFilterChain(ctx, profile, workletReady = false) {
 export function applyProfileToFilters(filters, lossArr, ctx) {
   const now = ctx.currentTime;
   const RAMP_TIME = 0.08; // 80ms — avoids clicks, fast enough to feel responsive
+  const bands = buildSensorineuralBands(ctx, lossArr);
 
   filters.forEach((f, i) => {
-    const corrected = Math.max(0, lossArr[i] - RETSPL_CORRECTION[i]);
-    const clamped   = Math.min(MAX_ATTENUATION, corrected);
-    const q         = getEffectiveQ(i, corrected);
-
     // Cancel any scheduled values then ramp smoothly
     f.gain.cancelScheduledValues(now);
     f.gain.setValueAtTime(f.gain.value, now);
-    f.gain.linearRampToValueAtTime(-clamped, now + RAMP_TIME);
+    f.gain.linearRampToValueAtTime(-bands[i].attenuation, now + RAMP_TIME);
 
     f.Q.cancelScheduledValues(now);
     f.Q.setValueAtTime(f.Q.value, now);
-    f.Q.linearRampToValueAtTime(q, now + RAMP_TIME);
+    f.Q.linearRampToValueAtTime(bands[i].q, now + RAMP_TIME);
   });
 }

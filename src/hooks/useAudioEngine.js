@@ -18,6 +18,7 @@
  *  stop()
  *  seek()
  *  setVolume()
+ *  setLevelMatching()
  *  setLooping()
  *  switchProfile()
  *  updateWorkletOverrides()
@@ -190,6 +191,10 @@ export function useAudioEngine() {
     engineRef.current.setVolume(percentToGain(percent));
   }, []);
 
+  const setLevelMatching = useCallback((enabled, profile) => {
+    engineRef.current.setLevelMatching(enabled, profile);
+  }, []);
+
   const setLooping = useCallback((enabled) => {
     engineRef.current.setLooping(enabled);
   }, []);
@@ -227,6 +232,7 @@ export function useAudioEngine() {
     removeFile,
     seek,
     setVolume,
+    setLevelMatching,
     setLooping,
     switchProfile,
     updateWorkletOverrides,
