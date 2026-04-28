@@ -168,11 +168,21 @@ function calibrateBandAttenuations(sampleRate, bands) {
   return attenuations;
 }
 
-function buildSensorineuralBands(ctx, lossArr) {
+// Cache calibration results — key: "<sampleRate>:<lossArr csv>"
+// Avoids re-solving on in-place profile switches during live playback.
+const _bandsCache = new Map();
+
+export function buildSensorineuralBands(sampleRate, lossArr) {
+  const key = `${sampleRate}:${lossArr.join(',')}`;
+  if (_bandsCache.has(key)) return _bandsCache.get(key);
   const bands = getSensorineuralBandTargets(lossArr);
-  const attenuations = calibrateBandAttenuations(ctx.sampleRate, bands);
-  return bands.map((band, i) => ({ ...band, attenuation: attenuations[i] }));
+  const attenuations = calibrateBandAttenuations(sampleRate, bands);
+  const result = bands.map((band, i) => ({ ...band, attenuation: attenuations[i] }));
+  _bandsCache.set(key, result);
+  return result;
 }
+
+export { getPeakingResponseDb, evaluateCascadeAttenuation, solveLinearSystem, calibrateBandAttenuations };
 
 /**
  * @param {BaseAudioContext} ctx
@@ -282,7 +292,7 @@ export function buildFilterChain(ctx, profile, workletReady = false) {
   const merger   = ctx.createChannelMerger(2);
 
   const createBandFilters = (lossArr) => {
-    const bands = buildSensorineuralBands(ctx, lossArr);
+    const bands = buildSensorineuralBands(ctx.sampleRate, lossArr);
     return bands.map((band) => {
       const f      = ctx.createBiquadFilter();
       f.type       = 'peaking';
@@ -341,7 +351,7 @@ export function buildFilterChain(ctx, profile, workletReady = false) {
 export function applyProfileToFilters(filters, lossArr, ctx) {
   const now = ctx.currentTime;
   const RAMP_TIME = 0.08; // 80ms — avoids clicks, fast enough to feel responsive
-  const bands = buildSensorineuralBands(ctx, lossArr);
+  const bands = buildSensorineuralBands(ctx.sampleRate, lossArr);
 
   filters.forEach((f, i) => {
     // Cancel any scheduled values then ramp smoothly
