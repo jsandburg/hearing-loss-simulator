@@ -36,11 +36,11 @@ export function AboutSection({ workletAttempted, workletReady }) {
       }}>
         <Feature
           title="Frequency loss"
-          body="Each profile is mapped out on an audiogram, a graph used to map which pitches a person can and cannot hear. The simulation applies those exact thresholds to your audio. Hearing loss isn't just about volume, and you can't always fix it by making sounds louder — this simulation applies the exact frequency pattern from each audiogram rather than just turning the volume down."
+          body="Each profile is based on a real audiogram, a chart showing which pitches a person can and cannot hear. The simulation applies that same pattern to your audio, reducing the frequencies that are difficult for that person to pick up. For many types of hearing loss, the damage is at specific frequencies, so turning up the volume does not bring those sounds back."
         />
         <Feature
           title="Frequency selectivity"
-          body="Damaged hair cells don't just reduce volume — they also blur adjacent frequencies together. The simulation widens each affected band's filter in proportion to the degree of loss, so heavily impaired regions lose clarity, not just loudness."
+          body="A healthy ear can clearly separate sounds that are close in pitch. When the inner ear is damaged, nearby sounds begin to blur together. The simulation reflects this by widening the affected frequency ranges in areas of greater hearing loss."
         />
         <Feature
           title="Tinnitus"
