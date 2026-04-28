@@ -207,6 +207,7 @@ The profile will appear in the selector under its category automatically.
 - Temporal processing loss is not modelled; damaged ears also struggle to track rapid changes in sound, which affects speech clarity independently of frequency loss
 - Results depend on playback hardware; headphones give a more accurate result than laptop speakers, which have their own uneven frequency response
 - The built-in profiles are representative examples drawn from common audiometric patterns; individual audiograms vary considerably even within a diagnostic category
+- Filter calibration accuracy: at audiogram frequencies that are near-normal but adjacent to a high-loss region, actual attenuation may run 1–2 dB above the target due to filter tail spillover from neighbouring bands. For profiles where all bands are elevated (flat moderate loss, etc.), calibration converges within 0.25 dB. Uncalibrated error for the same profiles runs 16–58 dB, so the residual 1–2 dB is a large improvement, but the tool should not be treated as a clinically validated diagnostic instrument
 
 ---
 
