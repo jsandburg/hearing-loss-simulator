@@ -9,7 +9,6 @@
  */
 
 import { Component } from 'react';
-import { THEME } from '../constants/theme.js';
 
 export class ErrorBoundary extends Component {
   constructor(props) {

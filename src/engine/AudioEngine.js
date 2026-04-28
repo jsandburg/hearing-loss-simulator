@@ -46,7 +46,6 @@ export class AudioEngine {
 
     // ── Worklet state ──────────────────────────────────────────────────────
     this._workletReady     = false;
-    this._workletLoading   = false;
 
     // ── Per-playback nodes ─────────────────────────────────────────────────
     this._source           = null;
@@ -72,7 +71,6 @@ export class AudioEngine {
 
     // ── Callbacks (set by useAudioEngine) ──────────────────────────────────
     this.onPlayEnd         = null;
-    this.onLimiterActive   = null;
     this.onWorkletReady    = null;
   }
 
@@ -149,18 +147,15 @@ export class AudioEngine {
       try { await this._ctx.resume(); } catch (_) {}
     }
 
-    this._workletLoading = true;
     try {
       await this._ctx.audioWorklet.addModule(
         `/hearing-processor.js?${WORKLET_VERSION}`
       );
       this._workletReady   = true;
-      this._workletLoading = false;
       if (this.onWorkletReady) this.onWorkletReady(true);
     } catch (err) {
       console.warn('[AudioEngine] AudioWorklet unavailable — falling back to BiquadFilter-only mode.', err);
       this._workletReady   = false;
-      this._workletLoading = false;
       if (this.onWorkletReady) this.onWorkletReady(false);
     }
   }
@@ -236,12 +231,20 @@ export class AudioEngine {
 
   startPlay(profile, overrides = {}) {
     if (!this._ctx || !this._buffer) return;
-    if (this._isPlaying) this._teardownSource();
+    if (this._isPlaying) this._teardownSource(true);
+    this._startAtOffset(profile, overrides, 0);
+  }
 
+  stop() {
+    this._teardownSource(true);
+    this._isPlaying = false;
+    this._setAllPathGainsSilent();
+  }
+
+  _startAtOffset(profile, overrides = {}, offset = 0) {
     this._currentProfile   = profile;
     this._workletOverrides = overrides;
 
-    // Build per-playback filter chain
     const chain = buildFilterChain(this._ctx, profile, this._workletReady);
     this._chainCleanup = chain.cleanup;
     this._filtersL     = chain.filtersL;
@@ -249,51 +252,39 @@ export class AudioEngine {
     this._workletL     = chain.workletL;
     this._workletR     = chain.workletR;
 
-    // Wire source into chain
     this._source        = this._ctx.createBufferSource();
     this._source.buffer = this._buffer;
     this._source.loop   = this._looping;
     this._source.connect(chain.input);
-
-    // Connect chain output to the correct path gain node FIRST,
-    // then open the path gain — ensures no gap between connection and signal flow.
-    // Each profile type routes to its own persistent gain node:
-    //   sensorineural → _snsPathGain, conductive → _condPathGain, bypass → _bypassPathGain
     chain.output.connect(this._pathGainNode(profile));
 
-    // Send worklet parameters (if worklet is active)
     if (this._workletL || this._workletR) {
       sendWorkletParams(this._workletL, this._workletR, profile, overrides);
     }
 
-    // Start source
-    this._source.start(0);
-    this._sourceStarted = true;
-    this._playStartTime = this._ctx.currentTime;
-    this._isPlaying     = true;
-
-    // onended only fires for non-looping sources
+    const startOffset = Math.max(0, Math.min(offset, this._buffer.duration));
     this._source.onended = () => {
-      if (!this._looping) {
-        this._isPlaying = false;
-        if (this.onPlayEnd) this.onPlayEnd();
-      }
+      this._teardownSource();
+      this._isPlaying = false;
+      this._setAllPathGainsSilent();
+      if (this.onPlayEnd) this.onPlayEnd();
     };
-
-    // Open the correct path gain after the chain is connected
+    this._source.start(0, startOffset);
+    this._sourceStarted = true;
+    this._playStartTime = this._ctx.currentTime - startOffset;
+    this._isPlaying     = true;
     this._setPathGainsForProfile(profile, false);
   }
 
-  stop() {
-    if (this._source && this._sourceStarted) {
-      try { this._source.stop(); } catch (_) {}
+  _teardownSource(stopSource = false) {
+    if (this._source) {
+      const source = this._source;
+      source.onended = null;
+      if (stopSource && this._sourceStarted) {
+        try { source.stop(); } catch (_) {}
+      }
+      try { source.disconnect(); } catch (_) {}
     }
-    this._teardownSource();
-    this._isPlaying = false;
-    this._setAllPathGainsSilent();
-  }
-
-  _teardownSource() {
     if (this._chainCleanup) {
       try { this._chainCleanup(); } catch (_) {}
       this._chainCleanup = null;
@@ -342,8 +333,9 @@ export class AudioEngine {
       // Rebuild chain after fade
       setTimeout(() => {
         if (!this._isPlaying) return;
-        this._teardownSource();
-        this.startPlay(newProfile, overrides);
+        const offset = this.elapsed;
+        this._teardownSource(true);
+        this._startAtOffset(newProfile, overrides, offset);
       }, FADE * 1000 + 20);
       return;
     }
@@ -427,42 +419,8 @@ export class AudioEngine {
     const overrides = this._workletOverrides;
     const offset    = Math.max(0, Math.min(1, fraction)) * this._buffer.duration;
 
-    // Stop the current source cleanly without calling the full stop()
-    // (which would silence path gains — we want audio to continue immediately)
-    if (this._source && this._sourceStarted) {
-      try { this._source.stop(); } catch (_) {}
-    }
-    this._teardownSource();
-
-    // Rebuild filter chain and start at the new offset position
-    const chain = buildFilterChain(this._ctx, profile, this._workletReady);
-    this._chainCleanup = chain.cleanup;
-    this._filtersL     = chain.filtersL;
-    this._filtersR     = chain.filtersR;
-    this._workletL     = chain.workletL;
-    this._workletR     = chain.workletR;
-
-    this._source        = this._ctx.createBufferSource();
-    this._source.buffer = this._buffer;
-    this._source.loop   = this._looping;
-    this._source.connect(chain.input);
-    chain.output.connect(this._pathGainNode(profile));
-
-    if (this._workletL || this._workletR) {
-      sendWorkletParams(this._workletL, this._workletR, profile, overrides);
-    }
-
-    this._source.onended = () => {
-      if (!this._looping) {
-        this._isPlaying = false;
-        if (this.onPlayEnd) this.onPlayEnd();
-      }
-    };
-
-    this._source.start(0, offset);
-    this._sourceStarted = true;
-    this._playStartTime = this._ctx.currentTime - offset;
-    this._isPlaying     = true;
+    this._teardownSource(true);
+    this._startAtOffset(profile, overrides, offset);
   }
 
   // ─── Volume ────────────────────────────────────────────────────────────────
@@ -484,29 +442,15 @@ export class AudioEngine {
     if (this._source) this._source.loop = enabled;
   }
 
-  // ─── Load pre-decoded ArrayBuffer (for share player) ─────────────────────
-
-  async loadBuffer(arrayBuffer) {
-    await this.ensureRunning();
-    const gen = ++this._decodeGen;
-    let buf;
-    try {
-      buf = await this._ctx.decodeAudioData(arrayBuffer);
-    } catch (_) {
-      throw new Error(
-        'Could not decode shared audio. The file may be corrupt or in an unsupported format.'
-      );
-    }
-    if (gen !== this._decodeGen) return null; // superseded by another load
-    this._buffer = buf;
-    return buf;
+  clearBuffer() {
+    this.stop();
+    this._buffer = null;
   }
 
   // ─── Getters ───────────────────────────────────────────────────────────────
 
   get isPlaying()     { return this._isPlaying; }
   get workletReady()  { return this._workletReady; }
-  get workletLoading(){ return this._workletLoading; }
   get buffer()        { return this._buffer; }
   get analyser()      { return this._analyser; }
   get sampleRate()    { return this._ctx?.sampleRate ?? 44100; }
@@ -518,9 +462,5 @@ export class AudioEngine {
     return this._looping
       ? raw % this._buffer.duration
       : Math.min(raw, this._buffer.duration);
-  }
-
-  get limiterReduction() {
-    return this._limiter ? Math.abs(this._limiter.reduction) : 0;
   }
 }

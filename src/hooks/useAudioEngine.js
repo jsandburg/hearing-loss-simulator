@@ -11,7 +11,6 @@
  *  elapsed       — playback position in seconds (updated via rAF)
  *  fileInfo      — { name, duration, sampleRate, channels } | null
  *  workletReady  — boolean
- *  workletLoading — boolean
  *  errors        — { decode, format, size, context } — each string|null
  *  warnings      — string[]
  *  loadFile()
@@ -28,7 +27,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { AudioEngine } from '../engine/AudioEngine.js';
-import { displayFileName, formatDuration } from '../utils/fileValidation.js';
+import { displayFileName } from '../utils/fileValidation.js';
 import { percentToGain } from '../utils/volumeCurve.js';
 
 export function useAudioEngine() {
@@ -40,7 +39,6 @@ export function useAudioEngine() {
   const [elapsed,       setElapsed]       = useState(0);
   const [fileInfo,      setFileInfo]      = useState(null);
   const [workletReady,    setWorkletReady]    = useState(false);
-  const [workletLoading,  setWorkletLoading]  = useState(false);
   const [workletAttempted,setWorkletAttempted]= useState(false);
   const [errors,        setErrors]        = useState({ decode: null, format: null, size: null, context: null });
   const [warnings,      setWarnings]      = useState([]);
@@ -62,7 +60,6 @@ export function useAudioEngine() {
     engine.onWorkletReady = (ready) => {
       if (mountedRef.current) {
         setWorkletReady(ready);
-        setWorkletLoading(false);
         setWorkletAttempted(true);
         if (!ready) {
           setWarnings(prev => [
@@ -80,7 +77,7 @@ export function useAudioEngine() {
     };
   }, []);
 
-  // ── rAF loop for elapsed time + limiter polling ────────────────────────────
+  // ── rAF loop for elapsed time ──────────────────────────────────────────────
 
   useEffect(() => {
     const tick = () => {
@@ -88,8 +85,8 @@ export function useAudioEngine() {
       const engine = engineRef.current;
 
       if (engine.isPlaying) {
-          setElapsed(engine.elapsed);
-        }
+        setElapsed(engine.elapsed);
+      }
 
       animFrameRef.current = requestAnimationFrame(tick);
     };
@@ -179,8 +176,7 @@ export function useAudioEngine() {
   }, []);
 
   const removeFile = useCallback(() => {
-    engineRef.current.stop();
-    engineRef.current._buffer = null;
+    engineRef.current.clearBuffer();
     setFileInfo(null);
     setPlayState('stopped');
     setElapsed(0);
@@ -222,7 +218,6 @@ export function useAudioEngine() {
     elapsed,
     fileInfo,
     workletReady,
-    workletLoading,
     workletAttempted,
     errors,
     warnings,

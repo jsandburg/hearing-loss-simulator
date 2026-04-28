@@ -7,7 +7,7 @@
  * v1 format (current):
  *   - Compact JSON with short field names
  *   - URL-safe Base64 (RFC 4648): + → -, / → _, no padding, no encodeURIComponent
- *   - flL / flR omitted (always null; decoder already handles missing fields)
+ *   - bp / flL / flR included only when needed for bypass or conductive profiles
  *
  * Backward compatibility:
  *   The decoder handles both old links (standard Base64 via encodeURIComponent)
@@ -36,8 +36,10 @@ export function encodePresetToUrl(profile) {
     l:    Array.from(profile.left).map(v => Math.round(Math.max(0, Math.min(120, v)))),
     r:    Array.from(profile.right).map(v => Math.round(Math.max(0, Math.min(120, v)))),
     cat:  profile.category ?? 'sensorineural',
+    bp:   profile.bypass ? 1 : 0,
     cond: profile.isConductive ? 1 : 0,
-    // flL / flR intentionally omitted — always null; decoder defaults missing to null
+    ...(profile.flatAttenuationL != null ? { flL: Math.round(Math.max(0, Math.min(120, profile.flatAttenuationL))) } : {}),
+    ...(profile.flatAttenuationR != null ? { flR: Math.round(Math.max(0, Math.min(120, profile.flatAttenuationR))) } : {}),
     wk: {
       ten: profile.worklet?.tinnitus?.enabled   ? 1 : 0,
       tF:  Math.round(profile.worklet?.tinnitus?.frequency ?? 4000),
@@ -84,10 +86,11 @@ export function decodePresetFromUrl(encoded) {
     // Step 2: normalise URL-safe Base64 chars back to standard Base64.
     //         Old links: no - or _ present, so this is a no-op for them.
     //         New links: restores - → + and _ → /.
-    const b64 = afterPct
+    const normalised = afterPct
       .replace(/-/g, '+')
-      .replace(/_/g, '/')
-      + '=='.slice((afterPct.replace(/-/g,'+').replace(/_/g,'/').length % 4) || 4);
+      .replace(/_/g, '/');
+    const padding = normalised.length % 4;
+    const b64 = normalised + (padding === 0 ? '' : '='.repeat(4 - padding));
 
     // Step 3: standard atob → bytes → UTF-8
     const raw   = atob(b64);
@@ -122,9 +125,8 @@ export function decodePresetFromUrl(encoded) {
     right,
     isSymmetric:  left.every((v, i) => v === right[i]),
     category:     typeof payload.cat === 'string' ? payload.cat : 'sensorineural',
-    bypass:       false,
+    bypass:       payload.bp === 1,
     isConductive: payload.cond === 1,
-    // flL / flR were never non-null; missing from new payloads → null safely
     flatAttenuationL: payload.flL != null ? clamp(payload.flL, 0, 120) : null,
     flatAttenuationR: payload.flR != null ? clamp(payload.flR, 0, 120) : null,
     color:        '#36454f',

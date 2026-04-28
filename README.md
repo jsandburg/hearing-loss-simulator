@@ -71,7 +71,7 @@ Conductive loss profiles bypass the EQ chain entirely and use flat gain reductio
 
 ### AudioWorklet Processor
 
-For sensorineural profiles an `AudioWorkletNode` (`public/hearing-processor.js`) runs after the BiquadFilter chain. Its role is tinnitus injection only: it passes the already-processed signal through and adds a sinusoidal tone at the configured frequency and level if tinnitus is enabled. All frequency-selective attenuation is handled by the BiquadFilter chain upstream.
+When tinnitus is available, an `AudioWorkletNode` (`public/hearing-processor.js`) runs at the end of the active playback path. Sensorineural profiles place it after the BiquadFilter chain; conductive and bypass profiles place it after their flat or direct path. Its role is tinnitus injection only: it passes the already-processed signal through and adds a sinusoidal tone at the configured frequency and level if tinnitus is enabled. All frequency-selective attenuation is handled upstream.
 
 ### Profile Sharing
 
@@ -105,7 +105,7 @@ src/
     presets.js               — built-in profiles + PRESET_CATEGORIES
     theme.js                 — design tokens
   engine/
-    AudioEngine.js           — Web Audio API lifecycle, playback, seek, loadBuffer
+    AudioEngine.js           — Web Audio API lifecycle, playback, seek
     buildFilterChain.js      — per-playback node graph (bypass/conductive/sensorineural)
     workletBridge.js         — sendWorkletParams, tinnitusLevelLabel
   hooks/

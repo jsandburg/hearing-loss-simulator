@@ -29,10 +29,19 @@ import { SpectrumAnalyser }  from '../components/SpectrumAnalyser.jsx';
 import { AttenuationBars }   from '../components/AttenuationBars.jsx';
 import { ShareDialog }       from '../components/ShareDialog.jsx';
 
+function withProfileId(id, profile) {
+  if (!profile) return null;
+  if (profile.id === id) return profile;
+  return { ...profile, id };
+}
+
 export function SimulatorPage({ initialPresetId, initialProfile, sharedProfile }) {
 
-  const defaultId      = initialPresetId ?? 'mild_sensorineural';
-  const defaultProfile = initialProfile ?? findPreset(defaultId) ?? PRESETS.normal;
+  const resolvedPresetId = findPreset(initialPresetId) ? initialPresetId : 'mild_sensorineural';
+  const defaultId        = initialProfile?.id ?? resolvedPresetId;
+  const defaultProfile   = initialProfile
+    ?? withProfileId(defaultId, findPreset(defaultId))
+    ?? withProfileId('normal', PRESETS.normal);
 
   const [activePresetId, setActivePresetId] = useState(
     initialProfile ? initialProfile.id : defaultId
@@ -60,11 +69,12 @@ export function SimulatorPage({ initialPresetId, initialProfile, sharedProfile }
   // ── Profile selection ──────────────────────────────────────────────────────
 
   const selectProfile = useCallback((id, profile) => {
+    const nextProfile = withProfileId(id, profile);
     setActivePresetId(id);
-    setActiveProfile(profile);
+    setActiveProfile(nextProfile);
     worklet.resetToPreset();
     if (audio.playState === 'playing') {
-      audio.switchProfile(profile, {});
+      audio.switchProfile(nextProfile, {});
     }
   }, [audio.playState, audio.switchProfile, worklet.resetToPreset]);
 
@@ -113,7 +123,7 @@ export function SimulatorPage({ initialPresetId, initialProfile, sharedProfile }
   const handleDeleteCustom = useCallback((id) => {
     editor.deleteProfile(id);
     if (activePresetId === id) {
-      selectProfile('mild_sensorineural', PRESETS['mild_sensorineural']);
+      selectProfile('mild_sensorineural', PRESETS.mild_sensorineural);
     }
   }, [editor.deleteProfile, activePresetId, selectProfile]);
 
@@ -124,6 +134,7 @@ export function SimulatorPage({ initialPresetId, initialProfile, sharedProfile }
   const supported = typeof AudioContext !== 'undefined' || typeof webkitAudioContext !== 'undefined';
 
   const isLoadingAudio = audio.playState === 'loading';
+  const tinnitusAvailable = !audio.workletAttempted || audio.workletReady;
 
   // ── Section title style ────────────────────────────────────────────────────
   const sectionTitle = {
@@ -244,6 +255,7 @@ export function SimulatorPage({ initialPresetId, initialProfile, sharedProfile }
                 effective={worklet.effective}
                 onSetTinnitus={worklet.setTinnitus}
                 hasFile={!!audio.fileInfo}
+                workletAvailable={tinnitusAvailable}
               />
 
               {/* Divider */}

@@ -194,9 +194,11 @@ export function ShareDialog({ isOpen, onClose, profile }) {
     setProfileUrl(buildPresetShareUrl(namedProfile) ?? '');
   }, [profile, name]);
 
-  // Reset tab to 'link' each time dialog opens
+  // Reset transient UI state each time the dialog opens
   useEffect(() => {
-    if (isOpen) setActiveTab('link');
+    if (!isOpen) return;
+    setActiveTab('link');
+    setName('');
   }, [isOpen]);
 
   if (!isOpen) return null;

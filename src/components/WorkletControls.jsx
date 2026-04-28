@@ -7,8 +7,9 @@
 import { THEME } from '../constants/theme.js';
 import { tinnitusLevelLabel } from '../engine/workletBridge.js';
 
-export function WorkletControls({ effective, onSetTinnitus, hasFile }) {
+export function WorkletControls({ effective, onSetTinnitus, hasFile, workletAvailable = true }) {
   const tinnitus = effective.tinnitus;
+  const controlsDisabled = !workletAvailable;
 
   return (
     <div style={{ marginTop: 16 }}>
@@ -17,7 +18,7 @@ export function WorkletControls({ effective, onSetTinnitus, hasFile }) {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        marginBottom: tinnitus.enabled ? 12 : 0,
+        marginBottom: tinnitus.enabled || controlsDisabled ? 12 : 0,
       }}>
         <span style={{
           fontSize: 10, fontFamily: THEME.fontSans, fontWeight: 600,
@@ -26,17 +27,30 @@ export function WorkletControls({ effective, onSetTinnitus, hasFile }) {
         }}>
           Tinnitus
         </span>
-        <label style={{ display: 'flex', alignItems: 'center', gap: 7, cursor: 'pointer' }}>
+        <label style={{ display: 'flex', alignItems: 'center', gap: 7, cursor: controlsDisabled ? 'not-allowed' : 'pointer' }}>
           <input
             type="checkbox"
             checked={tinnitus.enabled}
+            disabled={controlsDisabled}
             onChange={e => onSetTinnitus({ ...tinnitus, enabled: e.target.checked })}
-            style={{ accentColor: THEME.info, cursor: 'pointer', width: 13, height: 13 }}
+            style={{ accentColor: THEME.info, cursor: controlsDisabled ? 'not-allowed' : 'pointer', width: 13, height: 13 }}
           />
         </label>
       </div>
 
-      {tinnitus.enabled && (
+      {controlsDisabled && (
+        <div style={{
+          padding: '6px 10px',
+          background: 'rgba(183,119,13,0.06)',
+          border: `1px solid rgba(183,119,13,0.2)`,
+          borderRadius: 3,
+          fontSize: 10, fontFamily: THEME.fontSans, color: THEME.warning,
+        }}>
+          Tinnitus simulation is unavailable in this browser.
+        </div>
+      )}
+
+      {workletAvailable && tinnitus.enabled && (
         <div>
           {/* Warning */}
           {!hasFile ? (

@@ -11,11 +11,9 @@
  *  3. sensorineural — everything else
  *
  * WorkletNode integration:
- *  If workletReady === true, an AudioWorkletNode is inserted after the
- *  BiquadFilter chain for sensorineural profiles. If false, the BiquadFilters
- *  connect directly to the merger — full graceful degradation.
- *
- * Conductive and bypass paths never use the worklet.
+ *  If workletReady === true, an AudioWorkletNode is inserted at the end of
+ *  each active path so tinnitus can be injected consistently. If false, each
+ *  path connects directly to the merger — full graceful degradation.
  */
 
 import {
