@@ -10,9 +10,11 @@
  * input state and potentially crashing the tree with a blank page.
  */
 
+import { useRef } from 'react';
 import { THEME } from '../constants/theme.js';
 import { FREQUENCIES, FREQ_LABELS } from '../constants/frequencies.js';
 import { useIsMobile } from '../hooks/useIsMobile.js';
+import { useFocusTrap } from '../hooks/useFocusTrap.js';
 
 // ── Module-level helper components ────────────────────────────────────────────
 
@@ -80,7 +82,9 @@ export function AudiogramEditor({
   onSave,
   onCancel,
 }) {
-  const isMobile = useIsMobile();
+  const isMobile     = useIsMobile();
+  const containerRef = useRef(null);
+  useFocusTrap(containerRef, { isActive: !!profile, onEscape: onCancel });
   if (!profile) return null;
 
   return (
@@ -98,17 +102,23 @@ export function AudiogramEditor({
         padding: isMobile ? 12 : 24,
       }}
     >
-      <div style={{
-        background: '#ffffff',
-        border: `1px solid ${THEME.border}`,
-        borderRadius: 6,
-        boxShadow: '0 8px 40px rgba(0,0,0,0.15)',
-        width: '100%',
-        maxWidth: 680,
-        maxHeight: '90vh',
-        overflow: 'auto',
-        padding: isMobile ? 16 : 28,
-      }}>
+      <div
+        ref={containerRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Custom Audiogram"
+        style={{
+          background: '#ffffff',
+          border: `1px solid ${THEME.border}`,
+          borderRadius: 6,
+          boxShadow: '0 8px 40px rgba(0,0,0,0.15)',
+          width: '100%',
+          maxWidth: 680,
+          maxHeight: '90vh',
+          overflow: 'auto',
+          padding: isMobile ? 16 : 28,
+        }}
+      >
 
         {/* Header */}
         <div style={{

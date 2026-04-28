@@ -14,6 +14,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { THEME } from '../constants/theme.js';
 import { buildPresetShareUrl } from '../utils/presetUrlEncoding.js';
+import { useFocusTrap } from '../hooks/useFocusTrap.js';
 
 // ── Copy field ────────────────────────────────────────────────────────────────
 
@@ -187,6 +188,8 @@ export function ShareDialog({ isOpen, onClose, profile }) {
   const [name,       setName]       = useState('');
   const [profileUrl, setProfileUrl] = useState('');
   const [activeTab,  setActiveTab]  = useState('link');  // 'link' | 'qr'
+  const containerRef = useRef(null);
+  useFocusTrap(containerRef, { isActive: isOpen, onEscape: onClose });
 
   useEffect(() => {
     if (!profile) return;
@@ -228,15 +231,21 @@ export function ShareDialog({ isOpen, onClose, profile }) {
         padding: 20,
       }}
     >
-      <div style={{
-        background: THEME.bgCard,
-        border: `1px solid ${THEME.border}`,
-        borderRadius: 6,
-        boxShadow: '0 8px 32px rgba(0,0,0,0.12)',
-        width: '100%',
-        maxWidth: 420,
-        padding: 24,
-      }}>
+      <div
+        ref={containerRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Share Hearing Profile"
+        style={{
+          background: THEME.bgCard,
+          border: `1px solid ${THEME.border}`,
+          borderRadius: 6,
+          boxShadow: '0 8px 32px rgba(0,0,0,0.12)',
+          width: '100%',
+          maxWidth: 420,
+          padding: 24,
+        }}
+      >
 
         {/* Header */}
         <div style={{
