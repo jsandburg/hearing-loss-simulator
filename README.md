@@ -1,6 +1,6 @@
 # Hearing Loss Simulator
 
-Real-time browser-based hearing loss simulator. Upload any audio, apply clinical audiogram profiles or your own, and share the result as a URL.
+Browser-based hearing loss simulator with preset audiogram profiles, custom audiogram entry, and shareable profile URLs. 
 
 **Live:** [hearing-loss-simulator.netlify.app](https://hearing-loss-simulator.netlify.app)
 
