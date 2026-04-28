@@ -160,7 +160,7 @@ export function SharedProfileBanner({ profile, onDismiss, onScrollToUploader, on
               padding: '5px 10px',
             }}
           >
-            Upload audio to experience this profile →
+            Upload audio to experience this profile
           </button>
           {onSave && (
             <button type="button"

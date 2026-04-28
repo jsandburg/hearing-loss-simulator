@@ -85,6 +85,8 @@ When tinnitus is available, an `AudioWorkletNode` (`public/hearing-processor.js`
 
 Built-in profiles are shared as a simple `?preset=<id>` URL, short and readable. Custom audiograms encode the full profile as compact JSON, UTF-8 encoded to a byte array, then URL-safe Base64 encoded into a `?p=` parameter. No server involved. Links are permanent and decode correctly even from older URL formats that used standard Base64 with percent-encoding.
 
+The share dialog offers two formats: a copy-to-clipboard URL and a QR code generated client-side via the `qrcode` package. The QR code can be downloaded as a PNG. Scanning it with a phone camera opens the profile directly.
+
 ---
 
 ## Development
