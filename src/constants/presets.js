@@ -287,7 +287,7 @@ export const PRESETS = {
 // ─── Category definitions ──────────────────────────────────────────────────────
 
 export const PRESET_CATEGORIES = [
-  { key: 'reference',     label: 'Normal' },
+  { key: 'reference',     label: 'Reference' },
   { key: 'sensorineural', label: 'Sensorineural' },
   { key: 'noise',         label: 'Noise-Induced' },
   { key: 'conductive',    label: 'Conductive' },

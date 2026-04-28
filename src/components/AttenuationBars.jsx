@@ -1,15 +1,20 @@
 /**
  * components/AttenuationBars.jsx
- * Per-band signal attenuation bars.
- * Shows the effective dB reduction applied at each audiogram frequency
- * after RETSPL correction (i.e. what the simulation actually does to the audio).
+ * Per-band hearing loss pattern bars.
+ * Shows RETSPL-corrected effective loss per band at the audiogram frequencies.
+ * Bars scale to DISPLAY_MAX (80 dB) so severe profiles show their full shape.
+ * Note: the audio engine caps attenuation at MAX_ATTENUATION (40 dB) — this
+ * display intentionally shows the full audiogram pattern beyond that cap.
  */
 
 import { FREQUENCIES, FREQ_LABELS, RETSPL_CORRECTION, MAX_ATTENUATION } from '../constants/frequencies.js';
 import { THEME } from '../constants/theme.js';
 
+const DISPLAY_MAX = 80; // dB — display scale, covers all built-in profiles
+
 function Bar({ label, correctedDb, color }) {
-  const pct = Math.min(100, (correctedDb / MAX_ATTENUATION) * 100);
+  const pct     = Math.min(100, (correctedDb / DISPLAY_MAX) * 100);
+  const capped  = correctedDb > MAX_ATTENUATION;
   const hasLoss = correctedDb > 0;
 
   return (
@@ -36,7 +41,7 @@ function Bar({ label, correctedDb, color }) {
           position: 'absolute',
           bottom: 0, left: 0, right: 0,
           height: `${pct}%`,
-          background: hasLoss ? `${color}55` : 'transparent',
+          background: hasLoss ? `${color}${capped ? '88' : '55'}` : 'transparent',
           transition: 'height 0.2s',
         }} />
         <div style={{
@@ -59,14 +64,14 @@ export function AttenuationBars({ profile }) {
   if (!profile || profile.bypass) return null;
 
   const corrected = (arr) =>
-    arr.map((v, i) => Math.min(MAX_ATTENUATION, Math.max(0, v - RETSPL_CORRECTION[i])));
+    arr.map((v, i) => Math.max(0, v - RETSPL_CORRECTION[i]));
 
   // Conductive profiles apply a flat gain reduction across all bands, not per-band EQ.
   const corrL = profile.isConductive
-    ? Array(FREQUENCIES.length).fill(Math.min(MAX_ATTENUATION, profile.flatAttenuationL ?? 0))
+    ? Array(FREQUENCIES.length).fill(profile.flatAttenuationL ?? 0)
     : corrected(profile.left);
   const corrR = profile.isConductive
-    ? Array(FREQUENCIES.length).fill(Math.min(MAX_ATTENUATION, profile.flatAttenuationR ?? 0))
+    ? Array(FREQUENCIES.length).fill(profile.flatAttenuationR ?? 0)
     : corrected(profile.right);
 
   // Always use ISO 8253-1 clinical colors — same as the audiogram
@@ -76,12 +81,22 @@ export function AttenuationBars({ profile }) {
   return (
     <div style={{ padding: '12px 24px 16px' }}>
       <div style={{
-        fontSize: 9, fontFamily: THEME.fontSans,
-        color: THEME.textSecondary,
-        letterSpacing: '0.1em', textTransform: 'uppercase',
+        display: 'flex', justifyContent: 'space-between', alignItems: 'baseline',
         marginBottom: 8,
       }}>
-        Signal attenuation (dB)
+        <div style={{
+          fontSize: 9, fontFamily: THEME.fontSans,
+          color: THEME.textSecondary,
+          letterSpacing: '0.1em', textTransform: 'uppercase',
+        }}>
+          Signal attenuation (dB)
+        </div>
+        <div style={{
+          fontSize: 9, fontFamily: THEME.fontSans,
+          color: THEME.textTertiary,
+        }}>
+          audio capped at {MAX_ATTENUATION} dB
+        </div>
       </div>
 
       {/* Right ear — first row, always shown */}

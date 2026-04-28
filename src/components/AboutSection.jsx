@@ -36,7 +36,7 @@ export function AboutSection({ workletAttempted, workletReady }) {
       }}>
         <Feature
           title="Frequency loss"
-          body="Each profile is drawn from a real audiogram — the graph audiologists use to map which pitches a person can and can't hear. The simulation applies those exact thresholds to your audio."
+          body="Each profile is mapped out on an audiogram, a graph used to map which pitches a person can and cannot hear. The simulation applies those exact thresholds to your audio. Hearing loss isn't just about volume, and you can't always fix it by making sounds louder — this simulation applies the exact frequency pattern from each audiogram rather than just turning the volume down."
         />
         <Feature
           title="Frequency selectivity"
@@ -44,7 +44,7 @@ export function AboutSection({ workletAttempted, workletReady }) {
         />
         <Feature
           title="Tinnitus"
-          body="The persistent ringing many people with hearing loss also experience. It partially masks real sounds near its pitch. Enable it under any profile using the tinnitus controls."
+          body="Many people with hearing loss also experience persistent ringing, known as tinnitus. It partially masks real sounds near its pitch. You can enable tinnitus under any profile using the tinnitus control."
         />
       </div>
 
