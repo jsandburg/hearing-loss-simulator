@@ -362,10 +362,10 @@ export function SimulatorPage({ initialPresetId, initialProfile, sharedProfile }
       {editor.isEditorOpen && editor.editingProfile && (
         <AudiogramEditor
           profile={editor.editingProfile}
+          syncEars={editor.syncEars}
+          onToggleSync={() => editor.setSyncEars(v => !v)}
           onSetName={editor.setName}
           onSetLoss={editor.setLossValue}
-          onMirrorLR={editor.mirrorLeftToRight}
-          onMirrorRL={editor.mirrorRightToLeft}
           onSave={handleSaveCustom}
           onCancel={editor.closeEditor}
         />

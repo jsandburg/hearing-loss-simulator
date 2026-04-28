@@ -82,6 +82,7 @@ export function useAudiogramEditor() {
 
   const [editingProfile, setEditingProfile] = useState(null);
   const [isEditorOpen,   setIsEditorOpen]   = useState(false);
+  const [syncEars,       setSyncEars]       = useState(true);
 
   // Persist to localStorage whenever customProfiles changes
   useEffect(() => {
@@ -94,6 +95,7 @@ export function useAudiogramEditor() {
 
   const openNewEditor = useCallback(() => {
     setEditingProfile(makeEmptyProfile());
+    setSyncEars(true);
     setIsEditorOpen(true);
   }, []);
 
@@ -114,6 +116,9 @@ export function useAudiogramEditor() {
       if (!prev) return null;
       const updated = [...prev[ear]];
       updated[bandIndex] = clamped;
+      if (syncEars) {
+        return { ...prev, left: [...updated], right: [...updated], isSymmetric: true };
+      }
       const other = ear === 'left' ? prev.right : prev.left;
       return {
         ...prev,
@@ -121,21 +126,7 @@ export function useAudiogramEditor() {
         isSymmetric: updated.every((v, i) => v === other[i]),
       };
     });
-  }, []);
-
-  const mirrorLeftToRight = useCallback(() => {
-    setEditingProfile(prev => {
-      if (!prev) return null;
-      return { ...prev, right: [...prev.left], isSymmetric: true };
-    });
-  }, []);
-
-  const mirrorRightToLeft = useCallback(() => {
-    setEditingProfile(prev => {
-      if (!prev) return null;
-      return { ...prev, left: [...prev.right], isSymmetric: true };
-    });
-  }, []);
+  }, [syncEars]);
 
   // ── Save / delete ──────────────────────────────────────────────────────────
 
@@ -173,8 +164,8 @@ export function useAudiogramEditor() {
     closeEditor,
     setName,
     setLossValue,
-    mirrorLeftToRight,
-    mirrorRightToLeft,
+    syncEars,
+    setSyncEars,
     saveProfile,
     deleteProfile,
     addCustomProfile,

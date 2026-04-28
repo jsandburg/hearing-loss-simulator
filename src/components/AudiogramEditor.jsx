@@ -72,10 +72,10 @@ function EarRow({ profile, ear, label, color, onSetLoss }) {
 
 export function AudiogramEditor({
   profile,
+  syncEars,
+  onToggleSync,
   onSetName,
   onSetLoss,
-  onMirrorLR,
-  onMirrorRL,
   onSave,
   onCancel,
 }) {
@@ -168,22 +168,21 @@ export function AudiogramEditor({
           Enter the dB values from an existing audiogram.
         </div>
 
-        {/* "Duplicate" button — above the right ear row */}
-        <div style={{ marginBottom: 14 }}>
-          <button
-            type="button"
-            onClick={onMirrorRL}
-            style={{
-              fontSize: 11, fontFamily: THEME.fontSans,
-              background: 'none',
-              border: `1px solid ${THEME.border}`,
-              borderRadius: 3, cursor: 'pointer',
-              color: THEME.textTertiary, padding: '6px 14px',
-            }}
-          >
-            Duplicate input data from right ear
-          </button>
-        </div>
+        {/* Sync checkbox */}
+        <label style={{
+          display: 'flex', alignItems: 'center', gap: 8,
+          marginBottom: 16, cursor: 'pointer',
+        }}>
+          <input
+            type="checkbox"
+            checked={syncEars}
+            onChange={onToggleSync}
+            style={{ cursor: 'pointer' }}
+          />
+          <span style={{ fontSize: 11, fontFamily: THEME.fontSans, color: THEME.textSecondary }}>
+            Same for both ears
+          </span>
+        </label>
 
         {/* Right ear — first row */}
         <EarRow
@@ -194,31 +193,16 @@ export function AudiogramEditor({
           onSetLoss={onSetLoss}
         />
 
-        {/* "Duplicate from left ear" button — between the rows */}
-        <div style={{ marginBottom: 14 }}>
-          <button
-            type="button"
-            onClick={onMirrorLR}
-            style={{
-              fontSize: 11, fontFamily: THEME.fontSans,
-              background: 'none',
-              border: `1px solid ${THEME.border}`,
-              borderRadius: 3, cursor: 'pointer',
-              color: THEME.textTertiary, padding: '6px 14px',
-            }}
-          >
-            Duplicate input data from left ear
-          </button>
-        </div>
-
         {/* Left ear — second row */}
-        <EarRow
-          profile={profile}
-          ear="left"
-          label="Left Ear  (dB HL)"
-          color={THEME.leftEar}
-          onSetLoss={onSetLoss}
-        />
+        <div style={{ opacity: syncEars ? 0.5 : 1, pointerEvents: syncEars ? 'none' : 'auto' }}>
+          <EarRow
+            profile={profile}
+            ear="left"
+            label={syncEars ? 'Left Ear  (dB HL) — mirrored' : 'Left Ear  (dB HL)'}
+            color={THEME.leftEar}
+            onSetLoss={onSetLoss}
+          />
+        </div>
 
         {/* Actions */}
         <div style={{
