@@ -12,10 +12,11 @@
 
 import { THEME } from '../constants/theme.js';
 import { FREQUENCIES, FREQ_LABELS } from '../constants/frequencies.js';
+import { useIsMobile } from '../hooks/useIsMobile.js';
 
 // ── Module-level helper components ────────────────────────────────────────────
 
-function EarRow({ profile, ear, label, color, onSetLoss }) {
+function EarRow({ profile, ear, label, color, onSetLoss, isMobile }) {
   return (
     <div style={{ marginBottom: 16 }}>
       <div style={{
@@ -26,8 +27,8 @@ function EarRow({ profile, ear, label, color, onSetLoss }) {
       </div>
       <div style={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(8, 1fr)',
-        gap: 8,
+        gridTemplateColumns: isMobile ? 'repeat(4, 1fr)' : 'repeat(8, 1fr)',
+        gap: isMobile ? 6 : 8,
       }}>
         {FREQUENCIES.map((f, i) => (
           <div key={f}>
@@ -79,6 +80,7 @@ export function AudiogramEditor({
   onSave,
   onCancel,
 }) {
+  const isMobile = useIsMobile();
   if (!profile) return null;
 
   return (
@@ -93,7 +95,7 @@ export function AudiogramEditor({
         alignItems: 'center',
         justifyContent: 'center',
         zIndex: 1000,
-        padding: 24,
+        padding: isMobile ? 12 : 24,
       }}
     >
       <div style={{
@@ -105,7 +107,7 @@ export function AudiogramEditor({
         maxWidth: 680,
         maxHeight: '90vh',
         overflow: 'auto',
-        padding: 28,
+        padding: isMobile ? 16 : 28,
       }}>
 
         {/* Header */}
@@ -191,6 +193,7 @@ export function AudiogramEditor({
           label="Right Ear  (dB HL)"
           color={THEME.rightEar}
           onSetLoss={onSetLoss}
+          isMobile={isMobile}
         />
 
         {/* Left ear — second row */}
@@ -201,6 +204,7 @@ export function AudiogramEditor({
             label={syncEars ? 'Left Ear  (dB HL) — mirrored' : 'Left Ear  (dB HL)'}
             color={THEME.leftEar}
             onSetLoss={onSetLoss}
+            isMobile={isMobile}
           />
         </div>
 
