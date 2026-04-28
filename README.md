@@ -111,7 +111,7 @@ src/
   hooks/
     useAudioEngine.js        — React wrapper for AudioEngine
     useAudiogramEditor.js    — custom profile CRUD, localStorage persistence
-    useKeyboardShortcuts.js  — Space (play/stop), ← → (cycle presets)
+    useKeyboardShortcuts.js  — Space (play/stop)
     useWorkletParams.js      — tinnitus overrides on top of preset defaults
   components/
     AboutSection.jsx         — always-visible feature description
@@ -174,6 +174,14 @@ The profile will appear in the selector under its category automatically.
 **Why the simulation sounds quieter than normal:** That's intentional and correct. Real hearing loss makes the world quieter. No loudness compensation is applied; each profile is presented at its natural attenuated level, so the perceptual difference between profiles reflects actual differences in hearing loss severity. Severe profiles will be very quiet; turn up your system volume if needed. Per-band attenuation is capped at 40 dB in the audio engine; beyond that, bands become inaudible in a digital simulation, which defeats the educational purpose. The attenuation bars in the UI display the full uncapped loss shape (scaled to 80 dB) so the profile pattern remains readable for severe profiles, with a label noting where the audio cap sits.
 
 **Why conductive loss is different:** Conductive loss is mechanical (fluid in the middle ear, earwax, ossicular chain disruption). The cochlea is intact and there is no frequency-specific damage. The simulation uses flat gain reduction only, bypassing the EQ chain entirely.
+
+**Why conductive profiles have audiogram data that doesn't match the audio exactly:** The `left[]` and `right[]` arrays in conductive presets are realistic audiometric measurements and are used only for the audiogram display. The audio uses `flatAttenuationL/R` instead of running those values through the RETSPL-corrected EQ chain. The reason: RETSPL correction accounts for the ear's natural sensitivity curve, which is calibrated for cochlear hearing. Applying it to conductive loss data would create an artificial high-frequency tilt (250 Hz barely attenuated, 1-4 kHz heavily attenuated) that doesn't reflect how middle-ear blockage actually sounds. Flat gain is the correct model for conductive loss; the audiogram data exists for display accuracy only.
+
+**Why asymmetric profiles always show the left ear as the affected side:** This is a demonstration convention. The left-worse pattern is common in real-world noise-induced asymmetric loss (e.g., a right-handed shooter whose left ear faces the muzzle). Using the same convention across both asymmetric profiles makes it easy to compare them directly.
+
+**Why the noise notch profile shows partial recovery above 4 kHz:** The values at 6 kHz (40 dB) and 8 kHz (20 dB) are lower than the 4 kHz peak (65 dB), which might look like a data error. This is actually the clinically correct pattern: noise-induced loss creates a characteristic notch centred at 4 kHz that narrows above and below that frequency. The partial recovery at 6-8 kHz is what distinguishes a noise notch from age-related high-frequency loss, which rolls off continuously.
+
+**Why there are two cookie bite profiles:** The cookie bite pattern describes a U-shaped dip in the mid frequencies, but the dip can sit at different positions. The mid-low variant (centred around 1-2 kHz) affects voice fundamentals and makes speech sound hollow. The mid-high variant (centred around 2-3 kHz) affects consonant frequencies and makes words harder to distinguish. Both patterns exist in practice and produce noticeably different perceptual effects.
 
 **Audiogram colours vs UI theme:** The audiogram display always uses clinical colours (blue for left ear, red for right) per ISO 8253-1, regardless of the UI theme, so the audiogram remains clinically meaningful as the app's visual design evolves.
 

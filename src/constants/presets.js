@@ -298,10 +298,6 @@ export const PRESET_CATEGORIES = [
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
-export function isSymmetric(profile) {
-  return profile.left.every((v, i) => v === profile.right[i]);
-}
-
 export function findPreset(key) {
   return PRESETS[key] ?? null;
 }

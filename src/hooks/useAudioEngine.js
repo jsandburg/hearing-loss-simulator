@@ -67,7 +67,7 @@ export function useAudioEngine() {
         if (!ready) {
           setWarnings(prev => [
             ...prev.filter(w => !w.startsWith('AudioWorklet')),
-            'AudioWorklet is not available in this browser. Threshold gating and tinnitus features are disabled. Frequency attenuation is still active.',
+            'AudioWorklet is not available in this browser. Tinnitus simulation is disabled. Frequency attenuation still works.',
           ]);
         }
       }

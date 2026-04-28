@@ -59,8 +59,7 @@ export function AboutSection({ workletAttempted, workletReady }) {
           fontFamily: THEME.fontSans,
           color: THEME.warning,
         }}>
-          Advanced threshold and tinnitus features are not available in this browser.
-          Basic frequency simulation still works.
+          Tinnitus simulation is not available in this browser. Frequency attenuation still works.
         </div>
       )}
     </div>
