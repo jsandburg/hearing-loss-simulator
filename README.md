@@ -8,7 +8,7 @@ Browser-based hearing loss simulator with preset audiogram profiles, custom audi
 
 ## What It Does
 
-Most hearing loss explainers reduce the experience to "things sound quieter." This simulator goes further. It models:
+Many hearing loss explanations reduce the experience to "things sound quieter." This simulator models:
 
 - **Frequency-specific attenuation:** each profile is derived from a real audiogram, applying the specific pattern of loss at each frequency rather than a uniform volume reduction
 - **Reduced frequency selectivity:** damaged cochlear hair cells have broader tuning curves; the simulation widens each affected band's filter in proportion to the degree of loss, so heavily impaired regions lose clarity as well as loudness
@@ -76,7 +76,7 @@ Because the simulator uses a cascaded bank of peaking filters, neighbouring band
 
 By default, playback uses natural attenuation: quieter profiles really do sound quieter. The player also includes an optional matched mode for comparison listening. When enabled, the engine applies a capped makeup gain after the active hearing-loss path so you can focus more on changes in tone and clarity while reducing much of the profile's loudness drop.
 
-The level match gain is derived from a speech-weighted average of the profile's effective attenuation (or the conductive profile's flat attenuation), averaged across both ears and capped at +18 dB. It is meant as an A/B listening aid, not as a hearing-aid model.
+The level match gain is derived from a speech-weighted average of the profile's effective attenuation (or the conductive profile's flat attenuation), averaged across both ears and capped at +18 dB. It is meant as an A/B listening aid, not as a hearing aid model.
 
 ### AudioWorklet Processor
 
@@ -195,13 +195,13 @@ The profile will appear in the selector under its category automatically.
 
 **Why there are two cookie bite profiles:** The cookie bite pattern describes a U-shaped dip in the mid frequencies, but the dip can sit at different positions. The mid-low variant (centred around 1-2 kHz) affects voice fundamentals and makes speech sound hollow. The mid-high variant (centred around 2-3 kHz) affects consonant frequencies and makes words harder to distinguish. Both patterns exist in practice and produce noticeably different perceptual effects.
 
-**Audiogram colors:** The audiogram display uses clinically-recognized colors (blue for left ear, red for right) per ISO 8253-1.
+**Audiogram colors:** The audiogram display uses standard clinical format (blue for left ear, red for right ear) per ISO 8253-1.
 
 ---
 
 ## Limitations
 
-- Binaural processing (how both ears collaborate to localise sounds and separate competing voices) is not modelled
+- Binaural processing (how both ears collaborate to localize sounds and separate competing voices) is not modelled
 - Bone conduction thresholds are not distinguished from air conduction
 - Listening fatigue and cognitive load are not modelled
 - AudioWorklet availability varies by browser; tinnitus is disabled in browsers that don't support it, but frequency attenuation via the BiquadFilter chain still works fully
