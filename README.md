@@ -20,17 +20,18 @@ The audiogram display uses the standard clinical format (ISO 8253-1): blue X mar
 
 ## Hearing Profiles
 
-Built-in profiles span seven categories:
+Built-in profiles span several categories:
 
 | Category | Profiles |
 |---|---|
+| Reference | Normal hearing |
 | Sensorineural | Mild, Moderate, Severe |
 | Age-related (Presbycusis) | Mild, Moderate, Severe |
 | Noise-Induced | 4 kHz notch |
 | Conductive | Mild, Moderate |
 | Genetic patterns | Cookie Bite (mid-low), Cookie Bite (mid-high), Precipitous high-frequency |
 | Asymmetric | Noise-induced asymmetric, Sudden unilateral |
-| Reference | Normal Hearing |
+| Tinnitus | Pitch set at 4 kHz, can be adjusted |
 
 Custom audiograms can be created by entering dB HL values at each of the eight standard audiogram frequencies (250, 500, 1k, 2k, 3k, 4k, 6k, 8k Hz). Custom profiles are saved to localStorage and persist across sessions.
 
@@ -79,7 +80,7 @@ The level match gain is derived from a speech-weighted average of the profile's 
 
 ### AudioWorklet Processor
 
-When tinnitus is available, an `AudioWorkletNode` (`public/hearing-processor.js`) runs at the end of the active playback path. Sensorineural profiles place it after the BiquadFilter chain; conductive and bypass profiles place it after their flat or direct path. Its role is tinnitus injection only: it passes the already-processed signal through and adds a sinusoidal tone at the configured frequency and level if tinnitus is enabled. All frequency-selective attenuation is handled upstream.
+When tinnitus is selected, an `AudioWorkletNode` (`public/hearing-processor.js`) runs at the end of the active playback path. Sensorineural profiles place it after the BiquadFilter chain; conductive and bypass profiles place it after their flat or direct path. Its role is tinnitus injection only: it passes the already-processed signal through and adds a sinusoidal tone at the configured frequency and level if tinnitus is enabled. All frequency-selective attenuation is handled upstream.
 
 ### Profile Sharing
 
@@ -182,7 +183,7 @@ The profile will appear in the selector under its category automatically.
 
 **Why RETSPL correction matters:** Audiogram values are in dB HL (hearing level), a clinical reference scale where 0 dB HL = just audible to a normal ear at that frequency. But 0 dB HL means different things at different frequencies: 250 Hz requires 25.5 dB more signal energy than 1 kHz to reach the same perceptual threshold. Without RETSPL correction, a mild loss profile (10 dB HL at 250 Hz) would attenuate a large fraction of normal speech at 250 Hz, despite there being effectively zero perceptual loss there.
 
-**Why the simulation sounds quieter than normal:** That's still intentional. Real hearing loss makes the world quieter, and the simulator does not apply automatic loudness compensation. The player now starts at a unity-gain reference so "Normal Hearing" is a clean baseline, and each profile sounds quieter relative to that reference. Severe profiles will still be very quiet. Per-band attenuation is capped at 40 dB in the audio engine; beyond that, bands become inaudible in a digital simulation, which defeats the educational purpose. The attenuation bars in the UI display the full uncapped loss shape (scaled to 80 dB) so the profile pattern remains readable for severe profiles, with a label noting where the audio cap sits.
+**Why the simulation sounds quieter than normal:** Real hearing loss makes the world quieter, and the simulator does not apply automatic loudness compensation. The player starts at a unity-gain reference so "Normal Hearing" is a clean baseline, and each profile sounds quieter relative to that reference. Severe profiles will still be very quiet. Per-band attenuation is capped at 40 dB in the audio engine; beyond that, bands become inaudible in a digital simulation, which defeats the educational purpose. The attenuation bars in the UI display the full uncapped loss shape (scaled to 80 dB) so the profile pattern remains readable for severe profiles, with a label noting where the audio cap sits.
 
 **Why conductive loss is different:** Conductive loss is mechanical (fluid in the middle ear, earwax, ossicular chain disruption). The cochlea is intact and there is no frequency-specific damage. The simulation uses flat gain reduction only, bypassing the EQ chain entirely.
 
@@ -194,7 +195,7 @@ The profile will appear in the selector under its category automatically.
 
 **Why there are two cookie bite profiles:** The cookie bite pattern describes a U-shaped dip in the mid frequencies, but the dip can sit at different positions. The mid-low variant (centred around 1-2 kHz) affects voice fundamentals and makes speech sound hollow. The mid-high variant (centred around 2-3 kHz) affects consonant frequencies and makes words harder to distinguish. Both patterns exist in practice and produce noticeably different perceptual effects.
 
-**Audiogram colours vs UI theme:** The audiogram display always uses clinical colours (blue for left ear, red for right) per ISO 8253-1, regardless of the UI theme, so the audiogram remains clinically meaningful as the app's visual design evolves.
+**Audiogram colors:** The audiogram display uses clinically-recognized colors (blue for left ear, red for right) per ISO 8253-1.
 
 ---
 
