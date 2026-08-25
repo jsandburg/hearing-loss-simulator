@@ -6,7 +6,7 @@
 
 import { THEME } from '../constants/theme.js';
 
-export function PresetDescription({ profile, workletReady, workletAttempted, effectiveTinnitus }) {
+export function PresetDescription({ profile, workletReady, workletAttempted, effectiveTinnitus, embedded = false }) {
   if (!profile) return null;
 
   // Tinnitus is "active" when the worklet is ready AND the user has it enabled
@@ -15,9 +15,9 @@ export function PresetDescription({ profile, workletReady, workletAttempted, eff
 
   return (
     <div style={{
-      background: THEME.bgCardHover,
-      borderRadius: 4,
-      padding: '16px 20px',
+      background: embedded ? 'transparent' : THEME.bgCardHover,
+      borderRadius: embedded ? 0 : 4,
+      padding: embedded ? 0 : '16px 20px',
     }}>
 
       <div style={{

@@ -92,7 +92,7 @@ export class AudioEngine {
     const mimeOk = AUDIO_MIME_TYPES.has(file.type);
     const extOk  = AUDIO_EXTENSIONS.has(ext);
     if (!mimeOk && !extOk) {
-      return `Unsupported file type "${ext}". Please use MP3, WAV, OGG, M4A, AAC, FLAC, or OPUS.`;
+      return `Unsupported file type "${ext}". Please use MP3, WAV, OGG, M4A, AAC, FLAC, OPUS, or WebM.`;
     }
     return null;
   }

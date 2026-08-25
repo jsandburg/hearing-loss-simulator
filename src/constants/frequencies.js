@@ -55,7 +55,7 @@ export const MAX_FILE_SIZE = 25 * 1024 * 1024;
 
 /** Accepted audio file extensions */
 export const AUDIO_EXTENSIONS = new Set([
-  'mp3', 'wav', 'ogg', 'm4a', 'aac', 'flac', 'webm', 'opus', 'wma',
+  'mp3', 'wav', 'ogg', 'm4a', 'aac', 'flac', 'webm', 'opus',
 ]);
 
 /** Accepted MIME types for file validation */

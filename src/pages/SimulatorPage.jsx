@@ -2,8 +2,8 @@
  * pages/SimulatorPage.jsx
  *
  * Two-column layout (maxWidth 1100px):
- *   Left  — Hearing Loss block (selector + tinnitus + description + share)
- *   Right — Audiogram card + Audio Player card
+ *   Left  — Hearing profile block (selector + tinnitus + description + share)
+ *   Right — Audiogram reference followed by the Audio Player
  */
 
 import { useState, useCallback, useRef, useEffect } from 'react';
@@ -57,6 +57,7 @@ export function SimulatorPage({ initialPresetId, initialProfile, sharedProfile }
   const [volume,         setVolumeState] = useState(100);
   const [levelMatching,  setLevelMatching] = useState(false);
   const [loopEnabled,    setLoopEnabled] = useState(true);
+  const [audiogramOpen,  setAudiogramOpen] = useState(false);
 
   // Sync engine volume on mount so the default "Normal Hearing" reference is unity gain.
   useEffect(() => {
@@ -201,31 +202,31 @@ export function SimulatorPage({ initialPresetId, initialProfile, sharedProfile }
         <div style={{
           display: 'grid',
           gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr',
-          gap: 24,
-          marginTop: 24,
+          gap: isMobile ? 16 : 20,
+          marginTop: 20,
           alignItems: 'start',
         }}>
 
-          {/* ── Left column ── */}
+          {/* ── Profile controls ── */}
           <div>
 
-            {/* Hearing Loss block */}
+            {/* Compact profile picker */}
             <div style={{
               background: THEME.bgCardHover,
               border: `1px solid ${THEME.border}`,
               borderRadius: 4,
               padding: '16px 20px 20px',
-              marginBottom: 20,
+              marginBottom: isMobile ? 0 : 20,
             }}>
               {/* Section label + share button on same row */}
               <div style={{
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
-                marginBottom: 8,
+                marginBottom: 4,
               }}>
                 <div style={sectionTitle}>
-                  Hearing Loss
+                  Hearing profile
                 </div>
                 <button
                   type="button"
@@ -248,6 +249,16 @@ export function SimulatorPage({ initialPresetId, initialProfile, sharedProfile }
                 </button>
               </div>
 
+              <div style={{
+                fontSize: 11,
+                fontFamily: THEME.fontSans,
+                color: THEME.textSecondary,
+                lineHeight: 1.5,
+                marginBottom: 14,
+              }}>
+                Choose a hearing loss type to hear how it affects speech and other sounds.
+              </div>
+
               {/* Profile selector */}
               <PresetSelector
                 activeId={activePresetId}
@@ -257,10 +268,8 @@ export function SimulatorPage({ initialPresetId, initialProfile, sharedProfile }
                 onDeleteCustom={handleDeleteCustom}
               />
 
-              {/* Divider */}
+              {/* Tinnitus changes the selected hearing profile, so keep it with the profile controls. */}
               <div style={{ borderTop: `1px solid ${THEME.border}`, margin: '16px 0 0' }} />
-
-              {/* Tinnitus */}
               <WorkletControls
                 effective={worklet.effective}
                 onSetTinnitus={worklet.setTinnitus}
@@ -268,50 +277,35 @@ export function SimulatorPage({ initialPresetId, initialProfile, sharedProfile }
                 workletAvailable={tinnitusAvailable}
               />
 
-              {/* Divider */}
-              <div style={{ borderTop: `1px solid ${THEME.border}`, margin: '14px 0 14px' }} />
-
+              {/* Profile explanation stays with the profile it describes. */}
+              <div style={{ borderTop: `1px solid ${THEME.border}`, margin: '14px 0 0', paddingTop: 14 }}>
               {/* Profile description */}
               <PresetDescription
                 profile={activeProfile}
                 workletReady={audio.workletReady}
                 workletAttempted={audio.workletAttempted}
                 effectiveTinnitus={worklet.effective.tinnitus}
+                embedded
               />
+              </div>
             </div>
 
-          </div>{/* end left column */}
+          </div>{/* end profile controls */}
 
           {/* ── Right column: Audiogram + Audio Player ── */}
-          <div>
+          <div style={{
+            display: isMobile ? 'contents' : 'flex',
+            flexDirection: 'column',
+            gap: 20,
+          }}>
 
-            {/* Audiogram card */}
+            {/* Audio Player card — the primary listening action. */}
             <div style={{
               border: `1px solid ${THEME.border}`,
               borderRadius: 4,
               overflow: 'hidden',
-              marginBottom: 20,
-            }}>
-              <div style={{
-                padding: '10px 24px 8px',
-                background: THEME.bgCardHover,
-                borderBottom: `1px solid ${THEME.border}`,
-              }}>
-                <div style={sectionTitle}>
-                  Audiogram
-                </div>
-              </div>
-              <AudiogramDisplay profile={activeProfile} />
-              <div style={{ borderTop: `1px solid ${THEME.border}` }}>
-                <AttenuationBars profile={activeProfile} />
-              </div>
-            </div>
-
-            {/* Audio Player card */}
-            <div style={{
-              border: `1px solid ${THEME.border}`,
-              borderRadius: 4,
-              overflow: 'hidden',
+              order: 2,
+              background: THEME.bgCard,
             }}>
               {/* Header */}
               <div style={{
@@ -370,6 +364,60 @@ export function SimulatorPage({ initialPresetId, initialProfile, sharedProfile }
                 </div>
                 <SpectrumAnalyser engine={audio.engine} isPlaying={audio.playState === 'playing'} />
               </div>
+            </div>
+
+            {/* Audiogram — collapsed by default on mobile to keep the player close. */}
+            <div style={{ order: isMobile ? 3 : 1 }}>
+              {isMobile && (
+                <button
+                  type="button"
+                  aria-expanded={audiogramOpen}
+                  onClick={() => setAudiogramOpen(value => !value)}
+                  style={{
+                    width: '100%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    padding: '11px 14px',
+                    background: THEME.bgCardHover,
+                    border: `1px solid ${THEME.border}`,
+                    borderRadius: 4,
+                    color: THEME.textPrimary,
+                    cursor: 'pointer',
+                    fontSize: 10,
+                    fontFamily: THEME.fontSans,
+                    fontWeight: 600,
+                    letterSpacing: '0.1em',
+                    textTransform: 'uppercase',
+                  }}
+                >
+                  <span>{audiogramOpen ? 'Hide audiogram' : 'View audiogram'}</span>
+                  <span aria-hidden="true">{audiogramOpen ? '−' : '+'}</span>
+                </button>
+              )}
+
+              {(!isMobile || audiogramOpen) && (
+                <div style={{
+                  border: `1px solid ${THEME.border}`,
+                  borderRadius: 4,
+                  overflow: 'hidden',
+                  marginTop: isMobile ? 8 : 0,
+                }}>
+                  <div style={{
+                    padding: '10px 24px 8px',
+                    background: THEME.bgCardHover,
+                    borderBottom: `1px solid ${THEME.border}`,
+                  }}>
+                    <div style={sectionTitle}>
+                      Audiogram
+                    </div>
+                  </div>
+                  <AudiogramDisplay profile={activeProfile} />
+                  <div style={{ borderTop: `1px solid ${THEME.border}` }}>
+                    <AttenuationBars profile={activeProfile} />
+                  </div>
+                </div>
+              )}
             </div>
 
           </div>{/* end right column */}

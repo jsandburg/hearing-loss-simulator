@@ -159,7 +159,7 @@ export function FileUploader({ onFile, onRemove, fileInfo, isLoading, uploaderRe
             {isDragging ? 'Drop to load' : 'Upload an audio file'}
           </div>
           <div style={{ fontSize: 10, fontFamily: THEME.fontSans, color: THEME.textSecondary }}>
-            MP3, WAV, OGG, M4A, FLAC, OPUS · max 25 MB
+            MP3, WAV, OGG, M4A, AAC, FLAC, OPUS, WebM · max 25 MB
           </div>
         </label>
       )}
