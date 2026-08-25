@@ -208,7 +208,7 @@ export function SimulatorPage({ initialPresetId, initialProfile, sharedProfile }
         }}>
 
           {/* ── Profile controls ── */}
-          <div>
+          <div style={{ gridColumn: 1, gridRow: isMobile ? 1 : 2 }}>
 
             {/* Compact profile picker */}
             <div style={{
@@ -292,11 +292,9 @@ export function SimulatorPage({ initialPresetId, initialProfile, sharedProfile }
 
           </div>{/* end profile controls */}
 
-          {/* ── Right column: Audiogram + Audio Player ── */}
+          {/* ── Audiogram + Audio Player ── */}
           <div style={{
-            display: isMobile ? 'contents' : 'flex',
-            flexDirection: 'column',
-            gap: 20,
+            display: 'contents',
           }}>
 
             {/* Audio Player card — the primary listening action. */}
@@ -304,7 +302,8 @@ export function SimulatorPage({ initialPresetId, initialProfile, sharedProfile }
               border: `1px solid ${THEME.border}`,
               borderRadius: 4,
               overflow: 'hidden',
-              order: 2,
+              gridColumn: isMobile ? 1 : 2,
+              gridRow: isMobile ? 2 : 1,
               background: THEME.bgCard,
             }}>
               {/* Header */}
@@ -367,7 +366,10 @@ export function SimulatorPage({ initialPresetId, initialProfile, sharedProfile }
             </div>
 
             {/* Audiogram — collapsed by default on mobile to keep the player close. */}
-            <div style={{ order: isMobile ? 3 : 1 }}>
+            <div style={{
+              gridColumn: 1,
+              gridRow: isMobile ? 3 : 1,
+            }}>
               {isMobile && (
                 <button
                   type="button"
