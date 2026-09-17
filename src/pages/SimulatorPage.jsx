@@ -202,6 +202,8 @@ export function SimulatorPage({ initialPresetId, initialProfile, sharedProfile }
         <div style={{
           display: 'grid',
           gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr',
+          // Player spans both rows on desktop; 1fr absorbs its extra height so the audiogram row stays tight.
+          gridTemplateRows: isMobile ? undefined : 'auto 1fr',
           gap: isMobile ? 16 : 20,
           marginTop: 20,
           alignItems: 'start',
@@ -303,7 +305,7 @@ export function SimulatorPage({ initialPresetId, initialProfile, sharedProfile }
               borderRadius: 4,
               overflow: 'hidden',
               gridColumn: isMobile ? 1 : 2,
-              gridRow: isMobile ? 2 : 1,
+              gridRow: isMobile ? 2 : '1 / span 2',
               background: THEME.bgCard,
             }}>
               {/* Header */}
