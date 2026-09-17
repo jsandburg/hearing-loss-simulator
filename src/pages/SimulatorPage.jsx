@@ -413,9 +413,7 @@ export function SimulatorPage({ initialPresetId, initialProfile, sharedProfile }
                 {showAudiogram && (
                   <>
                     <AudiogramDisplay profile={activeProfile} />
-                    <div style={{ borderTop: `1px solid ${THEME.border}` }}>
-                      <AttenuationBars profile={activeProfile} />
-                    </div>
+                    <AttenuationBars profile={activeProfile} />
                   </>
                 )}
               </div>

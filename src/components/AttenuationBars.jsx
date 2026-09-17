@@ -88,8 +88,10 @@ function Bars({ profile }) {
   const leftColor  = THEME.leftEar;
   const rightColor = THEME.rightEar;
 
+  // The divider lives here, not in the page, so it disappears along with the
+  // bars on bypass profiles such as Normal Hearing.
   return (
-    <div style={{ padding: '16px' }}>
+    <div style={{ padding: '16px', borderTop: `1px solid ${THEME.border}` }}>
       <div style={{ marginBottom: 8 }}>
         <div style={{
           fontSize: 9, fontFamily: THEME.fontSans, fontWeight: 600,
