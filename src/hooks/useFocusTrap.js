@@ -11,7 +11,9 @@ const FOCUSABLE_SELECTOR = [
 
 /**
  * Traps keyboard focus inside containerRef while isActive is true.
- * - Moves focus to the first focusable element on activation.
+ * - Moves focus to the [data-autofocus] element, or the first focusable element, on activation.
+ *   Use data-autofocus rather than React's autoFocus, which focuses before this hook can
+ *   record the previously focused element.
  * - Tab / Shift+Tab cycle within the container.
  * - Escape calls onEscape.
  * - Restores focus to the previously focused element on deactivation.
@@ -33,8 +35,8 @@ export function useFocusTrap(containerRef, { isActive, onEscape }) {
       Array.from(containerRef.current?.querySelectorAll(FOCUSABLE_SELECTOR) ?? []);
 
     // Move focus into the modal immediately
-    const els = focusableEls();
-    if (els.length > 0) els[0].focus();
+    const initial = containerRef.current?.querySelector('[data-autofocus]') ?? focusableEls()[0];
+    initial?.focus();
 
     const handleKeyDown = (e) => {
       if (e.key === 'Escape') {

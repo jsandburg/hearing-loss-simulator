@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import { render, fireEvent, cleanup, within } from '@testing-library/react';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { useFocusTrap } from './useFocusTrap.js';
 
 afterEach(cleanup);
@@ -22,6 +22,47 @@ describe('useFocusTrap', () => {
   it('moves focus to the first focusable element on activation', () => {
     const { container } = render(<Fixture isActive={true} onEscape={vi.fn()} />);
     expect(document.activeElement).toBe(within(container).getAllByRole('button')[0]);
+  });
+
+  it('focuses the [data-autofocus] element instead of the first when present', () => {
+    function AutofocusFixture() {
+      const ref = useRef(null);
+      useFocusTrap(ref, { isActive: true });
+      return (
+        <div ref={ref}>
+          <button>Close</button>
+          <input type="text" data-autofocus />
+        </div>
+      );
+    }
+    const { container } = render(<AutofocusFixture />);
+    expect(document.activeElement).toBe(within(container).getByRole('textbox'));
+  });
+
+  it('restores focus to the opener when deactivated', () => {
+    function Opener() {
+      const [open, setOpen] = useState(false);
+      const ref = useRef(null);
+      useFocusTrap(ref, { isActive: open });
+      return (
+        <div>
+          <button onClick={() => setOpen(true)}>Open</button>
+          {open && (
+            <div ref={ref}>
+              <input type="text" data-autofocus />
+              <button onClick={() => setOpen(false)}>Done</button>
+            </div>
+          )}
+        </div>
+      );
+    }
+    const { getByText } = render(<Opener />);
+    const opener = getByText('Open');
+    opener.focus();
+    fireEvent.click(opener);
+    expect(document.activeElement.tagName).toBe('INPUT');
+    fireEvent.click(getByText('Done'));
+    expect(document.activeElement).toBe(opener);
   });
 
   it('does not move focus when inactive', () => {

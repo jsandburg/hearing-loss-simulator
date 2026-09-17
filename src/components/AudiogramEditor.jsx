@@ -162,7 +162,7 @@ export function AudiogramEditor({
             value={profile.name}
             onChange={e => onSetName(e.target.value)}
             placeholder="e.g. Mom's audiogram"
-            autoFocus
+            data-autofocus
             style={{
               width: '100%', boxSizing: 'border-box',
               background: THEME.bgInput,
