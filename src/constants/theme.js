@@ -51,6 +51,8 @@ export const THEME = {
 
   // Grid
   gridLine: 'rgba(54,69,79,0.08)',
+  // Half-octave audiogram columns — darker so the dashes read at display size
+  gridLineStrong: 'rgba(54,69,79,0.2)',
 
   // Motion — shared timing for hover and state transitions
   transition: '0.15s ease-out',

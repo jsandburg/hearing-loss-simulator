@@ -85,7 +85,7 @@ function AudiogramSvg({ profile }) {
         key={f}
         x1={x} y1={snap(PAD.top)}
         x2={x} y2={snap(PAD.top + CH)}
-        stroke={THEME.gridLine}
+        stroke={HALF_OCTAVE.has(f) ? THEME.gridLineStrong : THEME.gridLine}
         strokeWidth={0.5}
         strokeDasharray={HALF_OCTAVE.has(f) ? '3 3' : undefined}
         shapeRendering="crispEdges"
