@@ -4,7 +4,9 @@
  * SVG audiogram display. Shows left and right ear curves independently.
  * Follows ISO 8253-1 conventions: blue X = left, red O = right.
  * Y axis: dB HL, -10 at top to 120 at bottom (clinical standard).
- * X axis: logarithmic frequency 250–8000 Hz.
+ * X axis: one even column per tested frequency, 250–8000 Hz, as printed
+ * clinical forms lay them out. The half-octave columns (3k, 6k) are drawn
+ * with dashed grid lines, again following the printed convention.
  */
 
 import { memo } from 'react';
@@ -18,11 +20,14 @@ const PAD    = { top: 28, right: 16, bottom: 38, left: 52 };
 const CW     = SVG_W - PAD.left - PAD.right;
 const CH     = SVG_H - PAD.top  - PAD.bottom;
 
-const LOG_MIN = Math.log10(200);
-const LOG_MAX = Math.log10(10000);
+// Inset so the 250 Hz and 8 kHz columns sit inside the plot frame, not on it
+const X_INSET = 16;
 
-function fToX(f) {
-  return PAD.left + ((Math.log10(f) - LOG_MIN) / (LOG_MAX - LOG_MIN)) * CW;
+// Half-octave frequencies — drawn with dashed grid lines
+const HALF_OCTAVE = new Set([3000, 6000]);
+
+function xAt(i) {
+  return PAD.left + X_INSET + (i / (FREQUENCIES.length - 1)) * (CW - 2 * X_INSET);
 }
 
 function dToY(db) {
@@ -74,7 +79,7 @@ function AudiogramSvg({ profile }) {
 
   // Vertical grid lines at each audiogram frequency
   const vLines = FREQUENCIES.map((f, i) => {
-    const x = snap(fToX(f));
+    const x = snap(xAt(i));
     return (
       <line
         key={f}
@@ -82,6 +87,7 @@ function AudiogramSvg({ profile }) {
         x2={x} y2={snap(PAD.top + CH)}
         stroke={THEME.gridLine}
         strokeWidth={0.5}
+        strokeDasharray={HALF_OCTAVE.has(f) ? '3 3' : undefined}
         shapeRendering="crispEdges"
       />
     );
@@ -89,7 +95,7 @@ function AudiogramSvg({ profile }) {
 
   // Build SVG polyline points with optional y offset
   const pointsFor = (arr, yOff = 0) =>
-    arr.map((db, i) => `${fToX(FREQUENCIES[i])},${dToY(db) + yOff}`).join(' ');
+    arr.map((db, i) => `${xAt(i)},${dToY(db) + yOff}`).join(' ');
 
   // Symbols: X for left, O for right (ISO convention)
   const XSymbol = ({ x, y, color }) => (
@@ -154,7 +160,7 @@ function AudiogramSvg({ profile }) {
         {FREQUENCIES.map((f, i) => (
           <text
             key={f}
-            x={fToX(f)}
+            x={xAt(i)}
             y={SVG_H - PAD.bottom + 14}
             textAnchor="middle"
             fontSize={8}
@@ -194,7 +200,7 @@ function AudiogramSvg({ profile }) {
         {animLeft.map((db, i) => (
           <XSymbol
             key={i}
-            x={fToX(FREQUENCIES[i])}
+            x={xAt(i)}
             y={dToY(db)}
             color={leftCol}
           />
@@ -212,7 +218,7 @@ function AudiogramSvg({ profile }) {
         {animRight.map((db, i) => (
           <OSymbol
             key={i}
-            x={fToX(FREQUENCIES[i])}
+            x={xAt(i)}
             y={dToY(db) + rightOff}
             color={rightCol}
           />
