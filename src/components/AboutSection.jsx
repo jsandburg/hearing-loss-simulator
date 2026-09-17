@@ -99,7 +99,6 @@ export function AboutSection({ workletAttempted, workletReady }) {
                   fontFamily: THEME.fontSans,
                   color: THEME.textSecondary,
                   lineHeight: 1.6,
-                  maxWidth: 780,
                 }}
               >
                 {entry.body}
