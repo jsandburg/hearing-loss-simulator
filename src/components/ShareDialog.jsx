@@ -48,7 +48,6 @@ function CopyField({ url }) {
           fontSize: 10,
           fontFamily: THEME.fontSans,
           color: THEME.textPrimary,
-          outline: 'none',
           minWidth: 0,
         }}
         onFocus={e => e.target.select()}
@@ -296,7 +295,7 @@ export function ShareDialog({ isOpen, onClose, profile }) {
               border: `1px solid ${THEME.border}`,
               borderRadius: 3, padding: '7px 10px',
               fontSize: 11, fontFamily: THEME.fontSans,
-              color: THEME.textPrimary, outline: 'none',
+              color: THEME.textPrimary,
             }}
           />
         </div>

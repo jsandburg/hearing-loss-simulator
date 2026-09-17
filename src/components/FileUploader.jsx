@@ -148,7 +148,6 @@ export function FileUploader({ onFile, onRemove, fileInfo, isLoading, uploaderRe
             background: isDragging ? 'rgba(54,69,79,0.04)' : THEME.bgCardHover,
             cursor: 'pointer',
             transition: `all ${THEME.transition}`,
-            outline: 'none',
             textAlign: 'center',
             marginBottom: 16,
           }}

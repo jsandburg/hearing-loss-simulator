@@ -49,7 +49,10 @@ style.textContent = `
   }
   input[type=number] { -moz-appearance: textfield; }
   button:focus-visible,
-  select:focus-visible { outline: 2px solid #36454f; outline-offset: 2px; }
+  select:focus-visible,
+  input:focus-visible,
+  textarea:focus-visible,
+  [role="button"]:focus-visible { outline: 2px solid #36454f; outline-offset: 2px; }
   /* Enter animations for panels and dialogs — skipped under reduced motion */
   @keyframes fade-in    { from { opacity: 0; } }
   @keyframes fade-in-up { from { opacity: 0; transform: translateY(6px); } }

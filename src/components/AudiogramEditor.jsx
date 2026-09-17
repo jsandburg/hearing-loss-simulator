@@ -58,7 +58,6 @@ function EarRow({ profile, ear, label, color, onSetLoss, isMobile }) {
                 fontFamily: THEME.fontSans,
                 color: profile[ear][i] > 0 ? color : THEME.textMuted,
                 textAlign: 'center',
-                outline: 'none',
                 fontWeight: profile[ear][i] > 0 ? 600 : 400,
                 // Hide browser spinner arrows on number inputs
                 MozAppearance: 'textfield',
@@ -169,7 +168,7 @@ export function AudiogramEditor({
               border: `1px solid ${THEME.border}`,
               borderRadius: 3, padding: '9px 12px',
               fontSize: 13, fontFamily: THEME.fontSans,
-              color: THEME.textPrimary, outline: 'none',
+              color: THEME.textPrimary,
             }}
           />
         </div>
