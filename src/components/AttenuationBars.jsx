@@ -9,13 +9,15 @@
 
 import { FREQUENCIES, FREQ_LABELS, RETSPL_CORRECTION, MAX_ATTENUATION } from '../constants/frequencies.js';
 import { THEME } from '../constants/theme.js';
+import { useAnimatedArray } from '../hooks/useAnimatedArray.js';
 
 const DISPLAY_MAX = 80; // dB — display scale, covers all built-in profiles
 
 function Bar({ label, correctedDb, color }) {
   const pct     = Math.min(100, (correctedDb / DISPLAY_MAX) * 100);
   const capped  = correctedDb > MAX_ATTENUATION;
-  const hasLoss = correctedDb > 0;
+  const rounded = Math.round(correctedDb);
+  const hasLoss = rounded > 0;
 
   return (
     <div style={{ flex: 1, minWidth: 0 }}>
@@ -42,7 +44,6 @@ function Bar({ label, correctedDb, color }) {
           bottom: 0, left: 0, right: 0,
           height: `${pct}%`,
           background: hasLoss ? `${color}${capped ? '88' : '55'}` : 'transparent',
-          transition: 'height 0.2s',
         }} />
         <div style={{
           position: 'absolute', inset: 0,
@@ -52,7 +53,7 @@ function Bar({ label, correctedDb, color }) {
             fontSize: 9, fontFamily: THEME.fontSans, fontWeight: hasLoss ? 600 : 400,
             color: hasLoss ? color : THEME.textTertiary,
           }}>
-            {hasLoss ? `−${Math.round(correctedDb)}` : '—'}
+            {hasLoss ? `−${rounded}` : '—'}
           </span>
         </div>
       </div>
@@ -62,6 +63,10 @@ function Bar({ label, correctedDb, color }) {
 
 export function AttenuationBars({ profile }) {
   if (!profile || profile.bypass) return null;
+  return <Bars profile={profile} />;
+}
+
+function Bars({ profile }) {
 
   const corrected = (arr) =>
     arr.map((v, i) => Math.max(0, v - RETSPL_CORRECTION[i]));
@@ -73,6 +78,11 @@ export function AttenuationBars({ profile }) {
   const corrR = profile.isConductive
     ? Array(FREQUENCIES.length).fill(profile.flatAttenuationR ?? 0)
     : corrected(profile.right);
+
+  // Numbers count and bars grow together, on the same timing as the audiogram
+  const animated = useAnimatedArray([...corrR, ...corrL]);
+  const animR    = animated.slice(0, corrR.length);
+  const animL    = animated.slice(corrR.length);
 
   // Always use ISO 8253-1 clinical colors — same as the audiogram
   const leftColor  = THEME.leftEar;
@@ -93,14 +103,14 @@ export function AttenuationBars({ profile }) {
       {/* Right ear — first row, always shown */}
       <div style={{ display: 'flex', gap: 3, marginBottom: 10 }}>
         {FREQUENCIES.map((f, i) => (
-          <Bar key={`R${f}`} label={FREQ_LABELS[i]} correctedDb={corrR[i]} color={rightColor} />
+          <Bar key={`R${f}`} label={FREQ_LABELS[i]} correctedDb={animR[i]} color={rightColor} />
         ))}
       </div>
 
       {/* Left ear — second row, always shown */}
       <div style={{ display: 'flex', gap: 3 }}>
         {FREQUENCIES.map((f, i) => (
-          <Bar key={`L${f}`} label={FREQ_LABELS[i]} correctedDb={corrL[i]} color={leftColor} />
+          <Bar key={`L${f}`} label={FREQ_LABELS[i]} correctedDb={animL[i]} color={leftColor} />
         ))}
       </div>
     </div>

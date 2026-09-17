@@ -10,6 +10,7 @@
 import { memo } from 'react';
 import { FREQUENCIES, FREQ_LABELS, DB_MIN, DB_MAX } from '../constants/frequencies.js';
 import { THEME } from '../constants/theme.js';
+import { useAnimatedArray } from '../hooks/useAnimatedArray.js';
 
 const SVG_W  = 480;
 const SVG_H  = 280;
@@ -31,19 +32,29 @@ function dToY(db) {
 
 const snap = (v) => Math.round(v) + 0.5;
 
+// When symmetric, offset right ear line slightly downward so both are visible
+const SYMM_OFFSET = 3;
+
 export const AudiogramDisplay = memo(function AudiogramDisplay({ profile }) {
   if (!profile) return null;
+  return <AudiogramSvg profile={profile} />;
+});
 
+function AudiogramSvg({ profile }) {
   const left    = profile.left;
   const right   = profile.right;
   // Guard against malformed share data with mismatched array lengths
   const symm    = left.length === right.length &&
                   left.every((v, i) => v === right[i]);
+
+  // Animate curves between profiles; offset is included so it slides rather than jumps
+  const animated  = useAnimatedArray([...left, ...right, symm ? SYMM_OFFSET : 0]);
+  const animLeft  = animated.slice(0, left.length);
+  const animRight = animated.slice(left.length, left.length + right.length);
+  const rightOff  = animated[animated.length - 1];
   // Audiogram always uses ISO 8253-1 clinical colours regardless of profile.color
   const leftCol  = THEME.leftEar;
   const rightCol = THEME.rightEar;
-  // When symmetric, offset right ear line slightly downward so both are visible
-  const SYMM_OFFSET = 3;
 
   // Horizontal grid lines at every 20 dB
   const hLines = [];
@@ -175,12 +186,12 @@ export const AudiogramDisplay = memo(function AudiogramDisplay({ profile }) {
 
         {/* Left ear curve — drawn first so right renders on top */}
         <polyline
-          points={pointsFor(left)}
+          points={pointsFor(animLeft)}
           fill="none"
           stroke={leftCol}
           strokeWidth={2}
         />
-        {left.map((db, i) => (
+        {animLeft.map((db, i) => (
           <XSymbol
             key={i}
             x={fToX(FREQUENCIES[i])}
@@ -191,18 +202,18 @@ export const AudiogramDisplay = memo(function AudiogramDisplay({ profile }) {
 
         {/* Right ear curve — drawn on top; offset slightly when symmetric so both lines show */}
         <polyline
-          points={pointsFor(right, symm ? SYMM_OFFSET : 0)}
+          points={pointsFor(animRight, rightOff)}
           fill="none"
           stroke={rightCol}
           strokeWidth={1.5}
           strokeOpacity={0.6}
           strokeDasharray="4 3"
         />
-        {right.map((db, i) => (
+        {animRight.map((db, i) => (
           <OSymbol
             key={i}
             x={fToX(FREQUENCIES[i])}
-            y={dToY(db) + (symm ? SYMM_OFFSET : 0)}
+            y={dToY(db) + rightOff}
             color={rightCol}
           />
         ))}
@@ -224,4 +235,4 @@ export const AudiogramDisplay = memo(function AudiogramDisplay({ profile }) {
       </svg>
     </div>
   );
-});
+}

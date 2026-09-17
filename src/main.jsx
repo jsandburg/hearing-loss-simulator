@@ -48,6 +48,9 @@ style.textContent = `
   }
   input[type=number] { -moz-appearance: textfield; }
   button:focus-visible { outline: 2px solid #36454f; outline-offset: 2px; }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { transition-duration: 0s !important; }
+  }
   @media print {
     body { background: #fff; color: #000; }
   }
