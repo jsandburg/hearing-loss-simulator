@@ -7,6 +7,40 @@ import React from 'react';
 import { THEME } from '../constants/theme.js';
 import { useIsMobile } from '../hooks/useIsMobile.js';
 
+// ─── Icon buttons ─────────────────────────────────────────────────────────────
+
+// Small square control used in card header bands (deck arrows, collapse toggles)
+export const iconButtonStyle = {
+  width: 24,
+  height: 24,
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  background: 'none',
+  border: `1px solid ${THEME.border}`,
+  borderRadius: 3,
+  color: THEME.textSecondary,
+  cursor: 'pointer',
+  fontSize: 12,
+  lineHeight: 1,
+  fontFamily: THEME.fontSans,
+  transition: `all ${THEME.transition}`,
+};
+
+export function CollapseButton({ isOpen, onToggle, label }) {
+  return (
+    <button
+      type="button"
+      aria-expanded={isOpen}
+      aria-label={`${isOpen ? 'Hide' : 'Show'} ${label}`}
+      onClick={onToggle}
+      style={iconButtonStyle}
+    >
+      {isOpen ? '−' : '+'}
+    </button>
+  );
+}
+
 // ─── Header ───────────────────────────────────────────────────────────────────
 
 export function Header() {

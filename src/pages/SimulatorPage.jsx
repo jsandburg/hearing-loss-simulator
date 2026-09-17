@@ -16,7 +16,7 @@ import { useKeyboardShortcuts } from '../hooks/useKeyboardShortcuts.js';
 import { useIsMobile }          from '../hooks/useIsMobile.js';
 
 import {
-  Header, ErrorBanner, WarningBar, SharedProfileBanner,
+  Header, ErrorBanner, WarningBar, SharedProfileBanner, CollapseButton,
 } from '../components/SmallComponents.jsx';
 import { AboutSection }      from '../components/AboutSection.jsx';
 import { PresetSelector }    from '../components/PresetSelector.jsx';
@@ -145,6 +145,7 @@ export function SimulatorPage({ initialPresetId, initialProfile, sharedProfile }
   const supported = typeof AudioContext !== 'undefined' || typeof webkitAudioContext !== 'undefined';
 
   const isLoadingAudio = audio.playState === 'loading';
+  const showAudiogram  = !isMobile || audiogramOpen;
   const tinnitusAvailable = !audio.workletAttempted || audio.workletReady;
 
   // ── Section title style ────────────────────────────────────────────────────
@@ -165,10 +166,6 @@ export function SimulatorPage({ initialPresetId, initialProfile, sharedProfile }
     }}>
 
       <Header />
-      <AboutSection
-        workletReady={audio.workletReady}
-        workletAttempted={audio.workletAttempted}
-      />
 
       <div style={{ maxWidth: 1100, margin: '0 auto', padding: isMobile ? '0 16px 48px' : '0 32px 48px' }}>
 
@@ -183,6 +180,11 @@ export function SimulatorPage({ initialPresetId, initialProfile, sharedProfile }
             }}
           />
         )}
+
+        <AboutSection
+          workletReady={audio.workletReady}
+          workletAttempted={audio.workletAttempted}
+        />
 
         <ErrorBanner errors={audio.errors} onClear={audio.clearError} />
         <WarningBar  warnings={audio.warnings} onClear={audio.clearWarning} />
@@ -380,57 +382,43 @@ export function SimulatorPage({ initialPresetId, initialProfile, sharedProfile }
               gridColumn: 1,
               gridRow: isMobile ? 3 : 1,
             }}>
-              {isMobile && (
-                <button
-                  type="button"
-                  aria-expanded={audiogramOpen}
-                  onClick={() => setAudiogramOpen(value => !value)}
-                  style={{
-                    width: '100%',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    padding: '11px 14px',
-                    background: THEME.bgCardHover,
-                    border: `1px solid ${THEME.border}`,
-                    borderRadius: 4,
-                    color: THEME.textPrimary,
-                    cursor: 'pointer',
-                    fontSize: 10,
-                    fontFamily: THEME.fontSans,
-                    fontWeight: 600,
-                    letterSpacing: '0.1em',
-                    textTransform: 'uppercase',
-                  }}
-                >
-                  <span>{audiogramOpen ? 'Hide audiogram' : 'View audiogram'}</span>
-                  <span aria-hidden="true">{audiogramOpen ? '−' : '+'}</span>
-                </button>
-              )}
-
-              {(!isMobile || audiogramOpen) && (
+              <div style={{
+                border: `1px solid ${THEME.border}`,
+                borderRadius: 6,
+                overflow: 'hidden',
+                background: THEME.bgCard,
+              }}>
+                {/* Header band doubles as the collapse control on mobile */}
                 <div style={{
-                  border: `1px solid ${THEME.border}`,
-                  borderRadius: 6,
-                  overflow: 'hidden',
-                  marginTop: isMobile ? 8 : 0,
-                  background: THEME.bgCard,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  gap: 12,
+                  padding: '12px 16px',
+                  background: THEME.bgCardHover,
+                  borderBottom: showAudiogram ? `1px solid ${THEME.border}` : 'none',
                 }}>
-                  <div style={{
-                    padding: '12px 16px',
-                    background: THEME.bgCardHover,
-                    borderBottom: `1px solid ${THEME.border}`,
-                  }}>
-                    <div style={sectionTitle}>
-                      Audiogram
-                    </div>
+                  <div style={sectionTitle}>
+                    Audiogram
                   </div>
-                  <AudiogramDisplay profile={activeProfile} />
-                  <div style={{ borderTop: `1px solid ${THEME.border}` }}>
-                    <AttenuationBars profile={activeProfile} />
-                  </div>
+                  {isMobile && (
+                    <CollapseButton
+                      isOpen={audiogramOpen}
+                      onToggle={() => setAudiogramOpen(value => !value)}
+                      label="audiogram"
+                    />
+                  )}
                 </div>
-              )}
+
+                {showAudiogram && (
+                  <>
+                    <AudiogramDisplay profile={activeProfile} />
+                    <div style={{ borderTop: `1px solid ${THEME.border}` }}>
+                      <AttenuationBars profile={activeProfile} />
+                    </div>
+                  </>
+                )}
+              </div>
             </div>
 
           </div>{/* end right column */}
