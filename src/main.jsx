@@ -2,6 +2,7 @@ import { StrictMode } from 'react';
 import { createRoot }  from 'react-dom/client';
 import App             from './App.jsx';
 import { ErrorBoundary } from './components/ErrorBoundary.jsx';
+import { THEME }         from './constants/theme.js';
 
 // Global reset — light healthcare aesthetic
 const style = document.createElement('style');
@@ -48,6 +49,13 @@ style.textContent = `
   }
   input[type=number] { -moz-appearance: textfield; }
   button:focus-visible { outline: 2px solid #36454f; outline-offset: 2px; }
+  /* Enter animations for panels and dialogs — skipped under reduced motion */
+  @keyframes fade-in    { from { opacity: 0; } }
+  @keyframes fade-in-up { from { opacity: 0; transform: translateY(6px); } }
+  @media (prefers-reduced-motion: no-preference) {
+    .fade-in    { animation: fade-in ${THEME.transition}; }
+    .fade-in-up { animation: fade-in-up ${THEME.transition}; }
+  }
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { transition-duration: 0s !important; }
   }

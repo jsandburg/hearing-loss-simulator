@@ -90,6 +90,7 @@ export function AudiogramEditor({
   return (
     /* Backdrop — click outside to cancel */
     <div
+      className="fade-in"
       onClick={e => { if (e.target === e.currentTarget) onCancel(); }}
       style={{
         position: 'fixed',
@@ -104,6 +105,7 @@ export function AudiogramEditor({
     >
       <div
         ref={containerRef}
+        className="fade-in-up"
         role="dialog"
         aria-modal="true"
         aria-label="Custom Audiogram"

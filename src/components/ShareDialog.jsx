@@ -222,6 +222,7 @@ export function ShareDialog({ isOpen, onClose, profile }) {
 
   return (
     <div
+      className="fade-in"
       onClick={e => { if (e.target === e.currentTarget) onClose(); }}
       style={{
         position: 'fixed', inset: 0,
@@ -233,6 +234,7 @@ export function ShareDialog({ isOpen, onClose, profile }) {
     >
       <div
         ref={containerRef}
+        className="fade-in-up"
         role="dialog"
         aria-modal="true"
         aria-label="Share Hearing Profile"

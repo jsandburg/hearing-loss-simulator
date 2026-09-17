@@ -281,7 +281,8 @@ export function SimulatorPage({ initialPresetId, initialProfile, sharedProfile }
 
               {/* Profile explanation stays with the profile it describes. */}
               <div style={{ borderTop: `1px solid ${THEME.border}`, margin: '14px 0 0', paddingTop: 14 }}>
-              {/* Profile description */}
+              {/* Profile description — keyed so it fades in when the profile changes */}
+              <div key={activeProfile?.id} className="fade-in">
               <PresetDescription
                 profile={activeProfile}
                 workletReady={audio.workletReady}
@@ -289,6 +290,7 @@ export function SimulatorPage({ initialPresetId, initialProfile, sharedProfile }
                 effectiveTinnitus={worklet.effective.tinnitus}
                 embedded
               />
+              </div>
               </div>
             </div>
 
