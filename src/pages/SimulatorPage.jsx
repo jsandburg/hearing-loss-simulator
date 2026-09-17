@@ -242,7 +242,7 @@ export function SimulatorPage({ initialPresetId, initialProfile, sharedProfile }
                     fontSize: 10,
                     fontFamily: THEME.fontSans,
                     color: THEME.textSecondary,
-                    transition: 'all 0.12s',
+                    transition: `all ${THEME.transition}`,
                   }}
                   onMouseEnter={e => { e.currentTarget.style.borderColor = THEME.textPrimary; e.currentTarget.style.color = THEME.textPrimary; }}
                   onMouseLeave={e => { e.currentTarget.style.borderColor = THEME.textTertiary; e.currentTarget.style.color = THEME.textSecondary; }}

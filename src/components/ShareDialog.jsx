@@ -66,7 +66,7 @@ function CopyField({ url }) {
           color: copied ? '#ffffff' : THEME.textSecondary,
           padding: '7px 12px',
           flexShrink: 0,
-          transition: 'all 0.15s',
+          transition: `all ${THEME.transition}`,
         }}
       >
         {copied ? '✓ Copied' : 'Copy'}
@@ -171,7 +171,7 @@ function QrPanel({ url }) {
           border: `1px solid ${THEME.textTertiary}`,
           borderRadius: 3,
           textDecoration: 'none',
-          transition: 'all 0.12s',
+          transition: `all ${THEME.transition}`,
         }}
         onMouseEnter={e => { e.currentTarget.style.borderColor = THEME.textPrimary; e.currentTarget.style.color = THEME.textPrimary; }}
         onMouseLeave={e => { e.currentTarget.style.borderColor = THEME.textTertiary; e.currentTarget.style.color = THEME.textSecondary; }}
@@ -217,7 +217,7 @@ export function ShareDialog({ isOpen, onClose, profile }) {
     borderBottom: `2px solid ${activeTab === tab ? THEME.textPrimary : 'transparent'}`,
     color: activeTab === tab ? THEME.textPrimary : THEME.textTertiary,
     cursor: 'pointer',
-    transition: 'all 0.12s',
+    transition: `all ${THEME.transition}`,
   });
 
   return (

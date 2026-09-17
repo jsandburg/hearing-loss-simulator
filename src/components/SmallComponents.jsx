@@ -174,7 +174,7 @@ export function SharedProfileBanner({ profile, onDismiss, onScrollToUploader, on
                 color: saved ? THEME.success : THEME.info,
                 fontSize: 10, fontFamily: THEME.fontSans,
                 padding: '5px 10px',
-                transition: 'all 0.15s',
+                transition: `all ${THEME.transition}`,
               }}
             >
               {saved ? '✓ Saved to my profiles' : 'Save to my profiles'}

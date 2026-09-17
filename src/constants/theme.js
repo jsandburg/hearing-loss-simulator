@@ -51,4 +51,7 @@ export const THEME = {
 
   // Grid
   gridLine: 'rgba(54,69,79,0.08)',
+
+  // Motion — shared timing for hover and state transitions
+  transition: '0.15s ease-out',
 };

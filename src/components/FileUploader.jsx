@@ -117,7 +117,7 @@ export function FileUploader({ onFile, onRemove, fileInfo, isLoading, uploaderRe
               fontSize: 11,
               fontFamily: THEME.fontSans,
               color: THEME.textSecondary,
-              transition: 'all 0.12s',
+              transition: `all ${THEME.transition}`,
             }}
             onMouseEnter={e => { e.currentTarget.style.borderColor = THEME.error; e.currentTarget.style.color = THEME.error; }}
             onMouseLeave={e => { e.currentTarget.style.borderColor = THEME.textTertiary; e.currentTarget.style.color = THEME.textSecondary; }}
@@ -147,7 +147,7 @@ export function FileUploader({ onFile, onRemove, fileInfo, isLoading, uploaderRe
             borderRadius: 4,
             background: isDragging ? 'rgba(54,69,79,0.04)' : THEME.bgCardHover,
             cursor: 'pointer',
-            transition: 'all 0.15s',
+            transition: `all ${THEME.transition}`,
             outline: 'none',
             textAlign: 'center',
             marginBottom: 16,

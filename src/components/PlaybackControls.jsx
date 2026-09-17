@@ -106,7 +106,7 @@ export function PlaybackControls({
             alignItems: 'center',
             justifyContent: 'center',
             fontSize: 16,
-            transition: 'all 0.15s',
+            transition: `all ${THEME.transition}`,
             boxShadow: inactive ? 'none' : `0 2px 10px ${accent}40`,
           }}
         >
@@ -125,7 +125,7 @@ export function PlaybackControls({
           alignItems: 'center',
           gap: 8,
           opacity: inactive ? 0.4 : 1,
-          transition: 'opacity 0.15s',
+          transition: `opacity ${THEME.transition}`,
         }}>
           <span style={{
             fontSize: 10, fontFamily: THEME.fontSans,
@@ -156,7 +156,7 @@ export function PlaybackControls({
           alignItems: 'center',
           gap: 6,
           opacity: inactive ? 0.4 : 1,
-          transition: 'opacity 0.15s',
+          transition: `opacity ${THEME.transition}`,
           flexShrink: 0,
         }}>
           <span style={{
@@ -227,7 +227,7 @@ export function PlaybackControls({
             fontFamily: THEME.fontSans,
             color: loopEnabled ? accent : THEME.textPrimary,
             opacity: inactive ? 0.4 : 1,
-            transition: 'all 0.15s',
+            transition: `all ${THEME.transition}`,
             flexShrink: 0,
             whiteSpace: 'nowrap',
           }}
