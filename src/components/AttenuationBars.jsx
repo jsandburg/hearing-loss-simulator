@@ -92,8 +92,8 @@ function Bars({ profile }) {
     <div style={{ padding: '16px' }}>
       <div style={{ marginBottom: 8 }}>
         <div style={{
-          fontSize: 9, fontFamily: THEME.fontSans,
-          color: THEME.textSecondary,
+          fontSize: 9, fontFamily: THEME.fontSans, fontWeight: 600,
+          color: THEME.textTertiary,
           letterSpacing: '0.1em', textTransform: 'uppercase',
         }}>
           Signal attenuation (dB)

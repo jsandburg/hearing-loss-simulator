@@ -326,7 +326,7 @@ export function SimulatorPage({ initialPresetId, initialProfile, sharedProfile }
                   Audio Player
                 </div>
                 {!audio.fileInfo && !isLoadingAudio && (
-                  <div style={{ fontSize: 10, fontFamily: THEME.fontSans, color: THEME.textSecondary, marginTop: 2, fontStyle: 'italic' }}>
+                  <div style={{ fontSize: 10, fontFamily: THEME.fontSans, color: THEME.textTertiary, marginTop: 2, fontStyle: 'italic' }}>
                     Upload a file to begin
                   </div>
                 )}
@@ -367,7 +367,7 @@ export function SimulatorPage({ initialPresetId, initialProfile, sharedProfile }
                   <div style={sectionTitle}>
                     Frequency Spectrum
                   </div>
-                  <div style={{ fontSize: 10, fontFamily: THEME.fontSans, color: THEME.textSecondary }}>
+                  <div style={{ fontSize: 10, fontFamily: THEME.fontSans, color: THEME.textTertiary }}>
                     Live output
                   </div>
                 </div>

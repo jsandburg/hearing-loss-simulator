@@ -21,7 +21,7 @@ export function PresetSelector({ activeId, onSelect, customProfiles = [], onNewC
         fontWeight: 600,
         letterSpacing: '0.1em',
         textTransform: 'uppercase',
-        color: THEME.textPrimary,
+        color: THEME.textTertiary,
         marginBottom: 5,
       }}>
         Profile

@@ -21,9 +21,9 @@ export function WorkletControls({ effective, onSetTinnitus, hasFile, workletAvai
         marginBottom: tinnitus.enabled || controlsDisabled ? 12 : 0,
       }}>
         <span style={{
-          fontSize: 10, fontFamily: THEME.fontSans, fontWeight: 600,
-          letterSpacing: '0.08em', textTransform: 'uppercase',
-          color: THEME.textPrimary,
+          fontSize: 9, fontFamily: THEME.fontSans, fontWeight: 600,
+          letterSpacing: '0.1em', textTransform: 'uppercase',
+          color: THEME.textTertiary,
         }}>
           Tinnitus
         </span>

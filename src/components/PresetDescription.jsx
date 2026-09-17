@@ -21,7 +21,7 @@ export function PresetDescription({ profile, workletReady, workletAttempted, eff
     }}>
 
       <div style={{
-        fontSize: 12,
+        fontSize: 13,
         fontFamily: THEME.fontSans,
         fontWeight: 600,
         color: THEME.textPrimary,
