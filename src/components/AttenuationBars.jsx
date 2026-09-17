@@ -89,7 +89,7 @@ function Bars({ profile }) {
   const rightColor = THEME.rightEar;
 
   return (
-    <div style={{ padding: '12px 24px 16px' }}>
+    <div style={{ padding: '16px' }}>
       <div style={{ marginBottom: 8 }}>
         <div style={{
           fontSize: 9, fontFamily: THEME.fontSans,

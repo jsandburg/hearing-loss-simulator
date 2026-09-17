@@ -117,7 +117,7 @@ function AudiogramSvg({ profile }) {
     : `Audiogram showing left ear ${avgLeft} dB HL average, right ear ${avgRight} dB HL average`;
 
   return (
-    <div style={{ padding: '0 24px 8px' }}>
+    <div style={{ padding: '16px' }}>
       <svg
         width={SVG_W}
         height={SVG_H}

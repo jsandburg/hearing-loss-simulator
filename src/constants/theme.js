@@ -16,12 +16,13 @@
 export const THEME = {
   // Backgrounds
   bg:           '#ffffff',
+  bgPage:       '#eef0f1',   // page behind the cards, so white cards read as cards
   bgCard:       '#ffffff',
   bgCardHover:  '#f5f5f5',
   bgInput:      '#ffffff',
 
   // Borders
-  border:       '#d3d3d3',
+  border:       '#dcdfe1',
   borderFocus:  '#36454f',
 
   // Text

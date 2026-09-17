@@ -158,7 +158,7 @@ export function SimulatorPage({ initialPresetId, initialProfile, sharedProfile }
 
   return (
     <div style={{
-      background: THEME.bg,
+      background: THEME.bgPage,
       minHeight: '100vh',
       color: THEME.textPrimary,
       fontFamily: THEME.fontSans,
@@ -214,10 +214,10 @@ export function SimulatorPage({ initialPresetId, initialProfile, sharedProfile }
 
             {/* Compact profile picker */}
             <div style={{
-              background: THEME.bgCardHover,
+              background: THEME.bgCard,
               border: `1px solid ${THEME.border}`,
-              borderRadius: 4,
-              padding: '16px 20px 20px',
+              borderRadius: 6,
+              overflow: 'hidden',
               marginBottom: isMobile ? 0 : 20,
             }}>
               {/* Section label + share button on same row */}
@@ -225,7 +225,9 @@ export function SimulatorPage({ initialPresetId, initialProfile, sharedProfile }
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
-                marginBottom: 4,
+                padding: '12px 16px',
+                background: THEME.bgCardHover,
+                borderBottom: `1px solid ${THEME.border}`,
               }}>
                 <div style={sectionTitle}>
                   Hearing profile
@@ -250,6 +252,9 @@ export function SimulatorPage({ initialPresetId, initialProfile, sharedProfile }
                   Share profile
                 </button>
               </div>
+
+              {/* Card body — padding matches the Audio Player card */}
+              <div style={{ padding: '16px' }}>
 
               <div style={{
                 fontSize: 11,
@@ -292,6 +297,7 @@ export function SimulatorPage({ initialPresetId, initialProfile, sharedProfile }
               />
               </div>
               </div>
+              </div>{/* end card body */}
             </div>
 
           </div>{/* end profile controls */}
@@ -304,7 +310,7 @@ export function SimulatorPage({ initialPresetId, initialProfile, sharedProfile }
             {/* Audio Player card — the primary listening action. */}
             <div style={{
               border: `1px solid ${THEME.border}`,
-              borderRadius: 4,
+              borderRadius: 6,
               overflow: 'hidden',
               gridColumn: isMobile ? 1 : 2,
               gridRow: isMobile ? 2 : '1 / span 2',
@@ -405,12 +411,13 @@ export function SimulatorPage({ initialPresetId, initialProfile, sharedProfile }
               {(!isMobile || audiogramOpen) && (
                 <div style={{
                   border: `1px solid ${THEME.border}`,
-                  borderRadius: 4,
+                  borderRadius: 6,
                   overflow: 'hidden',
                   marginTop: isMobile ? 8 : 0,
+                  background: THEME.bgCard,
                 }}>
                   <div style={{
-                    padding: '10px 24px 8px',
+                    padding: '12px 16px',
                     background: THEME.bgCardHover,
                     borderBottom: `1px solid ${THEME.border}`,
                   }}>
