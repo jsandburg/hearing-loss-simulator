@@ -137,7 +137,7 @@ function AudiogramSvg({ profile }) {
             x={PAD.left - 8}
             y={dToY(db) + 4}
             textAnchor="end"
-            fontSize={10}
+            fontSize={11}
             fontFamily={THEME.font}
             fill={THEME.textTertiary}
           >
@@ -149,7 +149,7 @@ function AudiogramSvg({ profile }) {
         <text
           transform={`translate(10, ${PAD.top + CH / 2}) rotate(-90)`}
           textAnchor="middle"
-          fontSize={11}
+          fontSize={13}
           fontFamily={THEME.font}
           fill={THEME.textTertiary}
         >
@@ -163,7 +163,7 @@ function AudiogramSvg({ profile }) {
             x={xAt(i)}
             y={SVG_H - PAD.bottom + 14}
             textAnchor="middle"
-            fontSize={10}
+            fontSize={11}
             fontFamily={THEME.font}
             fill={THEME.textTertiary}
           >
@@ -176,7 +176,7 @@ function AudiogramSvg({ profile }) {
           x={PAD.left + CW / 2}
           y={SVG_H - 4}
           textAnchor="middle"
-          fontSize={11}
+          fontSize={13}
           fontFamily={THEME.font}
           fill={THEME.textTertiary}
         >
