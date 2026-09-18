@@ -200,109 +200,117 @@ export function SimulatorPage({ initialPresetId, initialProfile, sharedProfile }
           </div>
         )}
 
+        {/* ── Hearing profile — spans the full width under the explainer ── */}
+
+          {/* Compact profile picker */}
+          <div style={{
+            background: THEME.bgCard,
+            border: `1px solid ${THEME.border}`,
+            borderRadius: 6,
+            overflow: 'hidden',
+            marginTop: isMobile ? 16 : 20,
+          }}>
+            {/* Section label + share button on same row */}
+            <div style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              padding: '12px 16px',
+              background: THEME.bgCardHover,
+              borderBottom: `1px solid ${THEME.border}`,
+            }}>
+              <div style={sectionTitle}>
+                Hearing profile
+              </div>
+              <button
+                type="button"
+                onClick={() => setShareOpen(true)}
+                style={{
+                  padding: '4px 10px',
+                  background: 'none',
+                  border: `1px solid ${THEME.textTertiary}`,
+                  borderRadius: 3,
+                  cursor: 'pointer',
+                  fontSize: 10,
+                  fontFamily: THEME.fontSans,
+                  color: THEME.textSecondary,
+                  transition: `all ${THEME.transition}`,
+                }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = THEME.textPrimary; e.currentTarget.style.color = THEME.textPrimary; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = THEME.textTertiary; e.currentTarget.style.color = THEME.textSecondary; }}
+              >
+                Share profile
+              </button>
+            </div>
+
+            {/* Card body — two columns on desktop so the controls and the
+                explanation each keep a readable width in the full-width card */}
+            <div style={{
+              padding: '16px',
+              display: 'grid',
+              gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr',
+              gap: isMobile ? 0 : 24,
+              alignItems: 'start',
+            }}>
+
+            <div>
+            <div style={{
+              fontSize: 11,
+              fontFamily: THEME.fontSans,
+              color: THEME.textSecondary,
+              lineHeight: 1.5,
+              marginBottom: 14,
+            }}>
+              Choose a hearing loss type to hear how it affects speech and other sounds.
+            </div>
+
+            {/* Profile selector */}
+            <PresetSelector
+              activeId={activePresetId}
+              onSelect={selectProfile}
+              customProfiles={editor.customProfiles}
+              onNewCustom={editor.openNewEditor}
+              onDeleteCustom={handleDeleteCustom}
+            />
+
+            {/* Tinnitus changes the selected hearing profile, so keep it with the profile controls. */}
+            <div style={{ borderTop: `1px solid ${THEME.border}`, margin: '16px 0 0' }} />
+            <WorkletControls
+              effective={worklet.effective}
+              onSetTinnitus={worklet.setTinnitus}
+              hasFile={!!audio.fileInfo}
+              workletAvailable={tinnitusAvailable}
+            />
+            </div>{/* end controls column */}
+
+            {/* Profile explanation stays with the profile it describes. */}
+            <div style={isMobile
+              ? { borderTop: `1px solid ${THEME.border}`, margin: '14px 0 0', paddingTop: 14 }
+              : undefined
+            }>
+            {/* Profile description — keyed so it fades in when the profile changes */}
+            <div key={activeProfile?.id} className="fade-in">
+            <PresetDescription
+              profile={activeProfile}
+              workletReady={audio.workletReady}
+              workletAttempted={audio.workletAttempted}
+              effectiveTinnitus={worklet.effective.tinnitus}
+              embedded
+            />
+            </div>
+            </div>
+            </div>{/* end card body */}
+          </div>
+
         {/* ── Two-column body ── */}
         <div style={{
           display: 'grid',
           gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr',
-          // Player spans both rows on desktop; 1fr absorbs its extra height so the audiogram row stays tight.
-          gridTemplateRows: isMobile ? undefined : 'auto 1fr',
           gap: isMobile ? 16 : 20,
-          marginTop: 20,
+          marginTop: isMobile ? 16 : 20,
           alignItems: 'start',
         }}>
 
-          {/* ── Profile controls ── */}
-          <div style={{ gridColumn: 1, gridRow: isMobile ? 1 : 2 }}>
-
-            {/* Compact profile picker */}
-            <div style={{
-              background: THEME.bgCard,
-              border: `1px solid ${THEME.border}`,
-              borderRadius: 6,
-              overflow: 'hidden',
-              marginBottom: isMobile ? 0 : 20,
-            }}>
-              {/* Section label + share button on same row */}
-              <div style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                padding: '12px 16px',
-                background: THEME.bgCardHover,
-                borderBottom: `1px solid ${THEME.border}`,
-              }}>
-                <div style={sectionTitle}>
-                  Hearing profile
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setShareOpen(true)}
-                  style={{
-                    padding: '4px 10px',
-                    background: 'none',
-                    border: `1px solid ${THEME.textTertiary}`,
-                    borderRadius: 3,
-                    cursor: 'pointer',
-                    fontSize: 10,
-                    fontFamily: THEME.fontSans,
-                    color: THEME.textSecondary,
-                    transition: `all ${THEME.transition}`,
-                  }}
-                  onMouseEnter={e => { e.currentTarget.style.borderColor = THEME.textPrimary; e.currentTarget.style.color = THEME.textPrimary; }}
-                  onMouseLeave={e => { e.currentTarget.style.borderColor = THEME.textTertiary; e.currentTarget.style.color = THEME.textSecondary; }}
-                >
-                  Share profile
-                </button>
-              </div>
-
-              {/* Card body — padding matches the Audio Player card */}
-              <div style={{ padding: '16px' }}>
-
-              <div style={{
-                fontSize: 11,
-                fontFamily: THEME.fontSans,
-                color: THEME.textSecondary,
-                lineHeight: 1.5,
-                marginBottom: 14,
-              }}>
-                Choose a hearing loss type to hear how it affects speech and other sounds.
-              </div>
-
-              {/* Profile selector */}
-              <PresetSelector
-                activeId={activePresetId}
-                onSelect={selectProfile}
-                customProfiles={editor.customProfiles}
-                onNewCustom={editor.openNewEditor}
-                onDeleteCustom={handleDeleteCustom}
-              />
-
-              {/* Tinnitus changes the selected hearing profile, so keep it with the profile controls. */}
-              <div style={{ borderTop: `1px solid ${THEME.border}`, margin: '16px 0 0' }} />
-              <WorkletControls
-                effective={worklet.effective}
-                onSetTinnitus={worklet.setTinnitus}
-                hasFile={!!audio.fileInfo}
-                workletAvailable={tinnitusAvailable}
-              />
-
-              {/* Profile explanation stays with the profile it describes. */}
-              <div style={{ borderTop: `1px solid ${THEME.border}`, margin: '14px 0 0', paddingTop: 14 }}>
-              {/* Profile description — keyed so it fades in when the profile changes */}
-              <div key={activeProfile?.id} className="fade-in">
-              <PresetDescription
-                profile={activeProfile}
-                workletReady={audio.workletReady}
-                workletAttempted={audio.workletAttempted}
-                effectiveTinnitus={worklet.effective.tinnitus}
-                embedded
-              />
-              </div>
-              </div>
-              </div>{/* end card body */}
-            </div>
-
-          </div>{/* end profile controls */}
 
           {/* ── Audiogram + Audio Player ── */}
           <div style={{
@@ -315,7 +323,7 @@ export function SimulatorPage({ initialPresetId, initialProfile, sharedProfile }
               borderRadius: 6,
               overflow: 'hidden',
               gridColumn: isMobile ? 1 : 2,
-              gridRow: isMobile ? 2 : '1 / span 2',
+              gridRow: 1,
               background: THEME.bgCard,
             }}>
               {/* Header */}
@@ -327,11 +335,6 @@ export function SimulatorPage({ initialPresetId, initialProfile, sharedProfile }
                 <div style={sectionTitle}>
                   Audio Player
                 </div>
-                {!audio.fileInfo && !isLoadingAudio && (
-                  <div style={{ fontSize: 10, fontFamily: THEME.fontSans, color: THEME.textTertiary, marginTop: 2, fontStyle: 'italic' }}>
-                    Upload a file to begin
-                  </div>
-                )}
               </div>
 
               {/* Upload + playback */}
@@ -380,7 +383,7 @@ export function SimulatorPage({ initialPresetId, initialProfile, sharedProfile }
             {/* Audiogram — collapsed by default on mobile to keep the player close. */}
             <div style={{
               gridColumn: 1,
-              gridRow: isMobile ? 3 : 1,
+              gridRow: isMobile ? 2 : 1,
             }}>
               <div style={{
                 border: `1px solid ${THEME.border}`,
