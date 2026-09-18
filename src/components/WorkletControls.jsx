@@ -41,10 +41,10 @@ export function WorkletControls({ effective, onSetTinnitus, hasFile, workletAvai
       {controlsDisabled && (
         <div style={{
           padding: '6px 10px',
-          background: 'rgba(183,119,13,0.06)',
-          border: `1px solid rgba(183,119,13,0.2)`,
+          background: 'rgba(192,57,43,0.06)',
+          border: `1px solid rgba(192,57,43,0.25)`,
           borderRadius: 3,
-          fontSize: 10, fontFamily: THEME.fontSans, color: THEME.warning,
+          fontSize: 10, fontFamily: THEME.fontSans, color: THEME.error,
         }}>
           Tinnitus simulation is unavailable in this browser.
         </div>
@@ -56,24 +56,24 @@ export function WorkletControls({ effective, onSetTinnitus, hasFile, workletAvai
           {!hasFile ? (
             <div style={{
               padding: '6px 10px',
-              background: 'rgba(183,119,13,0.06)',
-              border: `1px solid rgba(183,119,13,0.2)`,
+              background: 'rgba(192,57,43,0.06)',
+              border: `1px solid rgba(192,57,43,0.25)`,
               borderRadius: 3,
-              fontSize: 10, fontFamily: THEME.fontSans, color: THEME.warning,
+              fontSize: 10, fontFamily: THEME.fontSans, fontWeight: 600, color: THEME.error,
               marginBottom: 12,
             }}>
-              ⚠ Upload a file to hear this effect.
+              Upload a file to hear this effect.
             </div>
           ) : (
             <div style={{
               padding: '6px 10px',
-              background: 'rgba(183,119,13,0.06)',
-              border: `1px solid rgba(183,119,13,0.2)`,
+              background: 'rgba(192,57,43,0.06)',
+              border: `1px solid rgba(192,57,43,0.25)`,
               borderRadius: 3,
-              fontSize: 10, fontFamily: THEME.fontSans, color: THEME.warning,
+              fontSize: 10, fontFamily: THEME.fontSans, fontWeight: 600, color: THEME.error,
               marginBottom: 12,
             }}>
-              ⚠ You will hear a tone through your speakers or headphones.
+              You will hear a tone through your speakers or headphones.
             </div>
           )}
 
