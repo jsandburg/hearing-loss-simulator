@@ -227,19 +227,18 @@ function AudiogramSvg({ profile }) {
           />
         ))}
 
-        {/* Legend — Right listed first, then Left */}
-        <g transform={`translate(${PAD.left + CW - 80}, ${PAD.top + 6})`}>
-            <rect x={0} y={0} width={76} height={34}
-              fill={THEME.bg} stroke={THEME.border} rx={2} />
+        {/* Legend — above the plot so it never covers the curves.
+            Right listed first, then Left. */}
+        <g transform={`translate(${PAD.left + CW - 104}, ${PAD.top - 12})`}>
             {/* Right — first entry */}
-            <line x1={8} y1={11} x2={18} y2={11} stroke={rightCol} strokeWidth={1.5} strokeDasharray="3 2" />
-            <circle cx={13} cy={11} r={3} fill="none" stroke={rightCol} strokeWidth={1.5} />
-            <text x={22} y={14} fontSize={10} fontFamily={THEME.font} fill={THEME.textSecondary}>Right</text>
+            <line x1={0} y1={0} x2={14} y2={0} stroke={rightCol} strokeWidth={1.5} strokeDasharray="3 2" />
+            <circle cx={7} cy={0} r={3.5} fill="none" stroke={rightCol} strokeWidth={1.5} />
+            <text x={19} y={3.5} fontSize={10} fontFamily={THEME.font} fill={THEME.textSecondary}>Right</text>
             {/* Left — second entry */}
-            <line x1={8} y1={26} x2={18} y2={26} stroke={leftCol} strokeWidth={2} />
-            <line x1={10} y1={22} x2={16} y2={30} stroke={leftCol} strokeWidth={1.5} />
-            <line x1={16} y1={22} x2={10} y2={30} stroke={leftCol} strokeWidth={1.5} />
-            <text x={22} y={29} fontSize={10} fontFamily={THEME.font} fill={THEME.textSecondary}>Left</text>
+            <line x1={52} y1={0} x2={66} y2={0} stroke={leftCol} strokeWidth={2} />
+            <line x1={55} y1={-4} x2={63} y2={4} stroke={leftCol} strokeWidth={1.5} />
+            <line x1={63} y1={-4} x2={55} y2={4} stroke={leftCol} strokeWidth={1.5} />
+            <text x={71} y={3.5} fontSize={10} fontFamily={THEME.font} fill={THEME.textSecondary}>Left</text>
           </g>
       </svg>
     </div>
