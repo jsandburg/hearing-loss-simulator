@@ -26,6 +26,10 @@ const X_INSET = 16;
 // Half-octave frequencies — drawn with dashed grid lines
 const HALF_OCTAVE = new Set([3000, 6000]);
 
+// dB values that get a horizontal grid line and a Y axis label. Both are
+// driven from this list so every line carries the label beside it.
+const DB_LINES = [-10, 0, 20, 40, 60, 80, 100, 120];
+
 function xAt(i) {
   return PAD.left + X_INSET + (i / (FREQUENCIES.length - 1)) * (CW - 2 * X_INSET);
 }
@@ -61,11 +65,10 @@ function AudiogramSvg({ profile }) {
   const leftCol  = THEME.leftEar;
   const rightCol = THEME.rightEar;
 
-  // Horizontal grid lines at every 20 dB
-  const hLines = [];
-  for (let db = DB_MIN; db <= DB_MAX; db += 20) {
+  // Horizontal grid lines, one per labelled dB value
+  const hLines = DB_LINES.map(db => {
     const y = snap(dToY(db));
-    hLines.push(
+    return (
       <line
         key={db}
         x1={snap(PAD.left)} y1={y}
@@ -75,7 +78,7 @@ function AudiogramSvg({ profile }) {
         shapeRendering="crispEdges"
       />
     );
-  }
+  });
 
   // Vertical grid lines at each audiogram frequency
   const vLines = FREQUENCIES.map((f, i) => {
@@ -131,7 +134,7 @@ function AudiogramSvg({ profile }) {
         {vLines}
 
         {/* Y axis labels (dB HL) */}
-        {[-10, 0, 20, 40, 60, 80, 100, 120].map(db => (
+        {DB_LINES.map(db => (
           <text
             key={db}
             x={PAD.left - 8}
