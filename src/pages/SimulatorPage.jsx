@@ -194,7 +194,7 @@ export function SimulatorPage({ initialPresetId, initialProfile, sharedProfile }
             marginTop: 16, padding: '10px 14px',
             background: 'rgba(183,119,13,0.06)',
             border: `1px solid rgba(183,119,13,0.3)`,
-            borderRadius: 4, fontSize: 11, color: THEME.warning,
+            borderRadius: 4, fontSize: 12, color: THEME.warning,
           }}>
             ⚠ Web Audio is not supported in this browser. Try Chrome, Firefox, Safari, or Edge.
           </div>
@@ -255,7 +255,7 @@ export function SimulatorPage({ initialPresetId, initialProfile, sharedProfile }
 
             <div>
             <div style={{
-              fontSize: 11,
+              fontSize: 12,
               fontFamily: THEME.fontSans,
               color: THEME.textSecondary,
               lineHeight: 1.5,

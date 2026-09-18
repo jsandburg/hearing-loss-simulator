@@ -152,7 +152,7 @@ function AudiogramSvg({ profile }) {
         <text
           transform={`translate(10, ${PAD.top + CH / 2}) rotate(-90)`}
           textAnchor="middle"
-          fontSize={13}
+          fontSize={12}
           fontFamily={THEME.font}
           fill={THEME.textTertiary}
         >
@@ -179,7 +179,7 @@ function AudiogramSvg({ profile }) {
           x={PAD.left + CW / 2}
           y={SVG_H - 4}
           textAnchor="middle"
-          fontSize={13}
+          fontSize={12}
           fontFamily={THEME.font}
           fill={THEME.textTertiary}
         >
@@ -234,12 +234,12 @@ function AudiogramSvg({ profile }) {
             {/* Right — first entry */}
             <line x1={8} y1={11} x2={18} y2={11} stroke={rightCol} strokeWidth={1.5} strokeDasharray="3 2" />
             <circle cx={13} cy={11} r={3} fill="none" stroke={rightCol} strokeWidth={1.5} />
-            <text x={22} y={14} fontSize={9} fontFamily={THEME.font} fill={THEME.textSecondary}>Right</text>
+            <text x={22} y={14} fontSize={10} fontFamily={THEME.font} fill={THEME.textSecondary}>Right</text>
             {/* Left — second entry */}
             <line x1={8} y1={26} x2={18} y2={26} stroke={leftCol} strokeWidth={2} />
             <line x1={10} y1={22} x2={16} y2={30} stroke={leftCol} strokeWidth={1.5} />
             <line x1={16} y1={22} x2={10} y2={30} stroke={leftCol} strokeWidth={1.5} />
-            <text x={22} y={29} fontSize={9} fontFamily={THEME.font} fill={THEME.textSecondary}>Left</text>
+            <text x={22} y={29} fontSize={10} fontFamily={THEME.font} fill={THEME.textSecondary}>Left</text>
           </g>
       </svg>
     </div>

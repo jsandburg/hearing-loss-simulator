@@ -23,7 +23,7 @@ function Bar({ label, correctedDb, color }) {
     <div style={{ flex: 1, minWidth: 0 }}>
       {/* Frequency label */}
       <div style={{
-        fontSize: 9, fontFamily: THEME.fontSans,
+        fontSize: 10, fontFamily: THEME.fontSans,
         color: THEME.textSecondary,
         textAlign: 'center', marginBottom: 3,
       }}>
@@ -50,7 +50,7 @@ function Bar({ label, correctedDb, color }) {
           display: 'flex', alignItems: 'center', justifyContent: 'center',
         }}>
           <span style={{
-            fontSize: 9, fontFamily: THEME.fontSans, fontWeight: hasLoss ? 600 : 400,
+            fontSize: 10, fontFamily: THEME.fontSans, fontWeight: hasLoss ? 600 : 400,
             color: hasLoss ? color : THEME.textTertiary,
           }}>
             {hasLoss ? `−${rounded}` : '—'}
@@ -94,7 +94,7 @@ function Bars({ profile }) {
     <div style={{ padding: '16px', borderTop: `1px solid ${THEME.border}` }}>
       <div style={{ marginBottom: 8 }}>
         <div style={{
-          fontSize: 9, fontFamily: THEME.fontSans, fontWeight: 600,
+          fontSize: 10, fontFamily: THEME.fontSans, fontWeight: 600,
           color: THEME.textTertiary,
           letterSpacing: '0.1em', textTransform: 'uppercase',
         }}>

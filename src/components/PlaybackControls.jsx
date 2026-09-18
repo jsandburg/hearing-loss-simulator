@@ -111,7 +111,7 @@ export function PlaybackControls({
           }}
         >
           {isLoading
-            ? <span style={{ fontSize: 11 }}>…</span>
+            ? <span style={{ fontSize: 12 }}>…</span>
             : isPlaying
               ? '■'
               : <span style={{ marginLeft: 3 }}>▶</span>

@@ -86,7 +86,7 @@ export function ErrorBanner({ errors, onClear }) {
           alignItems: 'flex-start',
           gap: 12,
         }}>
-          <span style={{ fontSize: 11, fontFamily: THEME.fontSans, color: THEME.error, lineHeight: 1.5 }}>
+          <span style={{ fontSize: 12, fontFamily: THEME.fontSans, color: THEME.error, lineHeight: 1.5 }}>
             ✕ {msg}
           </span>
           <button type="button"
@@ -123,7 +123,7 @@ export function WarningBar({ warnings, onClear }) {
           alignItems: 'flex-start',
           gap: 12,
         }}>
-          <span style={{ fontSize: 11, fontFamily: THEME.fontSans, color: THEME.warning, lineHeight: 1.5 }}>
+          <span style={{ fontSize: 12, fontFamily: THEME.fontSans, color: THEME.warning, lineHeight: 1.5 }}>
             ⚠ {msg}
           </span>
           <button type="button"
@@ -176,7 +176,7 @@ export function SharedProfileBanner({ profile, onDismiss, onScrollToUploader, on
       gap: 12,
     }}>
       <div>
-        <div style={{ fontSize: 11, fontFamily: THEME.fontSans, color: THEME.textPrimary, marginBottom: 3 }}>
+        <div style={{ fontSize: 12, fontFamily: THEME.fontSans, color: THEME.textPrimary, marginBottom: 3 }}>
           Shared hearing profile: <strong>{profile.name}</strong>
         </div>
         <div style={{ fontSize: 10, fontFamily: THEME.fontSans, color: THEME.textSecondary, marginBottom: 6 }}>

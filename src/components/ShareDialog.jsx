@@ -113,7 +113,7 @@ function QrPanel({ url }) {
     return (
       <div style={{
         padding: '20px 0', textAlign: 'center',
-        fontSize: 11, fontFamily: THEME.fontSans, color: THEME.warning,
+        fontSize: 12, fontFamily: THEME.fontSans, color: THEME.warning,
       }}>
         Could not generate QR code.
       </div>
@@ -164,7 +164,7 @@ function QrPanel({ url }) {
           display: 'inline-block',
           marginTop: 10,
           padding: '6px 16px',
-          fontSize: 11,
+          fontSize: 12,
           fontFamily: THEME.fontSans,
           color: THEME.textSecondary,
           border: `1px solid ${THEME.textTertiary}`,
@@ -208,7 +208,7 @@ export function ShareDialog({ isOpen, onClose, profile }) {
   const tabStyle = (tab) => ({
     flex: 1,
     padding: '6px 0',
-    fontSize: 11,
+    fontSize: 12,
     fontFamily: THEME.fontSans,
     fontWeight: activeTab === tab ? 600 : 400,
     background: 'none',
@@ -270,7 +270,7 @@ export function ShareDialog({ isOpen, onClose, profile }) {
         </div>
 
         <p style={{
-          fontSize: 11, fontFamily: THEME.fontSans, color: THEME.textSecondary,
+          fontSize: 12, fontFamily: THEME.fontSans, color: THEME.textSecondary,
           lineHeight: 1.6, marginBottom: 16,
         }}>
           Anyone with this link can load this hearing profile and apply it to their own audio.
@@ -294,7 +294,7 @@ export function ShareDialog({ isOpen, onClose, profile }) {
               background: THEME.bgInput,
               border: `1px solid ${THEME.border}`,
               borderRadius: 3, padding: '7px 10px',
-              fontSize: 11, fontFamily: THEME.fontSans,
+              fontSize: 12, fontFamily: THEME.fontSans,
               color: THEME.textPrimary,
             }}
           />

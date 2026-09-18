@@ -53,7 +53,7 @@ export class ErrorBoundary extends Component {
         </div>
         {this.state.error?.message && (
           <div style={{
-            fontSize: 11, color: '#9aa5ad',
+            fontSize: 12, color: '#9aa5ad',
             fontFamily: '"Courier New", monospace',
             background: '#f5f5f5',
             border: '1px solid #d3d3d3',
@@ -96,7 +96,7 @@ export class ErrorBoundary extends Component {
             border: '1px solid #d3d3d3',
             borderRadius: 4,
             cursor: 'pointer',
-            fontSize: 11,
+            fontSize: 12,
             fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif',
             color: '#708090',
           }}

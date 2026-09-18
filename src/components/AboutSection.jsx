@@ -115,7 +115,7 @@ export function AboutSection({ workletAttempted, workletReady }) {
           background: 'rgba(183,119,13,0.06)',
           border: `1px solid rgba(183,119,13,0.2)`,
           borderRadius: 3,
-          fontSize: 11,
+          fontSize: 12,
           fontFamily: THEME.fontSans,
           color: THEME.warning,
         }}>

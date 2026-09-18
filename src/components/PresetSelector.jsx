@@ -16,7 +16,7 @@ export function PresetSelector({ activeId, onSelect, customProfiles = [], onNewC
     <div>
       <label htmlFor="profile-select" style={{
         display: 'block',
-        fontSize: 9,
+        fontSize: 10,
         fontFamily: THEME.fontSans,
         fontWeight: 600,
         letterSpacing: '0.1em',
@@ -113,7 +113,7 @@ export function PresetSelector({ activeId, onSelect, customProfiles = [], onNewC
         }}>
           <span style={{
             flexBasis: '100%',
-            fontSize: 9,
+            fontSize: 10,
             fontFamily: THEME.fontSans,
             color: THEME.textTertiary,
           }}>

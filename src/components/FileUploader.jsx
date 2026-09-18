@@ -114,7 +114,7 @@ export function FileUploader({ onFile, onRemove, fileInfo, isLoading, uploaderRe
               borderRadius: 3,
               cursor: 'pointer',
               padding: '4px 8px',
-              fontSize: 11,
+              fontSize: 12,
               fontFamily: THEME.fontSans,
               color: THEME.textSecondary,
               transition: `all ${THEME.transition}`,
@@ -154,7 +154,7 @@ export function FileUploader({ onFile, onRemove, fileInfo, isLoading, uploaderRe
           onFocus={e => { e.currentTarget.style.borderColor = THEME.borderFocus; }}
           onBlur={e => { e.currentTarget.style.borderColor = isDragging ? THEME.textPrimary : THEME.textTertiary; }}
         >
-          <div style={{ fontSize: 11, fontFamily: THEME.fontSans, fontWeight: 500, color: isDragging ? THEME.textPrimary : THEME.textSecondary, marginBottom: 3 }}>
+          <div style={{ fontSize: 12, fontFamily: THEME.fontSans, fontWeight: 500, color: isDragging ? THEME.textPrimary : THEME.textSecondary, marginBottom: 3 }}>
             {isDragging ? 'Drop to load' : 'Upload an audio file'}
           </div>
           <div style={{ fontSize: 10, fontFamily: THEME.fontSans, color: THEME.textSecondary }}>

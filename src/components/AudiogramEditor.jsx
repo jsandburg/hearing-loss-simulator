@@ -22,7 +22,7 @@ function EarRow({ profile, ear, label, color, onSetLoss, isMobile }) {
   return (
     <div style={{ marginBottom: 16 }}>
       <div style={{
-        fontSize: 11, fontFamily: THEME.fontSans,
+        fontSize: 12, fontFamily: THEME.fontSans,
         fontWeight: 600, color, marginBottom: 10,
       }}>
         {label}
@@ -35,7 +35,7 @@ function EarRow({ profile, ear, label, color, onSetLoss, isMobile }) {
         {FREQUENCIES.map((f, i) => (
           <div key={f}>
             <div style={{
-              fontSize: 9, fontFamily: THEME.fontSans,
+              fontSize: 10, fontFamily: THEME.fontSans,
               color: THEME.textMuted, textAlign: 'center', marginBottom: 4,
             }}>
               {FREQ_LABELS[i]}
@@ -151,7 +151,7 @@ export function AudiogramEditor({
         <div style={{ marginBottom: 22 }}>
           <label style={{
             display: 'block',
-            fontSize: 11, fontFamily: THEME.fontSans,
+            fontSize: 12, fontFamily: THEME.fontSans,
             color: THEME.textTertiary, marginBottom: 6,
           }}>
             Profile name
@@ -175,7 +175,7 @@ export function AudiogramEditor({
 
         {/* Instructions */}
         <div style={{
-          fontSize: 11, fontFamily: THEME.fontSans,
+          fontSize: 12, fontFamily: THEME.fontSans,
           color: THEME.textTertiary, marginBottom: 14, lineHeight: 1.5,
         }}>
           Enter the dB values from an existing audiogram.
@@ -192,7 +192,7 @@ export function AudiogramEditor({
             onChange={onToggleSync}
             style={{ cursor: 'pointer' }}
           />
-          <span style={{ fontSize: 11, fontFamily: THEME.fontSans, color: THEME.textSecondary }}>
+          <span style={{ fontSize: 12, fontFamily: THEME.fontSans, color: THEME.textSecondary }}>
             Same for both ears
           </span>
         </label>

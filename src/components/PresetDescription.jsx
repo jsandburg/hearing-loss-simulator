@@ -31,7 +31,7 @@ export function PresetDescription({ profile, workletReady, workletAttempted, eff
         {tinnitusActive && (
           <span style={{
             marginLeft: 8,
-            fontSize: 9,
+            fontSize: 10,
             fontFamily: THEME.fontSans,
             fontWeight: 600,
             letterSpacing: '0.08em',
@@ -49,7 +49,7 @@ export function PresetDescription({ profile, workletReady, workletAttempted, eff
       </div>
 
       <div style={{
-        fontSize: 11,
+        fontSize: 12,
         fontFamily: THEME.fontSans,
         color: THEME.textSecondary,
         lineHeight: 1.65,
@@ -61,7 +61,7 @@ export function PresetDescription({ profile, workletReady, workletAttempted, eff
       {/* Tinnitus explanation — shown only when tinnitus is active */}
       {tinnitusActive && (
         <div style={{
-          fontSize: 11,
+          fontSize: 12,
           fontFamily: THEME.fontSans,
           color: THEME.textSecondary,
           lineHeight: 1.65,
