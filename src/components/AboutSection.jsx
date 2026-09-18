@@ -57,7 +57,7 @@ export function AboutSection({ workletAttempted, workletReady }) {
         borderBottom: isOpen ? `1px solid ${THEME.border}` : 'none',
       }}>
         <div style={{
-          fontSize: 10, fontFamily: THEME.fontSans, fontWeight: 600,
+          fontSize: 11, fontFamily: THEME.fontSans, fontWeight: 600,
           letterSpacing: '0.1em', textTransform: 'uppercase',
           color: THEME.textPrimary,
         }}>

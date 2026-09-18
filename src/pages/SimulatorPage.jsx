@@ -150,7 +150,7 @@ export function SimulatorPage({ initialPresetId, initialProfile, sharedProfile }
 
   // ── Section title style ────────────────────────────────────────────────────
   const sectionTitle = {
-    fontSize: 10, fontFamily: THEME.fontSans, fontWeight: 600,
+    fontSize: 11, fontFamily: THEME.fontSans, fontWeight: 600,
     letterSpacing: '0.1em', textTransform: 'uppercase',
     color: THEME.textPrimary,
   };
